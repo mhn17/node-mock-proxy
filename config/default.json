@@ -1,5 +1,11 @@
 {
   "target": {
     "url": "http://localhost:9999/"
+  },
+  "proxy": {
+    "port": "8000",
+    "mock": {
+      "contentType": "application/json"
+    }
   }
 }
