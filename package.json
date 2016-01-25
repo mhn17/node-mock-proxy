@@ -1,0 +1,19 @@
+{
+  "name": "node-mock-proxy",
+  "version": "0.0.1",
+  "dependencies": {
+    "config": "^1.19.0",
+    "http-proxy": "^1.11.1"
+  },
+  "description": "A proxy server returning mock responses for specific requests while proxying all other requests to the default target.",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Marc Hammerton",
+  "license": "MIT"
+}
