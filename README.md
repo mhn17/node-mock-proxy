@@ -3,7 +3,8 @@ A simple proxy server for serving mocked web service responses from text files. 
 
 ## How to use
 ### Configuration
-Configure the application by editing the config file "config/default.json".
+Copy the config/default-example.json file and name it config/default.json.
+Configure the application by editing the "config/default.json" file.
 
 ### Create mocks
 Create a new file in the "mocks" folder with a mocked web service response. The sub folders and the file name need to match the path of the web service URL. E.g. for a URL like "http://localhost/some/simple/path", the file needs to placed in a folder "mocks/some/simple" and named "path.txt".  
