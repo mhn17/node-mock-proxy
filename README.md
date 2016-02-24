@@ -7,7 +7,10 @@ Copy the config/default-example.json file and name it config/default.json.
 Configure the application by editing the "config/default.json" file.
 
 ### Create mocks
-Create a new file in the "mocks" folder with a mocked web service response. The sub folders and the file name need to match the path of the web service URL. E.g. for a URL like "http://localhost/some/simple/path", the file needs to placed in a folder "mocks/some/simple" and named "path.txt".  
+Create a new text file in the "mocks" folder with a mocked web service response. The sub folders and the file name need to match the path of the web service URL. E.g. for a URL like "http://localhost/some/simple/path", the file needs to placed in a folder "mocks/some/simple" and named "path.txt".  
+
+#### POST requests
+For POST requests the name of the file is defined by the sha1 hash of the request body. It still needs to be placed in the in the sub folder matching the URL.
 
 ### Run application
 To run the application:

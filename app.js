@@ -1,4 +1,6 @@
-var http = require('http');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
 var httpProxy = require('http-proxy');
 var config = require('config');
 var fs = require('fs');
@@ -6,49 +8,46 @@ var crypto = require('crypto');
 
 var targetConfig = config.get("target");
 var proxyConfig = config.get("proxy");
-var proxy = httpProxy.createProxyServer({});
 
-function processrequest(req, res, mockFile) {
+// create proxy server
+var proxy = httpProxy.createProxyServer({}).on('error', function(e) {
+    console.log(JSON.stringify(e, null, ' '))
+});
+
+// try to read file, otherwise forward to original target
+function processRequest(req, res, mockFile) {
     // try to read the mock file
     fs.readFile("mocks" + mockFile + ".txt", "utf-8", function(err, data) {
 
-        // file does not exist -> forward to original target
-        if (err != null) {
-            proxy.web(req, res, { target: targetConfig.get("url")});
-        }
-        else {
+        // if file exists serve mock otherwise forward to original target
+        if (err == null) {
             // set file contents as response body
             res.writeHead(200, { 'Content-Type': proxyConfig.get("mock.contentType")});
             res.end(data);
         }
+        else {
+            proxy.web(req, res, { target: targetConfig.get("url")});
+        }
     });
 }
 
-// set server for checking if a mock exists
-var server = http.createServer(function(req, res) {
-    var mockFile = req.url.toLowerCase();
+// get body as raw to create hash of post body
+app.use(bodyParser.raw());
 
-    // check body when method is POST
-    if (req.method == "POST") {
-        var data = "";
-        req.on('data', function(chunk) {
-            console.log("Received body data:");
-            console.log(chunk.toString());
-            data += chunk.toString();
-        });
+// handle GET requests
+app.get("/*", function(req, res){
+    var mockFileName = req.url.toLowerCase();
+    processRequest(req, res, mockFileName);
+});
 
-        req.on('end', function() {
-            mockFile += crypto.createHash("sha1").update(data).digest("hex");
-            processrequest(req, res, mockFile);
-        });
-    }
-    else {
-        processrequest(req, res, mockFile);
-    }
-
-
+// handle POST requests
+app.post("/*", function(req, res) {
+    var mockFileName = req.url.toLowerCase();
+    mockFileName += crypto.createHash("sha1").update(req.body.toString()).digest("hex");
+    processRequest(req, res, mockFileName);
 });
 
 // start server
-console.log("listening on port " + proxyConfig.get("port"));
-server.listen(proxyConfig.get("port"));
+app.listen(proxyConfig.get("port"), function () {
+    console.log('Example app listening on port ' + proxyConfig.get("port"));
+});
