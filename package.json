@@ -12,7 +12,7 @@
   "description": "A proxy server returning mock responses for specific requests while proxying all other requests to the default target.",
   "main": "app.js",
   "devDependencies": {},
-  "scripts": {
+  "scripts": {"start": "node app.js",
     "test": "test"
   },
   "keywords": [

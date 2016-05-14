@@ -35,7 +35,7 @@ function processRequest(req, res, mockFile) {
     fs.readFile("mocks-enabled" + mockFile + ".txt", "utf-8", function(err, data) {
 
         // if file exists serve mock otherwise forward to original target
-        if (err == null) {
+        if (err === null) {
             // set file contents as response body
             res.writeHead(200, { 'Content-Type': proxyConfig.get("mock.contentType")});
             res.end(data);
