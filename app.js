@@ -6,6 +6,7 @@ var config = require('config');
 var fs = require('fs');
 var crypto = require('crypto');
 var bunyan = require('bunyan');
+var AdminServer = require('./admin/server');
 
 var targetConfig = config.get("target");
 var proxyConfig = config.get("proxy");
@@ -78,3 +79,7 @@ app.post("/*", function(req, res) {
 app.listen(proxyConfig.get("port"), function () {
     console.log('Mock proxy listening on port ' + proxyConfig.get("port"));
 });
+
+// start admin API server
+var adminServer = new AdminServer();
+adminServer.start();

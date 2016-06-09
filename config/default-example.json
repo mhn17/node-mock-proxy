@@ -13,5 +13,8 @@
       "period": "1d",
       "count": 3
     }
+  },
+  "admin": {
+    "port": "8001"
   }
 }
