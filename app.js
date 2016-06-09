@@ -47,7 +47,6 @@ function processRequest(req, res, mockFile) {
 
 // get body as raw to create hash of post body
 app.use(bodyParser.text({"type": "*/*"}));
-// app.use(restreamer());
 
 // handle GET requests
 app.get("/*", function(req, res){
