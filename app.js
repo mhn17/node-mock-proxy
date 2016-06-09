@@ -10,14 +10,16 @@ var targetConfig = config.get("target");
 var proxyConfig = config.get("proxy");
 
 // create proxy server
-var proxy = httpProxy.createProxyServer({}).on('error', function(e) {
-    console.log(JSON.stringify(e, null, ' '))
+var proxy = httpProxy.createProxyServer({})
+    .on('error', function(e) {
+        console.log(JSON.stringify(e, null, ' '))
 });
+
 
 // try to read file, otherwise forward to original target
 function processRequest(req, res, mockFile) {
     // try to read the mock file
-    fs.readFile("mocks" + mockFile + ".txt", "utf-8", function(err, data) {
+    fs.readFile("mocks-enabled" + mockFile + ".txt", "utf-8", function(err, data) {
 
         // if file exists serve mock otherwise forward to original target
         if (err == null) {
@@ -26,13 +28,26 @@ function processRequest(req, res, mockFile) {
             res.end(data);
         }
         else {
+            // fix for node-http-proxy issue 180 (https://github.com/nodejitsu/node-http-proxy/issues/180)
+            req.removeAllListeners('data');
+            req.removeAllListeners('end');
+
+            process.nextTick(function () {
+                if(req.body) {
+                    req.emit('data', req.body)
+                }
+                req.emit('end')
+            });
+            // end of fix
+
             proxy.web(req, res, { target: targetConfig.get("url")});
         }
     });
 }
 
 // get body as raw to create hash of post body
-app.use(bodyParser.raw());
+app.use(bodyParser.text({"type": "*/*"}));
+// app.use(restreamer());
 
 // handle GET requests
 app.get("/*", function(req, res){
@@ -43,11 +58,11 @@ app.get("/*", function(req, res){
 // handle POST requests
 app.post("/*", function(req, res) {
     var mockFileName = req.url.toLowerCase();
-    mockFileName += crypto.createHash("sha1").update(req.body.toString()).digest("hex");
+    mockFileName += crypto.createHash("sha1").update(req.body).digest("hex");
     processRequest(req, res, mockFileName);
 });
 
 // start server
 app.listen(proxyConfig.get("port"), function () {
-    console.log('Example app listening on port ' + proxyConfig.get("port"));
+    console.log('Mock proxy listening on port ' + proxyConfig.get("port"));
 });
