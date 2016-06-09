@@ -5,9 +5,19 @@ var httpProxy = require('http-proxy');
 var config = require('config');
 var fs = require('fs');
 var crypto = require('crypto');
+var bunyan = require('bunyan');
 
 var targetConfig = config.get("target");
 var proxyConfig = config.get("proxy");
+var requestsLog = bunyan.createLogger({
+    name: 'requests',
+    streams: [{
+        type: 'rotating-file',
+        path: 'logs/requests.log',
+        period: '1d',   // daily rotation
+        count: 3        // keep 3 back copies
+    }]
+});
 
 // create proxy server
 var proxy = httpProxy.createProxyServer({})
@@ -40,6 +50,7 @@ function processRequest(req, res, mockFile) {
             });
             // end of fix
 
+            requestsLog.info({fileName: mockFile + ".txt", body: req.body}, 'not matched incoming request');
             proxy.web(req, res, { target: targetConfig.get("url")});
         }
     });
