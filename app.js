@@ -25,8 +25,8 @@ var requestsLog = bunyan.createLogger({
 // create proxy server
 var proxy = httpProxy.createProxyServer({})
     .on('error', function(e) {
-        console.log(JSON.stringify(e, null, ' '))
-});
+        console.log(JSON.stringify(e, null, ' '));
+	});
 
 
 // try to read file, otherwise forward to original target
@@ -47,13 +47,24 @@ function processRequest(req, res, mockFile) {
 
             process.nextTick(function () {
                 if(req.body) {
-                    req.emit('data', req.body)
+                    req.emit('data', req.body);
                 }
-                req.emit('end')
+                req.emit('end');
             });
             // end of fix
 
-            requestsLog.info({fileName: mockFile + ".txt", body: req.body}, 'not matched incoming request');
+			res.oldWrite = res.write;
+			res.write = function (data) {
+				/* add logic for your data here */
+				requestsLog.info(
+					{
+						fileName: mockFile + ".txt", 
+						request: req.body, 
+						response: data.toString('UTF8')
+					}, 
+					'not matched incoming request');
+				res.oldWrite(data);
+			};
             proxy.web(req, res, { target: targetConfig.get("url")});
         }
     });
@@ -70,6 +81,9 @@ app.get("/*", function(req, res){
 
 // handle POST requests
 app.post("/*", function(req, res) {
+	res.on('end', function () {
+		console.log('data');
+	});
     var mockFileName = req.url.toLowerCase();
     mockFileName += crypto.createHash("sha1").update(req.body).digest("hex");
     processRequest(req, res, mockFileName);

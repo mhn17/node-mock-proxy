@@ -47,12 +47,13 @@ AdminServer.prototype.setUpRoutes = function() {
                 var request = JSON.parse(rawRequest);
                 requests.push({
                     fileName: request.fileName,
-                    body: request.body
+                    request: request.request,
+					response: request.response
                 });
             });
 
             // set response
-            if (err == null) {
+            if (typeof err === 'undefined') {
                 res.json(requests);
             }
             else {
