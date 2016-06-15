@@ -28,6 +28,26 @@ var proxy = httpProxy.createProxyServer({})
         console.log(JSON.stringify(e, null, ' '));
 	});
 
+var responseData = '';
+
+proxy.on('proxyRes', function(proxyRes, req) {
+	proxyRes.on('data', function(dataBuffer) {
+		responseData += dataBuffer.toString('utf8');
+	});
+
+});
+
+proxy.on('end', function(req, res) {
+	var mockFileName = req.url.toLowerCase();
+	mockFileName += crypto.createHash("sha1").update(req.body).digest("hex");
+	requestsLog.info(
+		{
+			fileName: mockFileName + ".txt",
+			request: req.body,
+			response: responseData
+		},
+		'not matched incoming request');
+});
 
 // try to read file, otherwise forward to original target
 function processRequest(req, res, mockFile) {
@@ -51,20 +71,21 @@ function processRequest(req, res, mockFile) {
                 }
                 req.emit('end');
             });
+/*
             // end of fix
-
 			res.oldWrite = res.write;
 			res.write = function (data) {
 				/* add logic for your data here */
-				requestsLog.info(
+/*				requestsLog.info(
 					{
-						fileName: mockFile + ".txt", 
-						request: req.body, 
+						fileName: mockFile + ".txt",
+						request: req.body,
 						response: data.toString('UTF8')
-					}, 
+					},
 					'not matched incoming request');
 				res.oldWrite(data);
 			};
+*/
             proxy.web(req, res, { target: targetConfig.get("url")});
         }
     });
