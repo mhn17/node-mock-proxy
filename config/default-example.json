@@ -1,20 +1,24 @@
 {
-  "target": {
-    "url": "http://localhost:9999/"
-  },
-  "proxy": {
-    "port": "8000",
-    "mock": {
-      "contentType": "application/json"
-    }
-  },
-  "logging": {
-    "rotation": {
-      "period": "1d",
-      "count": 3
-    }
-  },
-  "admin": {
-    "port": "8001"
-  }
+	"target": {
+		"url": "http://localhost:9999/"
+	},
+	"proxy": {
+		"port": "8000",
+		"mock": {
+			"contentType": "application/json"
+		}
+	},
+	"logging": {
+		"file": "logs/requests.log",
+		"rotation": {
+			"period": "1d",
+			"count": 3
+		}
+	},
+	"admin": {
+		"port": "8001"
+	},
+	"mocks": {
+		"enabledFolder": "mocks-enabled"
+	}
 }

@@ -1,0 +1,24 @@
+{
+  "target": {
+    "url": "http://localhost:8099/"
+  },
+  "proxy": {
+    "port": "8098",
+    "mock": {
+      "contentType": "application/json"
+    }
+  },
+	"logging": {
+		"file": "test/logs/requests.log",
+		"rotation": {
+			"period": "1d",
+			"count": 3
+		}
+	},
+	"admin": {
+		"port": "8097"
+	},
+	"mocks": {
+		"enabledFolder": "test/fixtures/mocks-enabled"
+	}
+}
