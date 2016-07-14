@@ -69,7 +69,7 @@ RequestProcessor.prototype.initProxy = function() {
 			var mockFileName = that.mockFileNameService.getName(req);
 			that.requestLogger.info(
 				{
-					fileName: mockFileName + ".txt",
+					fileName: mockFileName,
 					request: req.body,
 					response: responseData
 				},
