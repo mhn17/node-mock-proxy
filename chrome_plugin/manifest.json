@@ -1,0 +1,18 @@
+{
+  "name": "Mock proxy connector",
+  "description": "Connects you to the mock proxy",
+  "version": "2.0",
+  "permissions": [
+    "http://www.localhost:8081/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+     "default_icon": "images/icon.png",
+    "default_title": "Connects you to the mock proxy",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}
