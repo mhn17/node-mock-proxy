@@ -4,6 +4,7 @@ var bodyParser  = require('body-parser');
 var config      = require('config');
 var fs          = require('fs');
 
+// Make the AdminServer to a real webserver via the express module
 var AdminServer = function() {
     this.app = express();
 
@@ -11,6 +12,7 @@ var AdminServer = function() {
     this.adminConfig = config.get('admin');
 };
 
+// Add a prototype start function for init stuff
 AdminServer.prototype.start = function() {
     var that = this;
 
@@ -28,6 +30,8 @@ AdminServer.prototype.start = function() {
     });
 };
 
+// Add a prototype function to setup the route stuff
+// Save requests and responses
 AdminServer.prototype.setUpRoutes = function() {
     // root URL
     router.get('/', function(req, res) {
@@ -104,4 +108,5 @@ AdminServer.prototype.setUpRoutes = function() {
     });
 };
 
+// When this file is required return the AdminServer instead
 module.exports = AdminServer;

@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var AdminServer = require('./admin/server');
+var AdminServer = require('./admin/AdminServer');
 
 // config
 var config = require('config');
