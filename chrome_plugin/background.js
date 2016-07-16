@@ -10,3 +10,28 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     //chrome.tabs.executeScript({
     //  code: 'document.body.style.backgroundColor="red"'
   });
+  
+chrome.runtime.onConnect.addListener(function(port){
+     if(port.name === "GetPossibleMockList"){
+        // Send request and list
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.localhost:8001/api/available-requests", false);
+        xhr.send();
+        var result = xhr.responseText;
+        var jsonResult = JSON.parse(result)
+        port.postMessage({result: jsonResult});   
+     }
+});
+
+chrome.runtime.onConnect.addListener(function(port){
+     if(port.name === "SaveToAvailableMocks"){
+        // Send request and list
+        // This here must be changed so that the correct endpoint will be called
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.localhost:8001/api/available-requests", false);
+        xhr.send();
+        var result = xhr.responseText;
+        var jsonResult = JSON.parse(result)
+        port.postMessage({result: "Added to available mocks!"});   
+     }
+});
