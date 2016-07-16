@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     mockListRequest.onMessage.addListener(function(message,sender){
         // Get results
         var requestList = message.result;
+        document.getElementById("requestList").innerHTML = "";
         
         // Create new element and add results!
         // Gets a lot shorter when I find out how to use jQuery in here properly
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Text
             var textNode = document.createElement("p");        
-            var node = document.createTextNode(entry);
+            var node = document.createTextNode(entry.fileName);
             textNode.appendChild(node);
             contentDiv.appendChild(textNode);
 
