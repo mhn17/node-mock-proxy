@@ -67,10 +67,11 @@ RequestProcessor.prototype.initProxy = function() {
 		})
 		.on('end', function (req, res) {
 			var mockFileName = that.mockFileNameService.getName(req);
-			that.requestLogger.info(
+			
+                        that.requestLogger.info(
 				{
 					fileName: mockFileName + ".txt",
-					request: req.body,
+					request: req,
 					response: responseData
 				},
 				'not matched incoming request'
