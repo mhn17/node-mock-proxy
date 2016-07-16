@@ -1,28 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
   
     // Stuff to list requests
-    var listRequestButton = document.getElementById('listRequests');
+    var listRequestButton = document.getElementById('refreshMocksButton');
     listRequestButton.addEventListener('click', function() {
   
     // Get the list as an array of json objects via message passing to the backgound
     // XHS is not directly possible in developer toolbar
-    var mockListRequest = chrome.runtime.connect({name: "GetPossibleMockList"});
+    var mockListRequest = chrome.runtime.connect({name: "GetMocks"});
     mockListRequest.onMessage.addListener(function(message,sender){
         // Get results
-        var requestList = message.result;
+        var mockList = message.result;
         
         // Create new element and add results!
         // Gets a lot shorter when I find out how to use jQuery in here properly
-        requestList.forEach(function(entry) {
+        mockList.forEach(function(entry) {
 
             // Content
-            var container = document.getElementById("requestList");
+            var container = document.getElementById("mockList");
             var contentDiv = document.createElement("div");
 
             // Input
             var inputNode = document.createElement("input");
             inputNode.setAttribute("type", "checkbox");
-
+            inputNode.checked = entry.enabled;
+            
             // Register event listener to checkboxes
             inputNode.addEventListener("click", function(){
                 // XHS is not directly possible in developer toolbar
@@ -35,12 +36,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Text
             var textNode = document.createElement("p");        
-            var node = document.createTextNode(entry);
+            var node = document.createTextNode(entry.name);
             textNode.appendChild(node);
             contentDiv.appendChild(textNode);
 
             container.appendChild(contentDiv);    
-        }); 
+        });
     });
   
    

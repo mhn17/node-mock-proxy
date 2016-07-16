@@ -107,7 +107,7 @@ AdminServer.prototype.setUpRoutes = function() {
                 requests.push({
                     fileName: request.fileName,
                     request: request.request,
-					response: request.response
+                    response: request.response
                 });
             });
 
@@ -120,6 +120,61 @@ AdminServer.prototype.setUpRoutes = function() {
                 res.json({ message: 'ups! something went wrong: ' + err });
             }
 
+        });
+    });
+
+    // Move available mock to enabled mocks
+    router.post('/moveAvailableMockToEnabled', function(req, res) {
+        console.log("Enable mock");
+
+    });
+    
+    // Move enabled mock to availabled mocks
+    router.post('/moveEnabledMockToAvailable', function(req, res) {
+        console.log("Disable mock");
+
+    });
+    
+    // Get mocklist and states
+    router.get('/mockList', function(req, res) {
+        console.log("List all mocks");
+        var mockList = [];
+        
+        // Get enabled mocks
+        fs.readdir("./mocks-enabled", function(err, files){ 
+            // Better user filtering too?
+            // fs.stat(path, callback(err, stats)) and stats.isDirectory()
+            files.forEach(function(entry){
+                if(entry !== ".gitignore"){
+                    mockList.push({
+                        name: entry,
+                        enabled: true
+                    });
+                }
+            });
+        });
+        
+        // Get disabled mocks
+        fs.readdir("./mocks-available", function(err, files){ 
+            // Better user filtering too?
+            // fs.stat(path, callback(err, stats)) and stats.isDirectory()
+            files.forEach(function(entry){
+                if(entry !== ".gitignore"){
+                    mockList.push({
+                        name: entry,
+                        enabled: false
+                    });
+                }
+            });
+            
+             // set response
+            if (typeof err === 'undefined' || err === null) {
+                res.statusCode = 200;
+                res.json(mockList);
+            }else {
+                res.statusCode = 500;
+                res.json({ message: 'ups! something went wrong: ' + err });
+            }
         });
     });
 };

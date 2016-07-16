@@ -26,3 +26,16 @@ chrome.runtime.onConnect.addListener(function(port){
         port.postMessage({result: result});   
      }
 });
+
+chrome.runtime.onConnect.addListener(function(port){
+     if(port.name === "GetMocks"){
+        // Send request and list
+        // This here must be changed so that the correct endpoint will be called
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.localhost:8001/api/mockList", false);
+        xhr.send();
+        var result = xhr.responseText;
+        var jsonResult = JSON.parse(result)
+        port.postMessage({result: jsonResult});   
+     }
+});
