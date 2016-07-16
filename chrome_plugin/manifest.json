@@ -10,11 +10,6 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  "browser_action": {
-    "default_icon": "images/icon.png",
-    "default_title": "Connects you to the mock proxy",
-    "default_popup": "popup.html"
-  },
     "content_scripts": [{
         "js": [ "jQuery/jquery-3.1.0.min.js"],
         "matches": [ "http://*/*", "https://*/*"]
