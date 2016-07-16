@@ -3,6 +3,7 @@ var router      = express.Router();
 var bodyParser  = require('body-parser');
 var config      = require('config');
 var fs          = require('fs');
+var mv          = require('mv');
 
 // Make the AdminServer to a real webserver via the express module
 var AdminServer = function() {
@@ -124,15 +125,34 @@ AdminServer.prototype.setUpRoutes = function() {
     });
 
     // Move available mock to enabled mocks
-    router.post('/moveAvailableMockToEnabled', function(req, res) {
-        console.log("Enable mock");
+    router.get('/moveAvailableMockToEnabled', function(req, res) {
+        var mockFileName = req.query.name;
+        console.log("Enable mock: " + mockFileName);
 
+        mv('./mocks-available/' + mockFileName
+                , './mocks-enabled/' + mockFileName, function(err) {
+                   // It seems there is always an error thrown? Strange.
+                   // No error handling for now.
+        });
+        
+        res.statusCode = 200;
+        res.json({ message: 'OK: '});
     });
     
     // Move enabled mock to availabled mocks
-    router.post('/moveEnabledMockToAvailable', function(req, res) {
-        console.log("Disable mock");
-
+    router.get('/moveEnabledMockToAvailable', function(req, res) {
+        
+        var mockFileName = req.query.name;
+        console.log("Disable mock: " + mockFileName);
+        
+        mv('./mocks-enabled/' + mockFileName
+                , './mocks-available/' + mockFileName, function(err) {
+                   // It seems there is always an error thrown? Strange.
+                   // No error handling for now.
+        });
+        
+        res.statusCode = 200;
+        res.json({ message: 'OK'});
     });
     
     // Get mocklist and states

@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // XHS is not directly possible in developer toolbar
     var mockListRequest = chrome.runtime.connect({name: "GetMocks"});
     mockListRequest.onMessage.addListener(function(message,sender){
-        // Get results
+        // Get results and clear previous results
         var mockList = message.result;
+        document.getElementById("mockList").innerHTML = "";
         
         // Create new element and add results!
         // Gets a lot shorter when I find out how to use jQuery in here properly
@@ -26,16 +27,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Register event listener to checkboxes
             inputNode.addEventListener("click", function(){
-                // XHS is not directly possible in developer toolbar
-                var port = chrome.runtime.connect({name: "SaveToAvailableMocks"});
-                port.onMessage.addListener(function(message,sender){
-                    alert(message.result);
-                });
+                // If mock is being enabled get the mock name from the label and
+                // build get request 
+                if(this.checked){
+                   var mockName = this.nextSibling.innerHTML;
+                    // XHS is not directly possible in developer toolbar
+                    var port = chrome.runtime.connect({name: "EnableMock?" + mockName});
+
+                // If mock is being disabled get the mock name from the label and
+                // build get request 
+                }else{
+                    var mockName = this.nextSibling.innerHTML;
+                    // XHS is not directly possible in developer toolbar
+                    var port = chrome.runtime.connect({name: "DisableMock?" + mockName});
+                }
             });
             contentDiv.appendChild(inputNode);
 
             // Text
-            var textNode = document.createElement("p");        
+            var textNode = document.createElement("label");        
             var node = document.createTextNode(entry.name);
             textNode.appendChild(node);
             contentDiv.appendChild(textNode);

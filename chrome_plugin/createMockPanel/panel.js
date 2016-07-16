@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             contentDiv.appendChild(inputNode);
 
             // Text
-            var textNode = document.createElement("p");        
+            var textNode = document.createElement("label");        
             var node = document.createTextNode(entry.fileName);
             textNode.appendChild(node);
             contentDiv.appendChild(textNode);
