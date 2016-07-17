@@ -170,6 +170,56 @@ AdminServer.prototype.setUpRoutes = function() {
         res.json({ message: 'OK'});
     });
     
+    // Add request to mocks
+    router.get('/addMockToMocks', function(req, res) {
+        
+        var mockFileName = req.query.name;
+        console.log("Add request to mocks: " + mockFileName);
+        fs.readFile("./logs/requests.log", "utf-8", function(err, data) {
+
+            // prepare data
+            var rawRequests = data.split('\n');
+            rawRequests.pop();
+
+            var requests = [];
+            rawRequests.forEach(function(rawRequest) {
+
+                var request = JSON.parse(rawRequest);
+                requests.push({
+                        fileName: request.fileName,
+                        request: request.request,
+                        response: request.response
+                });
+            });
+
+            // save response
+            if(typeof err === 'undefined' || err === null) {
+                // Get correct request
+                var requestToMock = {};
+                requests.forEach(function(entry){
+                    console.log(entry.fileName);
+                    if(entry.fileName === mockFileName){
+                        requestToMock = entry;
+                    }
+                });
+
+                // Write file
+                fs.writeFile('./mocks-enabled/' + requestToMock.fileName, requestToMock.response, function(err) {
+                    if (err) {
+                            res.statusCode = 500;
+                            res.json({message: 'Failed to add to mocks: ' + err});
+                    } else {
+                            res.json({message: 'Request saved with filename and enabled: ' + requestToMock.fileName});
+                    }
+                });
+            }
+            else {
+                res.statusCode = 500;
+                res.json({message: 'Failed to add to mocks: ' + err});
+            }
+        });
+    });
+    
     // Get mocklist and states
     router.get('/mockList', function(req, res) {
         console.log("List all mocks");

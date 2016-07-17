@@ -21,18 +21,18 @@ document.addEventListener('DOMContentLoaded', function() {
             var contentDiv = document.createElement("div");
 
             // Input
-            var inputNode = document.createElement("input");
-            inputNode.setAttribute("type", "checkbox");
+            var addButton = document.createElement("button");
+            addButton.innerHTML = "Add";
 
             // Register event listener to checkboxes
-            inputNode.addEventListener("click", function(){
+            addButton.addEventListener("click", function(){
                 // XHS is not directly possible in developer toolbar
-                var port = chrome.runtime.connect({name: "SaveToAvailableMocks"});
+                var port = chrome.runtime.connect({name: "AddRequestToMocks?" + entry.fileName});
                 port.onMessage.addListener(function(message,sender){
                     alert(message.result);
                 });
             });
-            contentDiv.appendChild(inputNode);
+            contentDiv.appendChild(addButton);
 
             // Text
             var textNode = document.createElement("label");        
