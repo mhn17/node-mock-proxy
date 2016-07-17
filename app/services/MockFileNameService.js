@@ -41,5 +41,9 @@ module.exports.getName = function(req) {
             mockFileName = mockFileName.replace(".", "-");
 	}
 
+        mockFileName += new Date().getHours();
+        mockFileName += new Date().getMinutes();
+        mockFileName += new Date().getSeconds();
+
 	return mockFileName;
 };
