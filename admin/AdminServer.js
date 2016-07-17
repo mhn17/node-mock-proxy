@@ -170,7 +170,7 @@ AdminServer.prototype.setUpRoutes = function() {
         res.json({ message: 'OK'});
     });
     
-       // Move available mock to enabled mocks
+    // Move available mock to enabled mocks
     router.get('/deleteMock', function(req, res) {
         
         var mockFileName = req.query.name;
@@ -198,9 +198,88 @@ AdminServer.prototype.setUpRoutes = function() {
                     + " error: " + err});
             }
         });
-        console.log("Was here");
+        
         res.statusCode = 200;
         res.json({ message: 'OK: '});
+    });
+    
+    // Get response for a request in the log file
+    router.get('/getRequestLogResponse', function(req, res) {
+        
+        var mockFileName = req.query.name;
+        
+        console.log("Get response for request: " + mockFileName);
+
+        fs.readFile("./logs/requests.log", "utf-8", function(err, data) {
+
+            // prepare data
+            var rawRequests = data.split('\n');
+            rawRequests.pop();
+
+            // Get requests
+            var requests = [];
+            rawRequests.forEach(function(rawRequest) {
+                var request = JSON.parse(rawRequest);
+                requests.push({
+                    fileName: request.fileName,
+                    request: request.request,
+                    response: request.response
+                });
+            });
+            
+            // Get correct request
+            var requestToResponse = {};
+            requests.forEach(function(entry){
+                if(entry.fileName === mockFileName){
+                    requestToResponse = entry;
+                }
+            });
+
+            // Set error response
+            if (typeof err === 'undefined' || err === null) {
+                // Set response
+                res.statusCode = 200;
+                res.json({ message: requestToResponse.response });
+            } else {
+                res.statusCode = 500;
+                res.json({ message: 'Could not get response for the request: ' + err });
+            }
+        });
+    });
+    
+        // Get response for a request in the log file
+    router.get('/getMockResponse', function(req, res) {
+        
+        var mockFileName = req.query.name;
+        var mockState = req.query.enabled;
+        var path;
+        
+        console.log("Get response for Mock: " 
+                + mockFileName 
+                + " in state "
+                + req.query.enabled);
+        
+        // Determine if the mock is enabled or disabled
+        // And I thought this should work with that truthy stuff and isn't it
+        // supposed to be a boolean anyway?
+        if(mockState === "true"){
+            path = './mocks-enabled/' + mockFileName;
+        } else {
+            path = './mocks-available/' + mockFileName;
+        }
+        
+        // Read content of mock file
+        fs.readFile(path, "utf-8", function(err, data) {
+            // Set error response
+            if (typeof err === 'undefined' || err === null) {
+                // Set response
+                res.statusCode = 200;
+                res.json({ message: data });
+            } else {
+                res.statusCode = 500;
+                res.json({ message: 'Could not get response for the request: ' + err });
+            }
+        });
     });
     
     // Add request to mocks
@@ -230,7 +309,6 @@ AdminServer.prototype.setUpRoutes = function() {
                 // Get correct request
                 var requestToMock = {};
                 requests.forEach(function(entry){
-                    console.log(entry.fileName);
                     if(entry.fileName === mockFileName){
                         requestToMock = entry;
                     }

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var container = document.getElementById("requestList");
             var contentDiv = document.createElement("div");
 
-            // Input
+            // Button to add the request
             var addButton = document.createElement("button");
             addButton.innerHTML = "Add";
 
@@ -40,7 +40,22 @@ document.addEventListener('DOMContentLoaded', function() {
             textNode.appendChild(node);
             contentDiv.appendChild(textNode);
 
-            container.appendChild(contentDiv);    
+            // Button for the preview
+            var previewButton = document.createElement("button");
+            previewButton.innerHTML = "Preview";
+
+            // Register event listener to checkboxes
+            previewButton.addEventListener("click", function(){
+                // XHS is not directly possible in developer toolbar
+                var port = chrome.runtime.connect({name: "GetResponseForRequestInLog?" + entry.fileName});
+                port.onMessage.addListener(function(message,sender){
+                    alert("Response:\n" + message.result);
+                });
+            });
+            contentDiv.appendChild(previewButton);
+            
+            // Add the whole content to the page
+            container.appendChild(contentDiv);
         }); 
     });
   

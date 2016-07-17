@@ -64,6 +64,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             contentDiv.appendChild(deleteButton);
 
+            // Button for the preview
+            var previewButton = document.createElement("button");
+            previewButton.innerHTML = "Preview";
+
+            // Register event listener to checkboxes
+            previewButton.addEventListener("click", function(){
+                var checkboxState = this.previousSibling.previousSibling.previousSibling.checked;
+                // XHS is not directly possible in developer toolbar
+                var port = chrome.runtime.connect({name: "GetResponseFromMock?" 
+                            + entry.name + "?" +  checkboxState});
+                port.onMessage.addListener(function(message,sender){
+                    alert("Response:\n" + message.result);
+                });
+            });
+            contentDiv.appendChild(previewButton);
+
             // Add to the page
             container.appendChild(contentDiv);    
         });

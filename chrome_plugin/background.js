@@ -83,6 +83,38 @@ chrome.runtime.onConnect.addListener(function(port){
 
 chrome.runtime.onConnect.addListener(function(port){
     // There has to be a better way to transfer the mock name ... 
+    if(port.name.includes("GetResponseForRequestInLog")){
+        var mockName = port.name.split("?")[1];
+         
+        // Send request and list
+        // This here must be changed so that the correct endpoint will be called
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.localhost:8001/api/getRequestLogResponse?name=" + mockName, false);
+        xhr.send();
+        var result = xhr.responseText;
+        port.postMessage({result: result}); 
+     }
+});
+
+chrome.runtime.onConnect.addListener(function(port){
+    // There has to be a better way to transfer the mock name ... 
+    if(port.name.includes("GetResponseFromMock")){
+        var mockName = port.name.split("?")[1];
+        var state = port.name.split("?")[2];
+         
+        // Send request and list
+        // This here must be changed so that the correct endpoint will be called
+        var xhr = new XMLHttpRequest();
+        var getParameters = "?name=" + mockName + "&enabled=" + state;
+        xhr.open("GET", "http://www.localhost:8001/api/getMockResponse" + getParameters, false);
+        xhr.send();
+        var result = xhr.responseText;
+        port.postMessage({result: result}); 
+     }
+});
+
+chrome.runtime.onConnect.addListener(function(port){
+    // There has to be a better way to transfer the mock name ... 
     if(port.name.includes("DeleteMock")){
         var mockName = port.name.split("?")[1];
         var state = port.name.split("?")[2];
