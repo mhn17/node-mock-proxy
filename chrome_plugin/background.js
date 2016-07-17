@@ -65,3 +65,14 @@ chrome.runtime.onConnect.addListener(function(port){
         xhr.send();
      }
 });
+
+chrome.runtime.onConnect.addListener(function(port){
+    // There has to be a better way to transfer the mock name ... 
+    if(port.name === "ClearRequestLog"){
+        // Send request and list
+        // This here must be changed so that the correct endpoint will be called
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.localhost:8001/api/clearRequestLog", false);
+        xhr.send();
+     }
+});

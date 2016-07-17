@@ -62,6 +62,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
     }, false);
  
+ 
+     // Save last request as mock
+    var clearRequestButton = document.getElementById('clearRequests');
+    clearRequestButton.addEventListener('click', function() {
+
+        var clearRequestsRequest = chrome.runtime.connect({name: "ClearRequestLog"});
+        clearRequestsRequest.onMessage.addListener(function(message,sender){
+            // Do something here?
+        });
+        
+    }, false);
 }, false);
 
 /*

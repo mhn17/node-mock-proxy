@@ -124,6 +124,21 @@ AdminServer.prototype.setUpRoutes = function() {
         });
     });
 
+    // Clear log entries from request log
+    router.get('/clearRequestLog', function(req, res) {
+        console.log("Clear request log.");
+
+        fs.writeFile("./logs/requests.log", "", function(err){
+            if(err){
+                res.statusCode = 200;
+                res.json({ message: 'Failed to clear request log: ' + err});
+            }
+        });
+
+        res.statusCode = 200;
+        res.json({ message: 'OK: '});
+    });
+
     // Move available mock to enabled mocks
     router.get('/moveAvailableMockToEnabled', function(req, res) {
         var mockFileName = req.query.name;
