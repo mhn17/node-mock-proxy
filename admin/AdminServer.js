@@ -170,6 +170,39 @@ AdminServer.prototype.setUpRoutes = function() {
         res.json({ message: 'OK'});
     });
     
+       // Move available mock to enabled mocks
+    router.get('/deleteMock', function(req, res) {
+        
+        var mockFileName = req.query.name;
+        var mockState = req.query.enabled;
+        var path;
+        
+        console.log("Delete mock: " + mockFileName + " in state " + mockState);
+
+        // Determine if the mock is enabled or disabled
+        // And I thought this should work with that truthy stuff and isn't it
+        // supposed to be a boolean anyway?
+        if(mockState === "true"){
+            path = './mocks-enabled/' + mockFileName;
+        } else {
+            path = './mocks-available/' + mockFileName;
+        }
+        
+        console.log("Target deletion path:" + path);
+        
+        // Delete mock
+        fs.unlink(path, function(err){
+            if(err){
+                res.statusCode = 500;
+                res.json({ message: 'Failed to delete mock: ' + mockFileName
+                    + " error: " + err});
+            }
+        });
+        console.log("Was here");
+        res.statusCode = 200;
+        res.json({ message: 'OK: '});
+    });
+    
     // Add request to mocks
     router.get('/addMockToMocks', function(req, res) {
         
