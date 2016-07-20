@@ -1,0 +1,18 @@
+{
+  "name": "Mock proxy connector",
+  "description": "Connects you to the mock proxy",
+  "version": "2.0",
+  "devtools_page": "panelCreation/createPanel.html",
+  "permissions": [
+    "http://www.localhost:8081/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+    "content_scripts": [{
+        "js": [ "jQuery/jquery-3.1.0.min.js"],
+        "matches": [ "http://*/*", "https://*/*"]
+  }],
+  "manifest_version": 2
+}

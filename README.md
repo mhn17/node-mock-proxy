@@ -22,3 +22,15 @@ To enable and disable mocks, just move the mock files between the "mock-enabled"
 To run the application:
 
     node app
+
+To run the test application which will always return a standard response use in the dir test:
+
+    node MockTarget.js
+
+# Chrome Plugin
+##How to use
+There is no packed plugin yet. You have to open the chrom extension page and 
+open the folder via "Entpackte Erweiterung laden". There will be two additional 
+tabs in the chrome developer toolbar which you can use.
+
+

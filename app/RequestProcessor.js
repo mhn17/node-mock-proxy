@@ -68,6 +68,7 @@ RequestProcessor.prototype.initProxy = function() {
 		})
 		.on('end', function (req, res) {
 			var mockFileName = that.mockFileNameService.getName(req);
+
 			that.forwardedRequestsLogger.info(
 				{
 					fileName: mockFileName,
