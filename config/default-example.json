@@ -9,10 +9,12 @@
 		}
 	},
 	"logging": {
-		"file": "logs/requests.log",
-		"rotation": {
-			"period": "1d",
-			"count": 3
+		"forwaredRequests": {
+			"file": "logs/requestsForwarded.log",
+			"rotation": {
+				"period": "1d",
+				"count": 3
+			}
 		}
 	},
 	"admin": {

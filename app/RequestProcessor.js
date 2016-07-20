@@ -10,7 +10,7 @@ var RequestProcessor = function(config, mockFileNameService) {
 	this.mockFileNameService = mockFileNameService;
 
 	this.proxy = this.initProxy();
-	this.requestLogger = this.initRequestLog(config.get("logging"));
+	this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwaredRequests"));
 };
 
 // try to read file, otherwise forward to original target
@@ -21,16 +21,10 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 
 	// try to read the mock file
 	fs.readFile(path.resolve(mockFolder + mockFile), "utf-8", function (err, data) {
-		// if file exists serve mock otherwise forward to original target
-		if (typeof err === "undefined") {
-			// set file contents as response body
-			res.writeHead(
-				200, 
-				{'Content-Type': that.proxyConfig.get("mock.contentType")}
-			);
-			res.end(data);
-		} else {
-			// fix for node-http-proxy issue 180 
+		// if file not exists forward to original target otherwise serve mock
+		if (err) {
+			console.log(err);
+			// fix for node-http-proxy issue 180
 			// (https://github.com/nodejitsu/node-http-proxy/issues/180)
 			if (req.method === "POST") {
 				req.removeAllListeners('data');
@@ -44,8 +38,15 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 				});
 			}
 			// end of fix
-			
+
 			that.proxy.web(req, res, {target: that.targetConfig.get("url")});
+		} else {
+			// set file contents as response body
+			res.writeHead(
+				200,
+				{'Content-Type': that.proxyConfig.get("mock.contentType")}
+			);
+			res.end(data);
 		}
 	});
 };
@@ -67,7 +68,7 @@ RequestProcessor.prototype.initProxy = function() {
 		})
 		.on('end', function (req, res) {
 			var mockFileName = that.mockFileNameService.getName(req);
-			that.requestLogger.info(
+			that.forwardedRequestsLogger.info(
 				{
 					fileName: mockFileName,
 					request: req.body,
@@ -76,14 +77,14 @@ RequestProcessor.prototype.initProxy = function() {
 				'not matched incoming request'
 			);
 		});
-		
+
 	return proxy;
 };
 
 // init request logging
 RequestProcessor.prototype.initRequestLog = function(logConfig) {
 	// create request log
-	var requestLogger = bunyan.createLogger({
+	var forwardedRequestsLogger = bunyan.createLogger({
 		name: 'requests',
 		streams: [{
 				type: "rotating-file",
@@ -91,17 +92,17 @@ RequestProcessor.prototype.initRequestLog = function(logConfig) {
 				period: logConfig.get("rotation").get("period"),
 				count: logConfig.get("rotation").get("count")
 			}]
-	});	
-	
-	return requestLogger;
+	});
+
+	return forwardedRequestsLogger;
 };
 
 RequestProcessor.prototype.getProxy = function() {
 	return this.proxy;
 };
 
-RequestProcessor.prototype.getRequestLogger = function() {
-	return this.requestLogger;
+RequestProcessor.prototype.getForwardedRequestsLogger = function() {
+	return this.forwardedRequestsLogger;
 };
 
 module.exports = RequestProcessor;
