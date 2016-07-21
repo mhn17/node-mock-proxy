@@ -10,7 +10,7 @@ var RequestProcessor = function(config, mockFileNameService) {
 	this.mockFileNameService = mockFileNameService;
 
 	this.proxy = this.initProxy();
-	this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwaredRequests"));
+	this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));
 };
 
 // try to read file, otherwise forward to original target
@@ -20,7 +20,7 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 	var mockFolder = this.mockConfig.get("enabledFolder");
 
 	// try to read the mock file
-	fs.readFile(path.resolve(mockFolder + mockFile), "utf-8", function (err, data) {
+	fs.readFile(path.resolve(mockFolder + "/" + mockFile), "utf-8", function (err, data) {
 		// if file not exists forward to original target otherwise serve mock
 		if (err) {
 			console.log(err);

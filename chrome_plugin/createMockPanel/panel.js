@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get results
         var requestList = message.result;
         document.getElementById("requestList").innerHTML = "";
-        
+         
         // Create new element and add results!
         // Gets a lot shorter when I find out how to use jQuery in here properly
         requestList.forEach(function(entry) {
