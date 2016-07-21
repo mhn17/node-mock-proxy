@@ -4,17 +4,21 @@ var bodyParser  = require('body-parser');
 var config      = require('config');
 var fs          = require('fs');
 var mv          = require('mv');
+// Well does not really work as class member variable thanks to the prototype
+// There is probably a better solution
+var pathService;
 
 // Make the AdminServer to a real webserver via the express module
-var AdminServer = function() {
+var AdminServer = function(pathServiceParam) {
     
     console.log("Init admin server");
-    
+    console.log(pathService);
     // Make this a server
     this.app = express();
 
     // get admin config
     this.adminConfig = config.get('admin');
+    pathService = pathServiceParam;
 };
 
 // Add a prototype start function for init stuff
@@ -53,7 +57,7 @@ AdminServer.prototype.setUpRoutes = function() {
 
 	// save last request
 	router.get('/save-last-request', function(req, res) {
-		fs.readFile("./logs/requestsForwarded.log", "utf-8", function(err, data) {
+		fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
 
 			// prepare data
 			var rawRequests = data.split('\n');
@@ -96,7 +100,8 @@ AdminServer.prototype.setUpRoutes = function() {
     // logged requests
     router.get('/available-requests', function(req, res) {
         console.log("Trying to list available requests");
-        fs.readFile("./logs/requestsForwarded.log", "utf-8", function(err, data) {
+       
+        fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
 
             // prepare data
             var rawRequests = data.split('\n');
@@ -128,7 +133,7 @@ AdminServer.prototype.setUpRoutes = function() {
     router.get('/clearRequestLog', function(req, res) {
         console.log("Clear request log.");
 
-        fs.writeFile("./logs/requestsForwarded.log", "", function(err){
+        fs.writeFile(pathService.getLogFilePath(), "", function(err){
             if(err){
                 res.statusCode = 200;
                 res.json({ message: 'Failed to clear request log: ' + err});
@@ -210,7 +215,7 @@ AdminServer.prototype.setUpRoutes = function() {
         
         console.log("Get response for request: " + mockFileName);
 
-        fs.readFile("./logs/requestsForwarded.log", "utf-8", function(err, data) {
+        fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
 
             // prepare data
             var rawRequests = data.split('\n');
@@ -287,7 +292,7 @@ AdminServer.prototype.setUpRoutes = function() {
         
         var mockFileName = req.query.name;
         console.log("Add request to mocks: " + mockFileName);
-        fs.readFile("./logs/requestsForwarded.log", "utf-8", function(err, data) {
+        fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
 
             // prepare data
             var rawRequests = data.split('\n');

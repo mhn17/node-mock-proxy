@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var mockFileNameService = require('./../services/MockFileNameService');
+var pathService = require('./../services/PathService');
 var RequestProcessor = require('./../RequestProcessor');
 
 var config = require('config');
-var requestProcessor = new RequestProcessor(config, mockFileNameService);
+var requestProcessor = new RequestProcessor(config, mockFileNameService, pathService);
 
 // handle GET requests
 router.get('/*', function(req, res) {
