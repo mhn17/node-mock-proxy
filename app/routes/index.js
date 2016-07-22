@@ -5,7 +5,7 @@ var pathService = require('./../services/PathService');
 var RequestProcessor = require('./../RequestProcessor');
 
 var config = require('config');
-var requestProcessor = new RequestProcessor(config, mockFileNameService, pathService);
+var requestProcessor = new RequestProcessor(config, mockFileNameService);
 
 // handle GET requests
 router.get('/*', function(req, res) {

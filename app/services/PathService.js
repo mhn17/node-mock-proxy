@@ -10,12 +10,17 @@ var mockEnabledFolder = mockConfig.get("enabledFolder");
 var loggingConfig = config.get("logging");
 
 /**
+ * PathService object declaration. Could be made a function object for more flexibility.
+ */
+var PathService = {}
+
+/**
  * Returns the path to the file where the requests are being saved.
  *
  * @returns {String} Returns the path to the file where the requests are being saved.
  */
-module.exports.getLogFilePath = function() {
-   return loggingConfig.get("forwardedRequests").get("file");	
+PathService.getLogFilePath = function() {
+   return path.resolve(loggingConfig.get("forwardedRequests").get("file"));	
 };
 
 /**
@@ -25,8 +30,17 @@ module.exports.getLogFilePath = function() {
  * @param {Boolean} mockEnabled Describes if the mock is enabled or disabled. Used to look for the log file in the corresponding folder.
  * @returns {String} Returns the path to a mock file.
  */
-module.exports.getMockPath = function(mockFileName, mockEnabled) {
-	
+PathService.getMockPath = function(mockFileName, mockEnabled) {
+    var mockPath = '';
+     
+    // Determine if the mock is enabled or disabled
+    if(mockEnabled){
+        mockPath = PathService.getMockEnabledFolderPath() + "/" + mockFileName;
+    } else {
+        mockPath = PathService.getMockAvailableFolderPath() + "/" + mockFileName;
+    }
+    
+    return path.resolve(mockPath);
 };
 
 /**
@@ -34,8 +48,8 @@ module.exports.getMockPath = function(mockFileName, mockEnabled) {
  *
  * @returns {String} Returns the path to the folder where the enabled mocks are being stored.
  */
-module.exports.getMockFolderEnabledPath = function() {
-	
+PathService.getMockEnabledFolderPath = function() {
+    return path.resolve(mockConfig.get("enabledFolder"));
 };
   
 /**
@@ -43,8 +57,8 @@ module.exports.getMockFolderEnabledPath = function() {
 * 
 * @returns {String} Returns the path to the folder where the available mocks are being stored.
 */
-module.exports.getMockAvailableFolderPath = function() {
-
+PathService.getMockAvailableFolderPath = function() {
+    return path.resolve(mockConfig.get("availableFolder"));
 };
 
 /**
@@ -54,6 +68,8 @@ module.exports.getMockAvailableFolderPath = function() {
  * @param {Boolean} mockEnabled Describes if the mock is enabled or disabled. Used to look for the log file in the corresponding folder.
  * @returns {Object} Returns a Javascript object containing the mock data.
  */
-module.exports.getMock = function(mockFileName, mockEnabled) {
-
+PathService.getMock = function(mockFileName, mockEnabled) {
+    // TBD
 };
+
+module.exports = PathService;

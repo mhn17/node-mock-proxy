@@ -3,13 +3,12 @@ var httpProxy = require('http-proxy');
 var bunyan = require('bunyan');
 var path = require("path");
 
-var RequestProcessor = function(config, mockFileNameService, pathService) {
+var RequestProcessor = function(config, mockFileNameService) {
 	this.targetConfig = config.get("target");
 	this.proxyConfig = config.get("proxy");
 	this.mockConfig = config.get("mocks");
 	this.mockFileNameService = mockFileNameService;
-        this.pathService = pathService;
-
+        
 	this.proxy = this.initProxy();
 	this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));
 };

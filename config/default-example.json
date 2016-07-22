@@ -21,6 +21,7 @@
 		"port": "8001"
 	},
 	"mocks": {
-		"enabledFolder": "mocks-enabled"
+		"enabledFolder": "mocks-enabled",
+                "availableFolder": "mocks-available"
 	}
 }

@@ -4,21 +4,22 @@ var bodyParser  = require('body-parser');
 var config      = require('config');
 var fs          = require('fs');
 var mv          = require('mv');
-// Well does not really work as class member variable thanks to the prototype
-// There is probably a better solution
-var pathService;
+
+// Services
+ 
+// Perhaps better to inject the object via constructor?
+var pathService = require("../app/services/PathService");
 
 // Make the AdminServer to a real webserver via the express module
-var AdminServer = function(pathServiceParam) {
+var AdminServer = function() {
     
     console.log("Init admin server");
-    console.log(pathService);
+    
     // Make this a server
     this.app = express();
 
     // get admin config
     this.adminConfig = config.get('admin');
-    pathService = pathServiceParam;
 };
 
 // Add a prototype start function for init stuff
@@ -79,7 +80,7 @@ AdminServer.prototype.setUpRoutes = function() {
 				var lastRequest = requests[requests.length-1];
                                 
                                 // Write file
-				fs.writeFile('./mocks-enabled/' + lastRequest.fileName, lastRequest.response, function(err) {
+				fs.writeFile(pathService.getMockPath(lastRequest.fileName, true), lastRequest.response, function(err) {
 					if (err) {
 						res.statusCode = 500;
 						res.json({message: 'ups! something went wrong: ' + err});
@@ -149,8 +150,8 @@ AdminServer.prototype.setUpRoutes = function() {
         var mockFileName = req.query.name;
         console.log("Enable mock: " + mockFileName);
 
-        mv('./mocks-available/' + mockFileName
-                , './mocks-enabled/' + mockFileName, function(err) {
+        mv(pathService.getMockPath(mockFileName, false)
+                , pathService.getMockPath(mockFileName, true), function(err) {
                    // It seems there is always an error thrown? Strange.
                    // No error handling for now.
         });
@@ -165,8 +166,8 @@ AdminServer.prototype.setUpRoutes = function() {
         var mockFileName = req.query.name;
         console.log("Disable mock: " + mockFileName);
         
-        mv('./mocks-enabled/' + mockFileName
-                , './mocks-available/' + mockFileName, function(err) {
+        mv(pathService.getMockPath(mockFileName, true)
+                , pathService.getMockPath(mockFileName, false), function(err) {
                    // It seems there is always an error thrown? Strange.
                    // No error handling for now.
         });
@@ -183,16 +184,7 @@ AdminServer.prototype.setUpRoutes = function() {
         var path;
         
         console.log("Delete mock: " + mockFileName + " in state " + mockState);
-
-        // Determine if the mock is enabled or disabled
-        // And I thought this should work with that truthy stuff and isn't it
-        // supposed to be a boolean anyway?
-        if(mockState === "true"){
-            path = './mocks-enabled/' + mockFileName;
-        } else {
-            path = './mocks-available/' + mockFileName;
-        }
-        
+        path = pathService.getMockPath(mockFileName, mockState);
         console.log("Target deletion path:" + path);
         
         // Delete mock
@@ -264,14 +256,7 @@ AdminServer.prototype.setUpRoutes = function() {
                 + " in state "
                 + req.query.enabled);
         
-        // Determine if the mock is enabled or disabled
-        // And I thought this should work with that truthy stuff and isn't it
-        // supposed to be a boolean anyway?
-        if(mockState === "true"){
-            path = './mocks-enabled/' + mockFileName;
-        } else {
-            path = './mocks-available/' + mockFileName;
-        }
+       path = pathService.getMockPath(mockFileName, mockState);
         
         // Read content of mock file
         fs.readFile(path, "utf-8", function(err, data) {
@@ -288,7 +273,7 @@ AdminServer.prototype.setUpRoutes = function() {
     });
     
     // Add request to mocks
-    router.get('/addMockToMocks', function(req, res) {
+    router.get('/addRequestToMocks', function(req, res) {
         
         var mockFileName = req.query.name;
         console.log("Add request to mocks: " + mockFileName);
@@ -320,7 +305,7 @@ AdminServer.prototype.setUpRoutes = function() {
                 });
 
                 // Write file
-                fs.writeFile('./mocks-enabled/' + requestToMock.fileName, requestToMock.response, function(err) {
+                fs.writeFile(pathService.getMockPath(requestToMock.fileName, true), requestToMock.response, function(err) {
                     if (err) {
                             res.statusCode = 500;
                             res.json({message: 'Failed to add to mocks: ' + err});
@@ -342,7 +327,7 @@ AdminServer.prototype.setUpRoutes = function() {
         var mockList = [];
         
         // Get enabled mocks
-        fs.readdir("./mocks-enabled", function(err, files){ 
+        fs.readdir(pathService.getMockEnabledFolderPath(), function(err, files){ 
             // Better user filtering too?
             // fs.stat(path, callback(err, stats)) and stats.isDirectory()
             files.forEach(function(entry){
@@ -356,7 +341,7 @@ AdminServer.prototype.setUpRoutes = function() {
         });
         
         // Get disabled mocks
-        fs.readdir("./mocks-available", function(err, files){ 
+        fs.readdir(pathService.getMockAvailableFolderPath(), function(err, files){ 
             // Better user filtering too?
             // fs.stat(path, callback(err, stats)) and stats.isDirectory()
             files.forEach(function(entry){

@@ -10,9 +10,6 @@ var proxyConfig = config.get("proxy");
 // routes
 var routes = require('./app/routes/index.js');
 
-// Services
-var pathService = require("./app/services/PathService");
-
 // get body as raw to create hash of post body
 app.use(bodyParser.text({"type": "*/*"}));
 app.use('/*', routes);
@@ -23,5 +20,5 @@ app.listen(proxyConfig.get('port'), function () {
 });
 
 // start admin API server
-var adminServer = new AdminServer(pathService);
+var adminServer = new AdminServer();
 adminServer.start();
