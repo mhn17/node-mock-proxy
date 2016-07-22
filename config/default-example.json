@@ -9,16 +9,19 @@
 		}
 	},
 	"logging": {
-		"file": "logs/requests.log",
-		"rotation": {
-			"period": "1d",
-			"count": 3
+		"forwardedRequests": {
+			"file": "logs/requestsForwarded.log",
+			"rotation": {
+				"period": "1d",
+				"count": 3
+			}
 		}
 	},
 	"admin": {
 		"port": "8001"
 	},
 	"mocks": {
-		"enabledFolder": "mocks-enabled"
+		"enabledFolder": "mocks-enabled",
+                "availableFolder": "mocks-available"
 	}
 }
