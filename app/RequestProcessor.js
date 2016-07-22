@@ -2,6 +2,7 @@ var fs = require('fs');
 var httpProxy = require('http-proxy');
 var bunyan = require('bunyan');
 var path = require("path");
+var uuid = require('node-uuid');
 
 var RequestProcessor = function(config, mockFileNameService) {
 	this.targetConfig = config.get("target");
@@ -18,12 +19,11 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 	var that = this;
 	var mockFile = this.mockFileNameService.getName(req);
 	var mockFolder = this.mockConfig.get("enabledFolder");
-
+        
 	// try to read the mock file
 	fs.readFile(path.resolve(mockFolder + "/" + mockFile), "utf-8", function (err, data) {
 		// if file not exists forward to original target otherwise serve mock
-		if (err) {
-			console.log(err);
+		if (err) {			
 			// fix for node-http-proxy issue 180
 			// (https://github.com/nodejitsu/node-http-proxy/issues/180)
 			if (req.method === "POST") {
@@ -71,7 +71,9 @@ RequestProcessor.prototype.initProxy = function() {
 
 			that.forwardedRequestsLogger.info(
 				{
+                                        id: uuid.v1(),
 					fileName: mockFileName,
+                                        method: req.method,
 					request: req.body,
 					response: responseData
 				},
