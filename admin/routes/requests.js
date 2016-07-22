@@ -3,16 +3,21 @@ var router = express.Router();
 var config = require('config');
 var fs = require('fs');
 
+// Services
+var pathService = require("../../app/services/PathService");
+
 // logged requests
 router.get('/', function (req, res) {
-	fs.readFile(config.get('logging').get('file'), "utf-8", function (err, data) {
+	console.log("Trying to list available requests");
+
+	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
 
 		// prepare data
 		var rawRequests = data.split('\n');
 		rawRequests.pop();
 
 		var requests = [];
-		rawRequests.forEach(function (rawRequest) {
+		rawRequests.forEach(function(rawRequest) {
 			var request = JSON.parse(rawRequest);
 			requests.push({
 				fileName: request.fileName,
@@ -24,12 +29,73 @@ router.get('/', function (req, res) {
 		// set response
 		if (typeof err === 'undefined' || err === null) {
 			res.json(requests);
-		} else {
+		}
+		else {
 			res.statusCode = 500;
-			res.json({message: 'ups! something went wrong: ' + err});
+			res.json({ message: 'ups! something went wrong: ' + err });
 		}
 
 	});
 });
+
+// Clear log entries from request log
+router.delete('/', function(req, res) {
+	console.log("Clear request log.");
+
+	fs.writeFile(pathService.getLogFilePath(), "", function(err){
+		if(err){
+			res.statusCode = 200;
+			res.json({ message: 'Failed to clear request log: ' + err});
+		}
+	});
+
+	res.statusCode = 200;
+	res.json({ message: 'OK: '});
+});
+
+// Get response for a request in the log file
+router.get('/getRequestLogResponse', function(req, res) {
+
+	var mockFileName = req.query.name;
+
+	console.log("Get response for request: " + mockFileName);
+
+	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
+
+		// prepare data
+		var rawRequests = data.split('\n');
+		rawRequests.pop();
+
+		// Get requests
+		var requests = [];
+		rawRequests.forEach(function(rawRequest) {
+			var request = JSON.parse(rawRequest);
+			requests.push({
+				fileName: request.fileName,
+				request: request.request,
+				response: request.response
+			});
+		});
+
+		// Get correct request
+		var requestToResponse = {};
+		requests.forEach(function(entry){
+			if(entry.fileName === mockFileName){
+				requestToResponse = entry;
+			}
+		});
+
+		// Set error response
+		if (typeof err === 'undefined' || err === null) {
+			// Set response
+			res.statusCode = 200;
+			res.json({ message: requestToResponse.response });
+		} else {
+			res.statusCode = 500;
+			res.json({ message: 'Could not get response for the request: ' + err });
+		}
+	});
+});
+
 
 module.exports = router;

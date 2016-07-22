@@ -43,6 +43,11 @@ baseUri: http://localhost/api
                   "response": "{foo:buzz}"
                 }
               ]
+  delete:
+    description: delete all logged request
+    responses:
+      200:
+        description: All good, all requests have been deleted
   /{id}:
     get:
       description: Get a single request
@@ -105,6 +110,17 @@ baseUri: http://localhost/api
                   "enabled": true
                 }
               ]
+  post:
+    description: Create a new mock (initially disabled, file name and id is generated)
+    body:
+      application/json:
+        type: object
+        properties:
+          response: string
+        example: |
+          {
+            "response": "{foo:buzz}"
+          }
   /{id}:
     get:
       description: Get a single mock
@@ -125,6 +141,11 @@ baseUri: http://localhost/api
                   "response": "{foo:buzz}",
                   "enabled": true
                 }
+    delete:
+      description: delete a certain mock
+      responses:
+        200:
+          description: All good, mock has been deleted
     /enable:
       put:
         description: Enable a mock
