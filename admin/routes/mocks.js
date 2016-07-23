@@ -77,60 +77,10 @@ router.get('/getMockResponse', function(req, res) {
 	});
 });
 
-// Add request to mocks
-router.get('/addRequestToMocks', function(req, res) {
-
-	var mockFileName = req.query.name;
-	console.log("Add request to mocks: " + mockFileName);
-	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
-
-		// prepare data
-		var rawRequests = data.split('\n');
-		rawRequests.pop();
-
-		var requests = [];
-		rawRequests.forEach(function(rawRequest) {
-
-			var request = JSON.parse(rawRequest);
-			requests.push({
-				fileName: request.fileName,
-				request: request.request,
-				response: request.response
-			});
-		});
-
-		// save response
-		if(typeof err === 'undefined' || err === null) {
-			// Get correct request
-			var requestToMock = {};
-			requests.forEach(function(entry){
-				if(entry.fileName === mockFileName){
-					requestToMock = entry;
-				}
-			});
-
-			// Write file
-			fs.writeFile(pathService.getMockPath(requestToMock.fileName, true), requestToMock.response, function(err) {
-				if (err) {
-					res.statusCode = 500;
-					res.json({message: 'Failed to add to mocks: ' + err});
-				} else {
-					res.json({message: 'Request saved with filename and enabled: ' + requestToMock.fileName});
-				}
-			});
-		}
-		else {
-			res.statusCode = 500;
-			res.json({message: 'Failed to add to mocks: ' + err});
-		}
-	});
-});
-
 // delete a mock
-router.get('/deleteMock', function(req, res) {
-
-	var mockFileName = req.query.name;
-	var mockState = req.query.enabled;
+router.delete('/delete', function(req, res) {
+	var mockFileName = req.body.id;
+	var mockState = req.body.enabled;
 	var path;
 
 	console.log("Delete mock: " + mockFileName + " in state " + mockState);
@@ -179,6 +129,56 @@ router.get('/moveEnabledMockToAvailable', function(req, res) {
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
+});
+
+// Add request to mocks
+router.post('/create', function(req, res) {
+        console.log(req);
+        console.log(req.body);
+	var mockFileName = req.body.id;
+	console.log("Add request to mocks: " + mockFileName);
+	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
+
+		// prepare data
+		var rawRequests = data.split('\n');
+		rawRequests.pop();
+
+		var requests = [];
+		rawRequests.forEach(function(rawRequest) {
+
+			var request = JSON.parse(rawRequest);
+			requests.push({
+				fileName: request.fileName,
+				request: request.request,
+				response: request.response
+			});
+		});
+
+		// save response
+		if(typeof err === 'undefined' || err === null) {
+			// Get correct request
+			var requestToMock = {};
+			requests.forEach(function(entry){
+				if(entry.fileName === mockFileName){
+					requestToMock = entry;
+				}
+			});
+
+			// Write file
+			fs.writeFile(pathService.getMockPath(requestToMock.fileName, true), requestToMock.response, function(err) {
+				if (err) {
+					res.statusCode = 500;
+					res.json({message: 'Failed to add to mocks: ' + err});
+				} else {
+					res.json({message: 'Request saved with filename and enabled: ' + requestToMock.fileName});
+				}
+			});
+		}
+		else {
+			res.statusCode = 500;
+			res.json({message: 'Failed to add to mocks: ' + err});
+		}
+	});
 });
 
 module.exports = router;

@@ -34,7 +34,7 @@ PathService.getMockPath = function(mockFileName, mockEnabled) {
     var mockPath = '';
      
     // Determine if the mock is enabled or disabled
-    if(mockEnabled){
+    if(mockEnabled === 'true'){
         mockPath = PathService.getMockEnabledFolderPath() + "/" + mockFileName;
     } else {
         mockPath = PathService.getMockAvailableFolderPath() + "/" + mockFileName;

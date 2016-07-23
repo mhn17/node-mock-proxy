@@ -39,7 +39,7 @@ router.get('/', function (req, res) {
 });
 
 // Clear log entries from request log
-router.delete('/', function(req, res) {
+router.delete('/delete', function(req, res) {
 	console.log("Clear request log.");
 
 	fs.writeFile(pathService.getLogFilePath(), "", function(err){
@@ -54,10 +54,10 @@ router.delete('/', function(req, res) {
 });
 
 // Get response for a request in the log file
-router.get('/getRequestLogResponse', function(req, res) {
+router.get('/:id', function(req, res) {
 
-	var mockFileName = req.query.name;
-
+	var mockFileName = req.params.id;
+        console.log(req);
 	console.log("Get response for request: " + mockFileName);
 
 	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
