@@ -30,23 +30,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 // If mock is being enabled get the mock name from the label and
                 // build get request 
                 if(this.checked){
-                   var mockName = this.nextSibling.innerHTML;
                    // XHS is not directly possible in developer toolbar
-                   var port = chrome.runtime.connect({name: "EnableMock?" + mockName});
+                   var port = chrome.runtime.connect({name: "EnableMock?" + entry.id});
 
                 // If mock is being disabled get the mock name from the label and
                 // build get request 
                 }else{
                     var mockName = this.nextSibling.innerHTML;
                     // XHS is not directly possible in developer toolbar
-                    var port = chrome.runtime.connect({name: "DisableMock?" + mockName});
+                    var port = chrome.runtime.connect({name: "DisableMock?" + entry.id});
                 }
             });
             contentDiv.appendChild(enableCheckbox);
 
             // Add text to checkbox
             var textNode = document.createElement("label");        
-            var node = document.createTextNode(entry.name);
+            var node = document.createTextNode(entry.fileName);
             textNode.appendChild(node);
             contentDiv.appendChild(textNode);
 
@@ -56,11 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Send delete request and refresh mock list
             deleteButton.addEventListener("click", function(){
-                var parameters = "?" + this.previousSibling.innerHTML + "?" 
-                        + this.previousSibling.previousSibling.checked;
+                var parameters = "?" + entry.id;
                 var port = chrome.runtime.connect({name: "DeleteMock" + parameters});
-                // This beautifuly refresh does unfortunaly not work as expected
-                listRequestButton.click();
             });
             contentDiv.appendChild(deleteButton);
 
@@ -70,12 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Register event listener to checkboxes
             previewButton.addEventListener("click", function(){
-                // XHS is not directly possible in developer toolbar
-                var port = chrome.runtime.connect({name: "GetResponseFromMock?" 
-                            + entry.name});
-                port.onMessage.addListener(function(message,sender){
-                    alert("Response:\n" + message.result);
-                });
+                alert("Response:\n" + entry.response);
             });
             contentDiv.appendChild(previewButton);
 

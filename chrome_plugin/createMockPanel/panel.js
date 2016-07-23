@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Register event listener to checkboxes
             addButton.addEventListener("click", function(){
                 // XHS is not directly possible in developer toolbar
-                var port = chrome.runtime.connect({name: "AddRequestToMocks?" + entry.fileName});
+                var port = chrome.runtime.connect({name: "AddRequestToMocks?" + entry.id});
                 port.onMessage.addListener(function(message,sender){
                     alert(message.result);
                 });
@@ -46,11 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Register event listener to checkboxes
             previewButton.addEventListener("click", function(){
-                // XHS is not directly possible in developer toolbar
-                var port = chrome.runtime.connect({name: "GetResponseForRequestInLog?" + entry.fileName});
-                port.onMessage.addListener(function(message,sender){
-                    alert("Response:\n" + message.result);
-                });
+                    alert("Response:\n" + entry.response);
             });
             contentDiv.appendChild(previewButton);
             
