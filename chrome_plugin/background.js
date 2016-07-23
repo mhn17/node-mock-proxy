@@ -20,26 +20,30 @@ chrome.runtime.onConnect.addListener(function(port){
 chrome.runtime.onConnect.addListener(function(port){
     // There has to be a better way to transfer the mock name ... 
     if(port.name.includes("EnableMock")){
-        var mockName = port.name.split("?")[1];
+        var mockFileName = port.name.split("?")[1];
+        var enableBody = JSON.stringify({id: mockFileName});
          
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/moveAvailableMockToEnabled?name=" + mockName, false);
-        xhr.send();
+        xhr.open("PUT", "http://www.localhost:8001/api/mocks/enable", false);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(enableBody);
      }
 });
 
 chrome.runtime.onConnect.addListener(function(port){
     // There has to be a better way to transfer the mock name ... 
     if(port.name.includes("DisableMock")){
-        var mockName = port.name.split("?")[1];
+        var mockFileName = port.name.split("?")[1];
+        var disableBody = JSON.stringify({id: mockFileName});
          
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/moveEnabledMockToAvailable?name=" + mockName, false);
-        xhr.send();
+        xhr.open("PUT", "http://www.localhost:8001/api/mocks/disable", false);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(disableBody);
      }
 });
 
@@ -67,13 +71,11 @@ chrome.runtime.onConnect.addListener(function(port){
     // There has to be a better way to transfer the mock name ... 
     if(port.name.includes("GetResponseFromMock")){
         var mockName = port.name.split("?")[1];
-        var state = port.name.split("?")[2];
          
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        var getParameters = "?name=" + mockName + "&enabled=" + state;
-        xhr.open("GET", "http://www.localhost:8001/api/getMockResponse" + getParameters, false);
+        xhr.open("GET", "http://www.localhost:8001/api/mocks/" + mockName, false);
         xhr.send();
         var result = xhr.responseText;
         port.postMessage({result: result}); 
@@ -125,7 +127,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("PUT", "http://www.localhost:8001/api/requests/save-last-request", false);
+        xhr.open("POST", "http://www.localhost:8001/api/mocks/createFromLastRequest", false);
         xhr.send();
         var result = xhr.responseText;
         //var jsonResult = JSON.parse(result)

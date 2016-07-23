@@ -70,10 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Register event listener to checkboxes
             previewButton.addEventListener("click", function(){
-                var checkboxState = this.previousSibling.previousSibling.previousSibling.checked;
                 // XHS is not directly possible in developer toolbar
                 var port = chrome.runtime.connect({name: "GetResponseFromMock?" 
-                            + entry.name + "?" +  checkboxState});
+                            + entry.name});
                 port.onMessage.addListener(function(message,sender){
                     alert("Response:\n" + message.result);
                 });

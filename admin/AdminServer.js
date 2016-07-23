@@ -3,7 +3,6 @@ var router      = express.Router();
 var bodyParser  = require('body-parser');
 var config      = require('config');
 var fs          = require('fs');
-var mv          = require('mv');
 
 // routes
 var requestRoutes = require('./routes/requests.js');

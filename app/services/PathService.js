@@ -1,5 +1,5 @@
 var path = require("path");
-
+var fs = require('fs');
 var config = require('config');
 var targetConfig = config.get("target");
 var proxyConfig = config.get("proxy");
@@ -32,12 +32,34 @@ PathService.getLogFilePath = function() {
  */
 PathService.getMockPath = function(mockFileName, mockEnabled) {
     var mockPath = '';
-     
+    
     // Determine if the mock is enabled or disabled
-    if(mockEnabled === 'true'){
+    // Damn that truthy stuff
+    if(mockEnabled === 'true' || (typeof mockEnabled === 'boolean' && mockEnabled)){
         mockPath = PathService.getMockEnabledFolderPath() + "/" + mockFileName;
     } else {
         mockPath = PathService.getMockAvailableFolderPath() + "/" + mockFileName;
+    }
+    
+    return path.resolve(mockPath);
+};
+
+/**
+ * Returns the path to a mock file. Checks for the mock first in the available 
+ * directory. If the file is not found in that directory, then the enabled folder
+ * will be searched.
+ *
+ * @param {String} mockFileName Name of the mock file to which the path should be returned.
+ * @returns {String} Returns the path to a mock file.
+ */
+PathService.getMockPathBySearch = function(mockFileName) {
+    var mockPath = '';
+    
+    // ToDo: What should happen if the mock is not found? Throw an exception?
+    if(fs.existsSync(PathService.getMockPath(mockFileName, false))){
+           mockPath = PathService.getMockPath(mockFileName, false);
+    } else {
+        mockPath = PathService.getMockPath(mockFileName, true);
     }
     
     return path.resolve(mockPath);
