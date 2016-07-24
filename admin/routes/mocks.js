@@ -39,10 +39,10 @@ router.get('/:id', function(req, res) {
 });
 
 // Delete a mock
-router.delete('/delete', function(req, res) {
-	var mockId = req.body.id;
+router.delete('/:id/delete', function(req, res) {
+	var mockId = req.params.id;
 	var path;
-console.log("test: " + pathService.getMockPathById(mockId));
+
 	console.log("Attempting to delete mock.");
 	path = pathService.getMockPathById(mockId).filePath;
 	console.log("Mock to be deleted:" + path);
@@ -61,8 +61,8 @@ console.log("test: " + pathService.getMockPathById(mockId));
 });
 
 // Move available mock to enabled mocks
-router.put('/enable', function(req, res) {
-	var mock = pathService.getMockById(req.body.id);
+router.put('/:id/enable', function(req, res) {
+	var mock = pathService.getMockById(req.params.id);
         console.log("Enable mock: " + mock.fileName);
 
 	mv(pathService.getMockPath(mock.fileName, false)
@@ -77,8 +77,8 @@ router.put('/enable', function(req, res) {
 });
 
 // Move enabled mock to availabled mocks
-router.put('/disable', function(req, res) {
-        var mock = pathService.getMockById(req.body.id);
+router.put('/:id/disable', function(req, res) {
+        var mock = pathService.getMockById(req.params.id);
 	console.log("Disable mock: " + mock.fileName);
 
 	mv(pathService.getMockPath(mock.fileName, true)
