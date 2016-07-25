@@ -12,7 +12,10 @@
   },
   "description": "A proxy server returning mock responses for specific requests while proxying all other requests to the default target.",
   "main": "app.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  },
   "scripts": {
     "start": "node app.js",
     "test": "test"
