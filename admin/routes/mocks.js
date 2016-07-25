@@ -26,11 +26,61 @@ router.get('/', function(req, res) {
     res.json(mockList);
 });
 
+// Add request to mocks
+router.post('/', function(req, res) {
+	var mockId = req.body.id;
+
+	console.log("Add request to mocks: " + mockId);
+	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
+
+		// Prepare data
+		var rawRequests = data.split('\n');
+		rawRequests.pop();
+		var requests = [];
+
+		rawRequests.forEach(function(rawRequest) {
+			var request = JSON.parse(rawRequest);
+			requests.push({
+				id: request.id,
+				fileName: request.fileName,
+				request: request.request,
+				response: request.response,
+				method: request.method
+			});
+		});
+
+		// Save response
+		if(typeof err === 'undefined' || err === null) {
+			// Get correct request
+			var requestToMock = {};
+			requests.forEach(function(entry){
+				if(entry.id === mockId){
+					requestToMock = entry;
+				}
+			});
+
+			// Write file
+			fs.writeFile(pathService.getMockPath(requestToMock.fileName, false), JSON.stringify(requestToMock), function(err) {
+				if (err) {
+					res.statusCode = 500;
+					res.json({message: 'Failed to add to mocks: ' + err});
+				} else {
+					res.json({message: 'Request saved with filename: ' + requestToMock.fileName});
+				}
+			});
+		}
+		else {
+			res.statusCode = 500;
+			res.json({message: 'Failed to add to mocks: ' + err});
+		}
+	});
+});
+
 // Get response for a mock
 router.get('/:id', function(req, res) {
 
     var mockId = req.params.id;
-  
+
     console.log("Get mock with id: " + mockId);
 
     // Set response
@@ -39,7 +89,7 @@ router.get('/:id', function(req, res) {
 });
 
 // Delete a mock
-router.delete('/:id/delete', function(req, res) {
+router.delete('/:id', function(req, res) {
 	var mockId = req.params.id;
 	var path;
 
@@ -91,62 +141,12 @@ router.put('/:id/disable', function(req, res) {
 	res.json({ message: 'OK'});
 });
 
-// Add request to mocks
-router.post('/create', function(req, res) {
-    var mockId = req.body.id;
-	
-    console.log("Add request to mocks: " + mockId);
-    fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
-
-        // Prepare data
-        var rawRequests = data.split('\n');
-        rawRequests.pop();
-        var requests = [];
-        
-        rawRequests.forEach(function(rawRequest) {
-            var request = JSON.parse(rawRequest);
-            requests.push({
-                id: request.id,
-                fileName: request.fileName,
-                request: request.request,
-                response: request.response,
-                method: request.method
-            });
-        });
-
-        // Save response
-        if(typeof err === 'undefined' || err === null) {
-            // Get correct request
-            var requestToMock = {};
-            requests.forEach(function(entry){
-                if(entry.id === mockId){
-                    requestToMock = entry;
-                }
-            });
-
-            // Write file
-            fs.writeFile(pathService.getMockPath(requestToMock.fileName, false), JSON.stringify(requestToMock), function(err) {
-                if (err) {
-                    res.statusCode = 500;
-                    res.json({message: 'Failed to add to mocks: ' + err});
-                } else {
-                    res.json({message: 'Request saved with filename: ' + requestToMock.fileName});
-                }
-            });
-        }
-        else {
-            res.statusCode = 500;
-            res.json({message: 'Failed to add to mocks: ' + err});
-        }
-    });
-});
-
 // Add last request to mocks
 // Duplicate code with the normal create method
 // Needs to be refactored
-router.post('/createFromLastRequest', function(req, res) {	
+router.post('/createFromLastRequest', function(req, res) {
     console.log("Adding last request to mocks.");
-    
+
     fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
 
         // prepare data
@@ -156,7 +156,7 @@ router.post('/createFromLastRequest', function(req, res) {
         var requests = [];
         rawRequests.forEach(function(rawRequest) {
             var request = JSON.parse(rawRequest);
-            
+
             requests.push({
                 id: request.id,
                 fileName: request.fileName,
@@ -170,7 +170,7 @@ router.post('/createFromLastRequest', function(req, res) {
         if(typeof err === 'undefined' || err === null) {
             // Get correct request
             var requestToMock = requests.pop();
-            
+
             // Write file
             fs.writeFile(pathService.getMockPath(requestToMock.fileName, false), JSON.stringify(requestToMock), function(err) {
                 if (err) {
