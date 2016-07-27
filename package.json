@@ -8,13 +8,15 @@
     "express": "^4.13.4",
     "fs": "0.0.2",
     "http-proxy": "^1.13.3",
-    "node-uuid": "^1.4.7"
+    "node-uuid": "^1.4.7",
+    "sanitize-filename": "^1.6.0"
   },
   "description": "A proxy server returning mock responses for specific requests while proxying all other requests to the default target.",
   "main": "app.js",
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "sinon": "^1.17.4"
   },
   "scripts": {
     "start": "node app.js",
