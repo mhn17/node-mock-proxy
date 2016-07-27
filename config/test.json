@@ -9,7 +9,7 @@
     }
   },
 	"logging": {
-    "forwaredRequests": {
+    	"forwaredRequests": {
 			"file": "test/logs/requestsForwarded.log",
 			"rotation": {
 				"period": "1d",

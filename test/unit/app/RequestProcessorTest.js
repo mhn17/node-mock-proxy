@@ -17,15 +17,6 @@ describe('RequestProcessor:', function() {
 		}
 	});
 
-	afterEach('remove log file after test', function() {
-		try {
-			fs.accessSync(config.get('logging').get('forwaredRequests').get('file'));
-			fs.unlink(config.get('logging').get('forwaredRequests').get('file'));
-		} catch (e) {
-			// do nothing, file does not exist
-		}
-	});
-
 	describe('init', function() {
 		var mockFileNameServiceMock = sinon.stub();
 		mockFileNameServiceMock.getName = function () {
