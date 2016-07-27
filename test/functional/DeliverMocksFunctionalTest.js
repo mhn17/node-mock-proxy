@@ -11,19 +11,8 @@ describe('Deliver mock functional test:', function () {
 
 	beforeEach('clear log file', function () {
 		try {
-			fs.accessSync(config.get('logging').get('file'));
-			fs.unlink(config.get('logging').get('file'));
-		} catch (e) {
-			// do nothing, file does not exist
-		}
-		
-		// start the mock proxy server
-	});
-
-	afterEach('remove log file after test', function () {
-		try {
-			fs.accessSync(config.get('logging').get('file'));
-			fs.unlink(config.get('logging').get('file'));
+			fs.accessSync(config.get('logging').get('forwaredRequests').get('file'));
+			fs.unlink(config.get('logging').get('forwaredRequests').get('file'));
 		} catch (e) {
 			// do nothing, file does not exist
 		}
@@ -40,16 +29,16 @@ describe('Deliver mock functional test:', function () {
 			response.on('end', function () {
 				var expected = fs.readFileSync('test/fixtures/mocks-enabled/path/to/getmock.txt', 'utf8');
 				expect(body).to.equal(expected);
-				
+
 				done();
 			});
 		});
 	});
-	
+
 	it('should deliver a mock for a POST request', function (done) {
 		var req = http.request({
 			host: 'localhost',
-			path: '/path/to/',
+			path: '/path/to/postMock',
 			port: config.get("proxy").get("port"),
 			method: 'POST',
 			headers: {
@@ -62,13 +51,13 @@ describe('Deliver mock functional test:', function () {
 				body += d;
 			});
 			response.on('end', function () {
-				var expected = fs.readFileSync('test/fixtures/mocks-enabled/path/to/3118e5e88b135860123e5a86b153ad9fc8e581cf.txt', 'utf8');
+				var expected = fs.readFileSync('test/fixtures/mocks-enabled/path/to/postmock__3118e5e88b135860123e5a86b153ad9fc8e581cf.txt', 'utf8');
 				expect(body).to.equal(expected);
 
 				done();
 			});
 		});
-		
+
 		req.write("{foo: postRequest}");
 		req.end();
 	});

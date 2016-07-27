@@ -16,6 +16,12 @@ module.exports.getName = function(req) {
 
 	var mockFileNameAndPath = originalUrl.split("/");
 	var mockFileName = mockFileNameAndPath.pop();
+
+	// if URL had a trailing slash take the previous segment
+	if (mockFileName == "") {
+		mockFileName = mockFileNameAndPath.pop();
+	}
+
 	var mockPath = path.join.apply(null, mockFileNameAndPath);
 
 	// Needs some improvement here for better naming

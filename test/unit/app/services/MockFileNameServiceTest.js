@@ -20,6 +20,14 @@ describe('mockFileNameService: #getName()', function() {
 			assert.equal(mockFileNameService.getName(req), 'some/url.txt');
 		});
 
+		it('should return the name for a normal request with trailing slash', function() {
+			var req = new IncomingMessage();
+			req.originalUrl = '/some/URL/';
+			req.method = 'GET';
+
+			assert.equal(mockFileNameService.getName(req), 'some/url.txt');
+		});
+
 		it('should return the name for a request with parameters', function() {
 			var req = new IncomingMessage();
 			req.originalUrl = '/some/URL?foo=bar';
