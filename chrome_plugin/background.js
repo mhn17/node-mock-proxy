@@ -55,7 +55,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();        
-        xhr.open("DELETE", "http://www.localhost:8001/api/mocks/" + mockId + "/delete", false);
+        xhr.open("DELETE", "http://www.localhost:8001/api/mocks/" + mockId, false);
         xhr.send();
         var result = xhr.responseText;
         port.postMessage({result: result}); 
@@ -99,7 +99,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://www.localhost:8001/api/mocks/create", false);
+        xhr.open("POST", "http://www.localhost:8001/api/mocks/", false);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(postBody);
         var result = xhr.responseText;
