@@ -41,6 +41,10 @@ AdminServer.prototype.start = function() {
     });
 };
 
+AdminServer.prototype.stop = function() {
+	this.app.stop();
+};
+
 // Add a prototype function to setup the route stuff
 // Save requests and responses
 AdminServer.prototype.setUpRoutes = function() {

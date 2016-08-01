@@ -42,16 +42,14 @@ PathService.getMockAvailableFolderPath = function() {
  * Returns the path to a mock file.
  *
  * @param {String} mockFileName Name of the mock file to which the path should be returned.
- * @param {Boolean} mockEnabled Describes if the mock is enabled or disabled. Used to look for the log file in the corresponding folder.
- * @returns {Object} Returns an object containing:
- *   - filePath: The filepath of the mock
- *   - enabled: True or false depending if the mock is enabled or disabled
+ * @param {Boolean} mockEnabled Describes if the mock is enabled or disabled. Used to look for the log file in the
+ * 					corresponding folder.
+ * @returns {Object} The file path of the mock
  */
 PathService.getMockPath = function(mockFileName, mockEnabled) {
     var mockPath = '';
 
     // Determine if the mock is enabled or disabled
-    // Damn that truthy stuff
     if(mockEnabled === 'true' || (typeof mockEnabled === 'boolean' && mockEnabled)){
         mockPath = PathService.getMockEnabledFolderPath() + "/" + mockFileName;
     } else {
@@ -68,7 +66,7 @@ PathService.getMockPath = function(mockFileName, mockEnabled) {
  *
  * @param {String} mockFileName Name of the mock file to which the path should be returned.
  * @returns {Object} Returns an object containing:
- *   - filePath: The filepath of the mock
+ *   - filePath: The file path of the mock
  *   - enabled: True or false depending if the mock is enabled or disabled
  */
 PathService.getMockPathBySearch = function(mockFileName) {
@@ -93,7 +91,7 @@ PathService.getMockPathBySearch = function(mockFileName) {
  *
  * @param {String} mockId Id of the mock file to which the path should be returned.
  * @returns {Object} Returns an object containing:
- *   - filePath: The filepath of the mock
+ *   - filePath: The file path of the mock
  *   - enabled: True or false depending if the mock is enabled or disabled
  */
 PathService.getMockPathById = function(mockId) {
@@ -106,91 +104,30 @@ PathService.getMockPathById = function(mockId) {
 };
 
 /**
- * Returns an array of objects representing the mocks. Each mock hast the following informations:
- *  - id
- *  - fileName,
- *  - request.
- *  - response,
- *  - method
- *  - enabled
+ * Returns all mock files, either enabled or available
  *
- * @param {String} mockId The id of the mock for which the the mock object should be returned.
- * @returns {Array} Returns an array of javascript objects containing the mock data.
+ * @param {String} dir The directory to look for mock files
+ * @returns {Array}
  */
-PathService.getMocks = function() {
-    var mockList = [];
+PathService.getListOfMockFiles = function(dir) {
+	var mockFiles = [];
+	var fileList = fs.readdirSync(dir);
 
+	while (fileList.length > 0) {
+		var file = fileList.pop();
+		if (!file || file.indexOf(".txt") == -1) break;
 
-    // Get enabled mocks and add them to the result array
-    var enabledMocks = fs.readdirSync(PathService.getMockEnabledFolderPath());
+		var filePath = path.join(dir, file);
+		var fileStat = fs.statSync(filePath);
 
-    // You could probably use array concat for this but how to filter other files
-    // gracefully?
-    enabledMocks.forEach(function(entry) {
-        if(entry !== ".gitignore"){
-            mockList.push(PathService.getMock(entry));
-        }
-    });
+		if (fileStat.isDirectory()) {
+			mockFiles = mockFiles.concat(this.getListOfMockFiles(filePath));
+		} else {
+			mockFiles.push(filePath);
+		}
+	}
 
-    // Get available mocks and add them to the result array
-    var availableMocks = fs.readdirSync(PathService.getMockAvailableFolderPath());
-
-    // You could probably use array concat for this but how to filter other files
-    // gracefully?
-    availableMocks.forEach(function(entry) {
-        if(entry !== ".gitignore"){
-            mockList.push(PathService.getMock(entry));
-        }
-    });
-
-    return mockList;
+	return mockFiles;
 };
-
-/**
- * Returns an object representing a mock which contains the following information:
- *  - id
- *  - fileName,
- *  - request.
- *  - response,
- *  - method
- *  - enabled
- *
- * @param {String} mockFileName The name of the mock for which the the mock object should be returned.
- * @returns {Object} Returns a Javascript object containing the mock data.
- */
-PathService.getMock = function(mockFileName) {
-    var mockPath = PathService.getMockPathBySearch(mockFileName);
-    var mockFileObject = JSON.parse(fs.readFileSync(mockPath.filePath, "utf-8"));
-
-    mockFileObject.enabled = mockPath.enabled;
-
-    return mockFileObject;
-};
-
-/**
- * Returns an object representing a mock which contains the following information:
- *  - id
- *  - fileName,
- *  - request,
- *  - response,
- *  - method
- *  - enabled
- *
- * @param {String} mockId The id of the mock for which the the mock object should be returned.
- * @returns {Object} Returns a javascript object containing the mock data.
- */
-PathService.getMockById = function(mockId){
-    var result = {};
-    var mocks = PathService.getMocks();
-
-    mocks.forEach(function(entry){
-        if(entry.id === mockId){
-            result = entry;
-            return;
-        }
-    });
-
-    return result;
-}
 
 module.exports = PathService;

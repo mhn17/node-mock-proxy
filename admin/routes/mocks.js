@@ -4,15 +4,18 @@ var config = require('config');
 var fs = require('fs');
 var mv = require('mv');
 
-// Services
+// Services, repositories
 var pathService = require("../../app/services/PathService");
+var MockRepository = require("../domain/repositories/MockRepository");
+var mockRepository = new MockRepository(pathService);
 
-// Get mocklist and states
+
+// Get list of mocks
 router.get('/', function(req, res) {
     console.log("List all mocks");
     var mockList = [];
 
-    pathService.getMocks().forEach(function(entry) {
+	mockRepository.findAll().forEach(function(entry) {
         mockList.push({
             id: entry.id,
             fileName: entry.fileName,
