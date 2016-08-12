@@ -1,12 +1,19 @@
 // Copyright (c) 2011 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-  
+
+// If the local storage value does not exist (user never changed anything ot it is empty), then warn the user
+// and use a default value
+if(!localStorage.mockProxyServerTargetEndpoint){
+    localStorage.mockProxyServerTargetEndpoint = "http://www.localhost:8001";
+    alert("No target endpoint configuration found. Requests target is: " + localStorage.mockProxyServerTargetEndpoint);
+}
+
 chrome.runtime.onConnect.addListener(function(port){
      if(port.name === "GetPossibleMockList"){
         // Send request and list
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/available-requests", false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/available-requests", false);
         xhr.send();
         var result = xhr.responseText;
         var jsonResult = JSON.parse(result)
@@ -19,7 +26,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/save-last-request", false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint +  "/api/save-last-request", false);
         xhr.send();
         var result = xhr.responseText;
         //var jsonResult = JSON.parse(result)
@@ -32,7 +39,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/mockList", false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/mockList", false);
         xhr.send();
         var result = xhr.responseText;
         var jsonResult = JSON.parse(result)
@@ -48,7 +55,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/moveAvailableMockToEnabled?name=" + mockName, false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/moveAvailableMockToEnabled?name=" + mockName, false);
         xhr.send();
      }
 });
@@ -61,7 +68,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/moveEnabledMockToAvailable?name=" + mockName, false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/moveEnabledMockToAvailable?name=" + mockName, false);
         xhr.send();
      }
 });
@@ -74,7 +81,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/addRequestToMocks?name=" + mockName, false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/addRequestToMocks?name=" + mockName, false);
         xhr.send();
         var result = xhr.responseText;
         port.postMessage({result: result}); 
@@ -89,7 +96,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/getRequestLogResponse?name=" + mockName, false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/getRequestLogResponse?name=" + mockName, false);
         xhr.send();
         var result = xhr.responseText;
         port.postMessage({result: result}); 
@@ -106,7 +113,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
         var getParameters = "?name=" + mockName + "&enabled=" + state;
-        xhr.open("GET", "http://www.localhost:8001/api/getMockResponse" + getParameters, false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/getMockResponse" + getParameters, false);
         xhr.send();
         var result = xhr.responseText;
         port.postMessage({result: result}); 
@@ -124,7 +131,7 @@ chrome.runtime.onConnect.addListener(function(port){
         var xhr = new XMLHttpRequest();
         var getParameters = "?name=" + mockName + "&enabled=" + state;
         
-        xhr.open("GET", "http://www.localhost:8001/api/deleteMock" + getParameters, false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/deleteMock" + getParameters, false);
         xhr.send();
         var result = xhr.responseText;
         port.postMessage({result: result}); 
@@ -137,7 +144,7 @@ chrome.runtime.onConnect.addListener(function(port){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.localhost:8001/api/clearRequestLog", false);
+        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/clearRequestLog", false);
         xhr.send();
      }
 });
