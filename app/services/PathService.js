@@ -115,10 +115,10 @@ PathService.getListOfMockFiles = function(dir) {
 
 	while (fileList.length > 0) {
 		var file = fileList.pop();
-		if (!file || file.indexOf(".txt") == -1) break;
+        var filePath = path.join(dir, file);
+        var fileStat = fs.statSync(filePath);
 
-		var filePath = path.join(dir, file);
-		var fileStat = fs.statSync(filePath);
+        if (!file || (file.indexOf(".txt") == -1 && !fileStat.isDirectory())) { break; }
 
 		if (fileStat.isDirectory()) {
 			mockFiles = mockFiles.concat(this.getListOfMockFiles(filePath));
