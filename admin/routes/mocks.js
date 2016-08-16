@@ -3,6 +3,8 @@ var router = express.Router();
 var config = require('config');
 var fs = require('fs');
 var mv = require('mv');
+var mkdirp = require('mkdirp');
+var path = require("path");
 
 // Services, repositories
 var pathService = require("../../app/services/PathService");
@@ -62,15 +64,26 @@ router.post('/', function(req, res) {
 				}
 			});
 
-			// Write file
-			fs.writeFile(pathService.getMockPath(requestToMock.fileName, false), JSON.stringify(requestToMock), function(err) {
-				if (err) {
-					res.statusCode = 500;
-					res.json({message: 'Failed to add to mocks: ' + err});
-				} else {
-					res.json({message: 'Request saved with filename: ' + requestToMock.fileName});
-				}
-			});
+			// Ensure that folder structure exists and write file
+            var pathToMockArray = pathService.getMockPath(requestToMock.fileName, false).split(path.sep);
+            var mockFileName = pathToMockArray.pop();
+            var pathToMock = pathToMockArray.join(path.sep);
+
+            mkdirp(pathToMock, function (err) {
+                if (err) {
+                    res.statusCode = 500;
+                    res.json({message: 'Failed to create folder structure for mock: ' + err});
+                } else {
+                    fs.writeFile(pathToMock + path.sep + mockFileName, JSON.stringify(requestToMock), function(err) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.json({message: 'Failed to add to mocks: ' + err});
+                        } else {
+                            res.json({message: 'Request saved with filename: ' + requestToMock.fileName});
+                        }
+                    });
+                }
+            });
 		}
 		else {
 			res.statusCode = 500;
