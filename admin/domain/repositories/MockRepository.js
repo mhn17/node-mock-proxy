@@ -16,6 +16,7 @@ var MockRepository = function(pathService) {
  * @returns {Array} Returns an array of objects containing the mock data.
  */
 MockRepository.prototype.findAll = function() {
+	var mockListPaths = [];
 	var mockList = [];
 
 	// Get enabled mocks and add them to the result array
@@ -24,8 +25,16 @@ MockRepository.prototype.findAll = function() {
 	// Get available mocks and add them to the result array
 	var availableMocks = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
 
+	// Merge two one array to avoid two iterations
+	mockListPaths = mockListPaths.concat(enabledMocks).concat(availableMocks);
 
-	return mockList.concat(enabledMocks).concat(availableMocks);
+	// Make objects from file content
+	mockListPaths.forEach(function (entry) {
+		var data = fs.readFileSync(entry, "utf-8");
+		mockList.push(JSON.parse(data));
+	});
+
+	return mockList;
 };
 
 /**
