@@ -65,6 +65,7 @@ router.post('/', function(req, res) {
 			});
 
 			// Ensure that folder structure exists and write file
+            // ToDo: Extract that to the PathService
             var pathToMockArray = pathService.getMockPath(requestToMock.fileName, false).split(path.sep);
             var mockFileName = pathToMockArray.pop();
             var pathToMock = pathToMockArray.join(path.sep);
@@ -94,67 +95,91 @@ router.post('/', function(req, res) {
 
 // Get response for a mock
 router.get('/:id', function(req, res) {
-
     var mockId = req.params.id;
 
     console.log("Get mock with id: " + mockId);
 
     // Set response
     res.statusCode = 200;
-    res.json({ message: pathService.getMockById(mockId) });
+    res.json({ message: mockRepository.findById(mockId) });
 });
 
 // Delete a mock
 router.delete('/:id', function(req, res) {
 	var mockId = req.params.id;
-	var path;
+    var mock = mockRepository.findById(mockId);
 
 	console.log("Attempting to delete mock.");
-	path = pathService.getMockPathById(mockId).filePath;
+    var path = pathService.getMockPath(mock.fileName, mock.enabled);
 	console.log("Mock to be deleted:" + path);
 
 	// Delete mock
-	fs.unlink(path, function(err){
-            if(err){
-                res.statusCode = 500;
-                res.json({ message: 'Failed to delete mock: ' + mockId
-                + " error: " + err});
-            }
-	});
+	fs.unlinkSync(path);
 
-	res.statusCode = 200;
-	res.json({ message: 'OK: '});
+    res.statusCode = 200;
+    res.json({ message: 'OK: '});
 });
 
 // Move available mock to enabled mocks
+//@Todo: When the mock is enabled the previous folder structer will not be deleted -> Needs some better handling?
 router.put('/:id/enable', function(req, res) {
-	var mock = pathService.getMockById(req.params.id);
-        console.log("Enable mock: " + mock.fileName);
+	var mock = mockRepository.findById(req.params.id);
+    console.log("Enable mock: " + mock.fileName);
 
-	mv(pathService.getMockPath(mock.fileName, false)
-            , pathService.getMockPath(mock.fileName, true), function(err) {
-                // It seems there is always an error thrown? Strange.
-                // No error handling for now.
-                console.log(err);
-            });
+    // Ensure that folder structure exists and write file
+    // ToDo: Extract that to the PathService
+    var pathTargetToMockArray = pathService.getMockPath(mock.fileName, true).split(path.sep);
+    var mockFileName = pathTargetToMockArray.pop();
+    var pathToMock = pathTargetToMockArray.join(path.sep);
+
+    mkdirp(pathToMock, function (err) {
+        if (err) {
+            res.statusCode = 500;
+            res.json({message: 'Failed to create folder structure for mock: ' + err});
+        } else {
+            mv(pathService.getMockPath(mock.fileName, false)
+                , pathService.getMockPath(mock.fileName, true), function(err) {
+                    // It seems there is always an error thrown? Strange.
+                    // No error handling for now.
+                    // @ToDo: Check this again for proper error handling.
+                    console.log(err);
+                });
+        }
+    });
 
 	res.statusCode = 200;
 	res.json({ message: 'OK: '});
 });
 
 // Move enabled mock to availabled mocks
+//@Todo: When the mock is disabled the previous folder structer will not be deleted -> Needs some better handling?
 router.put('/:id/disable', function(req, res) {
-        var mock = pathService.getMockById(req.params.id);
+    var mock = mockRepository.findById(req.params.id);
 	console.log("Disable mock: " + mock.fileName);
 
-	mv(pathService.getMockPath(mock.fileName, true)
-            , pathService.getMockPath(mock.fileName, false), function(err) {
+    // Ensure that folder structure exists and write file
+    // ToDo: Extract that to the PathService
+    var pathTargetToMockArray = pathService.getMockPath(mock.fileName, false).split(path.sep);
+    var mockFileName = pathTargetToMockArray.pop();
+    var pathToMock = pathTargetToMockArray.join(path.sep);
+
+    mkdirp(pathToMock, function (err) {
+        if (err) {
+            res.statusCode = 500;
+            res.json({message: 'Failed to create folder structure for mock: ' + err});
+        } else {
+            mv(pathService.getMockPath(mock.fileName, true)
+                , pathService.getMockPath(mock.fileName, false), function(err) {
                     // It seems there is always an error thrown? Strange.
                     // No error handling for now.
-            });
+                    // @ToDo: Check this again for proper error handling.
+                    console.log(err);
+                });
+        }
+    });
 
-	res.statusCode = 200;
-	res.json({ message: 'OK'});
+    res.statusCode = 200;
+    res.json({ message: 'OK: '});
 });
 
 // Add last request to mocks

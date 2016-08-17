@@ -39,7 +39,7 @@ PathService.getMockAvailableFolderPath = function() {
 };
 
 /**
- * Returns the path to a mock file.
+ * Returns the complete path to a mock file including its name and type.
  *
  * @param {String} mockFileName Name of the mock file to which the path should be returned.
  * @param {Boolean} mockEnabled Describes if the mock is enabled or disabled. Used to look for the log file in the
@@ -84,24 +84,6 @@ PathService.getMockPathBySearch = function(mockFileName) {
     }
 };
 
-/**
- * Returns the path to a mock file. Checks for the mock first in the available
- * directory. If the file is not found in that directory, then the enabled folder
- * will be searched.
- *
- * @param {String} mockId Id of the mock file to which the path should be returned.
- * @returns {Object} Returns an object containing:
- *   - filePath: The file path of the mock
- *   - enabled: True or false depending if the mock is enabled or disabled
- */
-PathService.getMockPathById = function(mockId) {
-    var mock = PathService.getMockById(mockId);
-
-    return {
-        filePath: path.resolve(PathService.getMockPathBySearch(mock.fileName).filePath),
-        enabled: mock.enabled
-    };
-};
 
 /**
  * Returns all mock files, either enabled or available

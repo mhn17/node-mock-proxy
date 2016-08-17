@@ -16,25 +16,33 @@ var MockRepository = function(pathService) {
  * @returns {Array} Returns an array of objects containing the mock data.
  */
 MockRepository.prototype.findAll = function() {
-	var mockListPaths = [];
-	var mockList = [];
+	var availableMocks = [];
+	var enabledMocks = [];
+	var result = [];
 
 	// Get enabled mocks and add them to the result array
-	var enabledMocks = this.pathService.getListOfMockFiles(this.pathService.getMockEnabledFolderPath());
+	var availableMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
 
 	// Get available mocks and add them to the result array
-	var availableMocks = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
+	var enabledMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockEnabledFolderPath());
 
-	// Merge two one array to avoid two iterations
-	mockListPaths = mockListPaths.concat(enabledMocks).concat(availableMocks);
-
-	// Make objects from file content
-	mockListPaths.forEach(function (entry) {
+	availableMockNames.forEach(function (entry) {
 		var data = fs.readFileSync(entry, "utf-8");
-		mockList.push(JSON.parse(data));
+		var mock = JSON.parse(data);
+
+		mock.enabled = false;
+		availableMocks.push(mock);
 	});
 
-	return mockList;
+	enabledMockNames.forEach(function (entry) {
+		var data = fs.readFileSync(entry, "utf-8");
+		var mock = JSON.parse(data);
+
+		mock.enabled = true;
+		enabledMocks.push(mock);
+	});
+
+	return result.concat(enabledMocks).concat(availableMocks);
 };
 
 /**
@@ -72,7 +80,7 @@ MockRepository.prototype.findByFileName = function(mockFileName) {
  */
 MockRepository.prototype.findById = function(mockId){
 	var result = {};
-	var mocks = PathService.getMocks();
+	var mocks = this.findAll();
 
 	mocks.forEach(function(entry){
 		if(entry.id === mockId){
