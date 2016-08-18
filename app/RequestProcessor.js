@@ -72,14 +72,15 @@ RequestProcessor.prototype.initProxy = function() {
 
 			that.forwardedRequestsLogger.info(
 				{
-                                        id: uuid.v1(),
+                    id: uuid.v1(),
 					fileName: mockFileName,
-                                        method: req.method,
+                    method: req.method,
 					request: req.body,
 					response: responseData
 				},
 				'not matched incoming request'
 			);
+			responseData = '';
 		});
 
 	return proxy;
