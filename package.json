@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "test"
+    "test": "mocha --recursive"
   },
   "keywords": [
     "nodejs"
