@@ -10,7 +10,7 @@ var path = require("path");
  */
 module.exports.getName = function(req) {
 	// Builds a string out of the protocol and hostname to replace that part of the originalUrl from express in windows
-	// with "" because express seems to take the wrong delimiter. example: http:\www.deploy.calimero.concust.aoe.host
+	// with "" because express seems to take the wrong delimiter. example: http:\www.test.com
 	var protAndHost = req.protocol + ":\\" + req.hostname;
 	var originalUrl = req.originalUrl;
 	if (originalUrl == "/") {
@@ -39,7 +39,7 @@ module.exports.getName = function(req) {
 	}
 
 	// This step is needed because there seems to be an express bug in windows which causes originalUrl to
-	// return the complete url with protocoal and host
+	// return the complete url with protocol and host
 	mockPath = mockPath.replace(protAndHost, "");
 	mockFileName = sanitize(mockFileName + ".txt");
 

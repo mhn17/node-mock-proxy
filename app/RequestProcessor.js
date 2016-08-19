@@ -9,7 +9,7 @@ var RequestProcessor = function(config, mockFileNameService) {
 	this.proxyConfig = config.get("proxy");
 	this.mockConfig = config.get("mocks");
 	this.mockFileNameService = mockFileNameService;
-        
+
 	this.proxy = this.initProxy();
 	this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));
 };
@@ -19,11 +19,11 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 	var that = this;
 	var mockFile = this.mockFileNameService.getName(req);
 	var mockFolder = this.mockConfig.get("enabledFolder");
-        
+
 	// try to read the mock file
 	fs.readFile(path.resolve(mockFolder + "/" + mockFile), "utf-8", function (err, data) {
 		// if file not exists forward to original target otherwise serve mock
-		if (err) {			
+		if (err) {
 			// fix for node-http-proxy issue 180
 			// (https://github.com/nodejitsu/node-http-proxy/issues/180)
 			if (req.method === "POST") {
@@ -39,7 +39,8 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 			}
 			// end of fix
 
-			that.proxy.web(req, res, {target: that.targetConfig.get("url")});
+			var target = that.targetConfig.get("url") + req.originalUrl;
+			that.proxy.web(req, res, {target: target});
 		} else {
 			// set file contents as response body
 			res.writeHead(
@@ -79,6 +80,7 @@ RequestProcessor.prototype.initProxy = function() {
 				},
 				'not matched incoming request'
 			);
+			responseData = '';
 		});
 
 	return proxy;

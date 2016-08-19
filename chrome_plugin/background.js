@@ -23,16 +23,16 @@ chrome.runtime.onConnect.addListener(function(port){
         xhr.send();
         var result = xhr.responseText;
         var jsonResult = JSON.parse(result)
-        port.postMessage({result: jsonResult});   
+        port.postMessage({result: jsonResult});
      }
 });
 
 // Enable
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name.includes("EnableMock")){
         var mockId = port.name.split("?")[1];
-         
+
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
@@ -43,10 +43,10 @@ chrome.runtime.onConnect.addListener(function(port){
 
 // Disable
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name.includes("DisableMock")){
         var mockId = port.name.split("?")[1];
-         
+
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
@@ -57,17 +57,17 @@ chrome.runtime.onConnect.addListener(function(port){
 
 // Delete
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name.includes("DeleteMock")){
         var mockId = port.name.split("?")[1];
 
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
-        var xhr = new XMLHttpRequest();        
+        var xhr = new XMLHttpRequest();
         xhr.open("DELETE", localStorage.mockProxyServerTargetEndpoint + "/api/mocks/" + mockId, false);
         xhr.send();
         var result = xhr.responseText;
-        port.postMessage({result: result}); 
+        port.postMessage({result: result});
      }
 });
 
@@ -82,13 +82,13 @@ chrome.runtime.onConnect.addListener(function(port){
         xhr.send();
         var result = xhr.responseText;
         var jsonResult = JSON.parse(result)
-        port.postMessage({result: jsonResult});   
+        port.postMessage({result: jsonResult});
      }
 });
 
 // Delete
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name === "ClearRequestLog"){
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
@@ -100,11 +100,11 @@ chrome.runtime.onConnect.addListener(function(port){
 
 // Create
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name.includes("AddRequestToMocks")){
         var requestId = port.name.split("?")[1];
         var postBody = JSON.stringify({id: requestId});
-         
+
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
@@ -112,7 +112,7 @@ chrome.runtime.onConnect.addListener(function(port){
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(postBody);
         var result = xhr.responseText;
-        port.postMessage({result: result}); 
+        port.postMessage({result: result});
      }
 });
 
@@ -126,38 +126,38 @@ chrome.runtime.onConnect.addListener(function(port){
         xhr.send();
         var result = xhr.responseText;
         //var jsonResult = JSON.parse(result)
-        port.postMessage({result: result});   
+        port.postMessage({result: result});
      }
 });
 
 // Obsolete ?
 
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name.includes("GetResponseFromMock")){
         var mockName = port.name.split("?")[1];
-         
+
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
         xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/mocks/" + mockName, false);
         xhr.send();
         var result = xhr.responseText;
-        port.postMessage({result: result}); 
+        port.postMessage({result: result});
      }
 });
 
 chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ... 
+    // There has to be a better way to transfer the mock name ...
     if(port.name.includes("GetResponseForRequestInLog")){
         var mockName = port.name.split("?")[1];
-         
+
         // Send request and list
         // This here must be changed so that the correct endpoint will be called
         var xhr = new XMLHttpRequest();
         xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/requests/" + mockName, false);
         xhr.send();
         var result = xhr.responseText;
-        port.postMessage({result: result}); 
+        port.postMessage({result: result});
      }
 });
