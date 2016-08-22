@@ -7,7 +7,7 @@
 // If the local storage value does not exist (user never changed anything ot it is empty), then warn the user
 // and use a default value
 if(!localStorage.mockProxyServerTargetEndpoint){
-    localStorage.mockProxyServerTargetEndpoint = "http://www.localhost:8001";
+    localStorage.mockProxyServerTargetEndpoint = "http://localhost:8001";
     alert("No target endpoint configuration found. Requests target is: " + localStorage.mockProxyServerTargetEndpoint);
 }
 

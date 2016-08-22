@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // If the local storage value does not exist (user never changed anything ot it is empty), then use default value
     if(!localStorage.mockProxyServerTargetEndpoint){
-        localStorage.mockProxyServerTargetEndpoint = "http://www.localhost:8001";
+        localStorage.mockProxyServerTargetEndpoint = "http://localhost:8001";
     }
 
     // Load value from local storage into input field
