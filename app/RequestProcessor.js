@@ -4,11 +4,12 @@ var bunyan = require('bunyan');
 var path = require("path");
 var uuid = require('node-uuid');
 
-var RequestProcessor = function(config, mockFileNameService) {
+var RequestProcessor = function(config, mockFileNameService, mockLUT) {
 	this.targetConfig = config.get("target");
 	this.proxyConfig = config.get("proxy");
 	this.mockConfig = config.get("mocks");
 	this.mockFileNameService = mockFileNameService;
+	this.mockLUT = mockLUT;
 
 	this.proxy = this.initProxy();
 	this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));
@@ -16,40 +17,35 @@ var RequestProcessor = function(config, mockFileNameService) {
 
 // try to read file, otherwise forward to original target
 RequestProcessor.prototype.processRequest = function(req, res) {
-	var that = this;
-	var mockFile = this.mockFileNameService.getName(req);
-	var mockFolder = this.mockConfig.get("enabledFolder");
+	var hash = this.mockFileNameService.getHashByRequest(req);
+	var mock = this.mockLUT.getMockByHash(hash);
 
-	// try to read the mock file
-	fs.readFile(path.resolve(mockFolder + "/" + mockFile), "utf-8", function (err, data) {
-		// if file not exists forward to original target otherwise serve mock
-		if (err) {
-			// fix for node-http-proxy issue 180
-			// (https://github.com/nodejitsu/node-http-proxy/issues/180)
-			if (req.method === "POST") {
-				req.removeAllListeners('data');
-				req.removeAllListeners('end');
+	if (mock) {
+		// set file contents as response body
+		res.writeHead(
+			200,
+			{'Content-Type': this.proxyConfig.get("mock.contentType")}
+		);
+		res.end(mock.responseBody);
+	} else {
+		// fix for node-http-proxy issue 180
+		// (https://github.com/nodejitsu/node-http-proxy/issues/180)
+		if (req.method === "POST") {
+			req.removeAllListeners('data');
+			req.removeAllListeners('end');
 
-				process.nextTick(function () {
-					if (req.body) {
-						req.emit('data', req.body);
-					}
-					req.emit('end');
-				});
-			}
-			// end of fix
-
-			var target = that.targetConfig.get("url") + req.originalUrl;
-			that.proxy.web(req, res, {target: target});
-		} else {
-			// set file contents as response body
-			res.writeHead(
-				200,
-				{'Content-Type': that.proxyConfig.get("mock.contentType")}
-			);
-			res.end(data);
+			process.nextTick(function () {
+				if (req.body) {
+					req.emit('data', req.body);
+				}
+				req.emit('end');
+			});
 		}
-	});
+		// end of fix
+
+		var target = this.targetConfig.get("url") + req.originalUrl;
+		this.proxy.web(req, res, {target: target});
+	}
 };
 
 // init proxy server
@@ -68,7 +64,7 @@ RequestProcessor.prototype.initProxy = function() {
 			});
 		})
 		.on('end', function (req, res) {
-			var mockFileName = that.mockFileNameService.getName(req);
+			var mockFileName = that.mockFileNameService.getHashByRequest(req);
 
 			that.forwardedRequestsLogger.info(
 				{

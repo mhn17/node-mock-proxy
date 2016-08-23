@@ -7,6 +7,10 @@ var AdminServer = require('./admin/AdminServer');
 var config = require('config');
 var proxyConfig = config.get("proxy");
 
+// build Mock LUT
+var MockLUT = require('./app/services/MockLUT');
+new MockLUT().buildCache();
+
 // routes
 var routes = require('./app/routes/index.js');
 

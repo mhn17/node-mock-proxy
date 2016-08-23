@@ -35,7 +35,7 @@ PathService.getMockEnabledFolderPath = function() {
 * @returns {String} Returns the path to the folder where the available mocks are being stored.
 */
 PathService.getMockAvailableFolderPath = function() {
-    return path.resolve(mockConfig.get("availableFolder"));
+    return path.resolve(mockConfig.get("availableFolder") + path.sep);
 };
 
 /**
@@ -100,7 +100,7 @@ PathService.getListOfMockFiles = function(dir) {
         var filePath = path.join(dir, file);
         var fileStat = fs.statSync(filePath);
 
-        if (!file || (file.indexOf(".txt") == -1 && !fileStat.isDirectory())) { break; }
+        if (!file || (file.indexOf(".json") == -1 && !fileStat.isDirectory())) { break; }
 
 		if (fileStat.isDirectory()) {
 			mockFiles = mockFiles.concat(this.getListOfMockFiles(filePath));

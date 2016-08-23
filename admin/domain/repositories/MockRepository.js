@@ -20,10 +20,10 @@ MockRepository.prototype.findAll = function() {
 	var enabledMocks = [];
 	var result = [];
 
-	// Get enabled mocks and add them to the result array
+	// Get available mocks and add them to the result array
 	var availableMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
 
-	// Get available mocks and add them to the result array
+	// Get enabled mocks and add them to the result array
 	var enabledMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockEnabledFolderPath());
 
 	availableMockNames.forEach(function (entry) {

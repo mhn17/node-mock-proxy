@@ -21,6 +21,7 @@
 		"port": "8097"
 	},
 	"mocks": {
-		"enabledFolder": "test/fixtures/mocks-enabled"
+		"enabledFolder": "test/fixtures/mocks-enabled",
+		"availableFolder": "test/fixtures/mocks-available"
 	}
 }

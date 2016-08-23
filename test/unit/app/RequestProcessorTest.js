@@ -19,7 +19,7 @@ describe('RequestProcessor:', function() {
 
 	describe('init', function() {
 		var mockFileNameServiceMock = sinon.stub();
-		mockFileNameServiceMock.getName = function () {
+		mockFileNameServiceMock.getHashByRequest = function () {
 			return 'fileName';
 		};
 		var requestProcessor = new RequestProcessor(config, mockFileNameServiceMock);
