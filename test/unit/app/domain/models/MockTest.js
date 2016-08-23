@@ -1,7 +1,9 @@
 process.env.NODE_ENV = 'test';
 
+require('app-module-path').addPath(__dirname + '/../../../../../app');
+
 var expect = require('chai').expect;
-var Mock = require('./../../../../../app/domain/models/Mock');
+var Mock = require('domain/models/Mock');
 var path = require('path');
 var config = require('config');
 var availableFolder = config.get('mocks').get('availableFolder');

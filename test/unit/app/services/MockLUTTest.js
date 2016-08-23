@@ -1,8 +1,10 @@
 process.env.NODE_ENV = 'test';
 
+require('app-module-path').addPath(__dirname + '/../../../../app');
+
 var expect = require('chai').expect;
-var MockLUT = require('./../../../../app/services/MockLUT');
-var Mock = require('./../../../../app/domain/models/Mock');
+var MockLUT = require('services/MockLUT');
+var Mock = require('domain/models/Mock');
 var fs = require('fs');
 var path = require('path');
 var config = require('config');
