@@ -1,4 +1,5 @@
 var fs = require('fs');
+var Mock = require('models/Mock');
 
 var MockRepository = function(pathService) {
 	this.pathService = pathService;
@@ -13,36 +14,43 @@ var MockRepository = function(pathService) {
  *  - method
  *  - enabled
  *
- * @returns {Array} Returns an array of objects containing the mock data.
+ * @returns {Object} Returns an Object (enabled/available) of objects containing the mock data.
  */
 MockRepository.prototype.findAll = function() {
-	var availableMocks = [];
-	var enabledMocks = [];
-	var result = [];
-
-	// Get available mocks and add them to the result array
-	var availableMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
+	var result = {'enabled': [], 'available': []};
 
 	// Get enabled mocks and add them to the result array
 	var enabledMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockEnabledFolderPath());
-
-	availableMockNames.forEach(function (entry) {
-		var data = fs.readFileSync(entry, "utf-8");
-		var mock = JSON.parse(data);
-
-		mock.enabled = false;
-		availableMocks.push(mock);
-	});
-
 	enabledMockNames.forEach(function (entry) {
-		var data = fs.readFileSync(entry, "utf-8");
-		var mock = JSON.parse(data);
-
-		mock.enabled = true;
-		enabledMocks.push(mock);
+		var mock = new Mock();
+		mock.setFileName(entry);
+		mock.readFromFile();
+		result.enabled.push(mock);
 	});
 
-	return result.concat(enabledMocks).concat(availableMocks);
+	// Get available mocks and add them to the result array
+	var availableMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
+	availableMockNames.forEach(function (entry) {
+		var mock = new Mock();
+		mock.setFileName(entry);
+		mock.readFromFile();
+		var mockIsEnabled = false;
+		// determine, if mock is already enabled...
+		result.enabled.forEach(function(enabledMock) {
+			console.log(enabledMock.getId(),' === ', mock.getId(), enabledMock.getId() === mock.getId());
+
+			if (enabledMock.getId() === mock.getId()) {
+
+				mockIsEnabled = true;
+			}
+		});
+
+		if (!mockIsEnabled) {
+			result.available.push(mock);
+		}
+	});
+
+	return result;
 };
 
 /**

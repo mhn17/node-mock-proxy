@@ -11,21 +11,33 @@ var pathService = require("services/PathService");
 var MockRepository = require("domain/repositories/MockRepository");
 var mockRepository = new MockRepository(pathService);
 
-
 // Get list of mocks
 router.get('/', function(req, res) {
     console.log("List all mocks");
-    var mockList = [];
 
-	mockRepository.findAll().forEach(function(entry) {
-        mockList.push({
-            id: entry.id,
-            fileName: entry.fileName,
-            request: entry.request,
-            response: entry.response,
-            enabled: entry.enabled
-        });
-    });
+	var allMocks = mockRepository.findAll();
+
+	var mockList = [];
+
+	allMocks.available.forEach(function(mock) {
+		mockList.push({
+						  id: mock.getId(),
+						  fileName: mock.getFileName(),
+						  name: mock.getName(),
+						  description: mock.getDescription(),
+						  enabled: false
+					  });
+	});
+
+	allMocks.enabled.forEach(function(mock) {
+		mockList.push({
+						  id: mock.getId(),
+						  fileName: mock.getFileName(),
+						  name: mock.getName(),
+						  description: mock.getDescription(),
+						  enabled: true
+					  });
+	});
 
     res.statusCode = 200;
     res.json(mockList);
