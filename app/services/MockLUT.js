@@ -1,6 +1,6 @@
-var Mock = require('./../models/Mock');
-var mockFileNameService = require('./../services/MockFileNameService');
-var pathService = require('./PathService');
+var Mock = require('models/Mock');
+var mockFileNameService = require('services/MockFileNameService');
+var pathService = require('services/PathService');
 
 var MockLUT = function() {
 	if (process.mockCache) {

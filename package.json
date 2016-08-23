@@ -2,13 +2,14 @@
   "name": "node-mock-proxy",
   "version": "0.0.1",
   "dependencies": {
+    "app-module-path": "^1.1.0",
     "body-parser": "^1.15.0",
-    "mkdirp": "0.5.1",
     "bunyan": "^1.8.1",
     "config": "^1.19.0",
     "express": "^4.13.4",
     "fs": "0.0.2",
     "http-proxy": "^1.13.3",
+    "mkdirp": "0.5.1",
     "mv": "^2.1.1",
     "node-uuid": "^1.4.7",
     "sanitize-filename": "^1.6.0"

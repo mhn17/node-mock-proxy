@@ -5,8 +5,8 @@ var config      = require('config');
 var fs          = require('fs');
 
 // routes
-var requestRoutes = require('./routes/requests.js');
-var mockRoutes = require('./routes/mocks.js');
+var requestRoutes = require('routes/requests');
+var mockRoutes = require('routes/mocks');
 
 // Make the AdminServer to a real webserver via the express module
 var AdminServer = function() {

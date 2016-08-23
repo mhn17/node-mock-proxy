@@ -4,7 +4,7 @@ var config = require('config');
 var fs = require('fs');
 
 // Services
-var pathService = require("../../app/services/PathService");
+var pathService = require("services/PathService");
 
 // Logged requests
 router.get('/', function (req, res) {

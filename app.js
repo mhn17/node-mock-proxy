@@ -1,18 +1,21 @@
+require('app-module-path').addPath(__dirname + '/app');
+require('app-module-path').addPath(__dirname + '/admin');
+
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var AdminServer = require('./admin/AdminServer');
+var AdminServer = require('AdminServer');
 
 // config
 var config = require('config');
 var proxyConfig = config.get("proxy");
 
 // build Mock LUT
-var MockLUT = require('./app/services/MockLUT');
+var MockLUT = require('services/MockLUT');
 new MockLUT().buildCache();
 
 // routes
-var routes = require('./app/routes/index.js');
+var routes = require('routes/index');
 
 // get body as raw to create hash of post body
 app.use(bodyParser.text({"type": "*/*"}));

@@ -7,8 +7,8 @@ var mkdirp = require('mkdirp');
 var path = require("path");
 
 // Services, repositories
-var pathService = require("../../app/services/PathService");
-var MockRepository = require("../domain/repositories/MockRepository");
+var pathService = require("services/PathService");
+var MockRepository = require("domain/repositories/MockRepository");
 var mockRepository = new MockRepository(pathService);
 
 
