@@ -1,23 +1,23 @@
-var Mock = require('models/Mock');
+var Mock = require('domain/models/Mock');
 var mockFileNameService = require('services/MockFileNameService');
 var pathService = require('services/PathService');
 
 var MockLUT = function() {
-	if (process.mockCache) {
-		return process.mockCache;
+	if (process.mainModule.instances.mockLUT) {
+		return process.mainModule.instances.mockLUT;
 	}
 
 	// array of Mock objects
 	this.lookUpTable = {};
 
-	process.mockCache = this;
+	process.mainModule.instances.mockLUT = this;
 	return this;
 };
 
 MockLUT.prototype.buildCache = function() {
 	var that = this;
 	pathService.getListOfMockFiles(pathService.getMockEnabledFolderPath()).forEach(function (filePath) {
-		that.addFileToTable(filePath);
+		that._addFileToTable(filePath);
 	});
 
 	return this;
@@ -51,7 +51,7 @@ MockLUT.prototype.getMockByHash = function(hash) {
 	}
 };
 
-MockLUT.prototype.addFileToTable = function(filePath) {
+MockLUT.prototype._addFileToTable = function(filePath) {
 	var mock = new Mock();
 	mock.setFileName(filePath);
 	mock.readFromFile();

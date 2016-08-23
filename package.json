@@ -1,6 +1,10 @@
 {
   "name": "node-mock-proxy",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mhn17/node-mock-proxy.git"
+  },
   "dependencies": {
     "app-module-path": "^1.1.0",
     "body-parser": "^1.15.0",

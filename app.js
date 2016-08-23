@@ -1,6 +1,11 @@
+// define space for singletons
+process.mainModule.instances = {};
+
+// configure require
 require('app-module-path').addPath(__dirname + '/app');
 require('app-module-path').addPath(__dirname + '/admin');
 
+// require modules
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');

@@ -1,0 +1,15 @@
+{
+  "id": "2",
+  "name": "a GET mock",
+  "description": "a GET mock for testing",
+  "request":
+  {
+    "uri": "/a/path/?param=1",
+    "method": "GET",
+    "body": ""
+  },
+  "response":
+  {
+    "body": "{foo:baz}"
+  }
+}

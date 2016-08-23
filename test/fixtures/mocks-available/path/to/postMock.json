@@ -1,0 +1,15 @@
+{
+  "id": "3",
+  "name": "a POST mock",
+  "description": "a POST mock for testing",
+  "request":
+  {
+    "uri": "/a/path/?param=2",
+    "method": "POST",
+    "body": "{param2:lorem}"
+  },
+  "response":
+  {
+    "body": "{foo:postResponse}"
+  }
+}

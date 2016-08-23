@@ -85,8 +85,8 @@ Mock.prototype.readFromFile = function() {
 
 	var that = this;
 
-	var data = fs.readFileSync(this.getFileName(), {"encoding": "utf-8"});
-	if (data) {
+	try {
+		var data = fs.readFileSync(this.getFileName(), {"encoding": "utf-8"});
 		var jsonData = JSON.parse(data);
 		that.setId(jsonData.id);
 		that.setName(jsonData.name);
@@ -95,7 +95,7 @@ Mock.prototype.readFromFile = function() {
 		that.setRequestMethod(jsonData.request.method);
 		that.setRequestBody(jsonData.request.body);
 		that.setResponseBody(jsonData.response.body);
-	} else {
+	} catch (e) {
 		throw new Error("Could nor read mock file " + this.getFileName());
 	}
 };
@@ -104,8 +104,5 @@ Mock.prototype.safeToFile = function() {
 	// @ToDo
 };
 
-Mock.prototype.overrideConfig = function(config) {
-	this.config = config;
-};
 
 module.exports = Mock;
