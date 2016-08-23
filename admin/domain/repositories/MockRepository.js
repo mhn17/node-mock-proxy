@@ -1,5 +1,5 @@
 var fs = require('fs');
-var Mock = require('models/Mock');
+var Mock = require('domain/models/Mock');
 
 var MockRepository = function(pathService) {
 	this.pathService = pathService;
