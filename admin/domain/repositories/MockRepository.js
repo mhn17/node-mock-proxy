@@ -36,7 +36,7 @@ MockRepository.prototype._findByFolder = function(folder) {
 };
 
 MockRepository.prototype.findAvailableMocks = function() {
-	return this._findByFolder(this.pathService.getMockEnabledFolderPath());
+	return this._findByFolder(this.pathService.getMockAvailableFolderPath());
 };
 
 MockRepository.prototype.findEnabledMocks = function() {
@@ -48,12 +48,7 @@ MockRepository.prototype.findDisabledMocks = function() {
 	var enabledMocks = this.findEnabledMocks();
 	var disabledMocks = [];
 
-	availableMocks.forEach(function (fileName) {
-		console.log(fileName);
-		var mock = new Mock();
-		mock.setFileName(fileName);
-		mock.readFromFile();
-
+	availableMocks.forEach(function (mock) {
 		var mockIsEnabled = false;
 		// determine, if mock is already enabled...
 		enabledMocks.forEach(function(enabledMock) {
@@ -122,9 +117,13 @@ MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 	var fileName = mock.getFileName();
 
 	// @todo - check if mock is already in the state
-
-
-
+	if (state) {
+		fs.symlink('./foo', './new-port');
+		fs.symlinkSync(this.pathService.getMockEnabledFolderPath() + fileName, this.pathService.getMockAvailableFolderPath() + fileName);
+	}
+	else {
+		fs.unlinkSync(this.pathService.getMockEnabledFolderPath() + fileName);
+	}
 };
 
 
