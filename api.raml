@@ -1,4 +1,5 @@
 #%RAML 1.0
+---
 title: Node-Mock-Proxy-API
 version: v1
 baseUri: http://localhost/api
@@ -93,25 +94,25 @@ baseUri: http://localhost/api
               properties:
                 id: string
                 fileName: string
-				name: string
-				description: string
+                name: string
+                description: string
                 enabled: boolean
             example: |
               [
-              	{
-				  "id": "684fb90",
-				  "fileName": "foo.txt",
-				  "description": "Some description",
-				  "name": "Mock name",
-				  "enabled": true
-				},
-				{
-				  "id": "1234567",
-				  "fileName": "bar.json",
-				  "description": "Another description",
-				  "name": "Another Mock name",
-				  "enabled": false
-				}
+                {
+                  "id": "684fb90",
+                  "fileName": "foo.txt",
+                  "description": "Some description",
+                  "name": "Mock name",
+                  "enabled": true
+                },
+                {
+                  "id": "1234567",
+                  "fileName": "bar.json",
+                  "description": "Another description",
+                  "name": "Another Mock name",
+                  "enabled": false
+                }
               ]
   post:
     description: Create a new mock (initially disabled, file name and id is generated)
