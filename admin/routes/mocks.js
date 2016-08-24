@@ -214,7 +214,7 @@ router.post('/createFromLastRequest', function(req, res) {
 // create manually
 router.post('/', function(req, res) {
 	console.log("creating mock manually");
-	mockRepository.createMock(req);
+	mockRepository.createMock(req.body);
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});

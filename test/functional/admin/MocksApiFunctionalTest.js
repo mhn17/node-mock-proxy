@@ -12,7 +12,7 @@ var availableFolder = config.get('mocks').get('availableFolder');
 var enabledFolder = config.get('mocks').get('enabledFolder');
 
 var AdminServer = require('AdminServer');
-var adminServer = new AdminServer().start();
+new AdminServer().start();
 
 describe('Mocks API functional test:', function () {
 

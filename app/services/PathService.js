@@ -26,7 +26,7 @@ PathService.getLogFilePath = function() {
  * @returns {String} Returns the path to the folder where the enabled mocks are being stored.
  */
 PathService.getMockEnabledFolderPath = function() {
-    return path.resolve(mockConfig.get("enabledFolder"));
+    return path.resolve(mockConfig.get("enabledFolder")) + path.sep;
 };
 
 /**
@@ -35,7 +35,7 @@ PathService.getMockEnabledFolderPath = function() {
 * @returns {String} Returns the path to the folder where the available mocks are being stored.
 */
 PathService.getMockAvailableFolderPath = function() {
-    return path.resolve(mockConfig.get("availableFolder") + path.sep);
+    return path.resolve(mockConfig.get("availableFolder")) + path.sep;
 };
 
 /**

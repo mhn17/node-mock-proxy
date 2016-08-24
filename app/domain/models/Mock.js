@@ -1,4 +1,7 @@
 var fs = require('fs');
+var uuid = require('node-uuid');
+var sanitize = require('sanitize-filename');
+var pathService = require('services/PathService');
 
 var Mock = function() {
 	this.fileName = "";
@@ -100,8 +103,35 @@ Mock.prototype.readFromFile = function() {
 	}
 };
 
-Mock.prototype.safeToFile = function() {
-	// @ToDo
+Mock.prototype.saveToFile = function() {
+	if (!this.getId()) {
+		this.setId(uuid.v1());
+	}
+
+	if (!this.getFileName()) {
+		var fileName = pathService.getMockAvailableFolderPath() + sanitize(this.getName()) + ".json";
+		this.setFileName(fileName);
+	}
+
+	var content = {
+		"id": this.getId(),
+		"name": this.getName(),
+		"description": this.getDescription(),
+		"request": {
+			"uri": this.getRequestUri(),
+			"method": this.getRequestMethod(),
+			"body": this.getRequestBody()
+		},
+		"response": {
+			"body": this.getResponseBody()
+		}
+	};
+
+	try {
+		fs.writeFileSync(this.getFileName(), JSON.stringify(content), 'utf8');
+	} catch (e) {
+		throw new Error("Could nor write mock file " + this.getFileName());
+	}
 };
 
 

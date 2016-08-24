@@ -1,7 +1,7 @@
 [
   {
     "id": "3",
-    "fileName": "/path/to/postMock.json",
+    "fileName": "path/to/postMock.json",
     "name": "a POST mock",
     "description": "a POST mock for testing",
     "request": {
@@ -16,7 +16,7 @@
   },
   {
     "id": "2",
-    "fileName": "/path/to/getMock.json",
+    "fileName": "path/to/getMock.json",
     "name": "a GET mock",
     "description": "a GET mock for testing",
     "request": {
@@ -31,7 +31,7 @@
   },
   {
     "id": "1",
-    "fileName": "/path/to/aMock.json",
+    "fileName": "path/to/aMock.json",
     "name": "a mock",
     "description": "a mock for testing",
     "request": {

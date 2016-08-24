@@ -165,9 +165,9 @@ MockRepository.prototype.createMock = function(data) {
 	mock.setRequestUri(data.requestUri);
 	mock.setRequestMethod(data.requestMethod);
 	mock.setRequestBody(data.requestBody);
-	mock.setRequestBody(data.responseBody);
+	mock.setResponseBody(data.responseBody);
 
-	mock.safeToFile();
+	mock.saveToFile();
 };
 
 module.exports = MockRepository;
