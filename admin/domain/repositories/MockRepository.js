@@ -17,41 +17,59 @@ var MockRepository = function(pathService) {
  * @returns {Object} Returns an Object (enabled/available) of objects containing the mock data.
  */
 MockRepository.prototype.findAll = function() {
-	var result = {'enabled': [], 'available': []};
+	return this.findAvailableMocks();
+};
 
+MockRepository.prototype._findByFolder = function(folder) {
 	// Get enabled mocks and add them to the result array
-	var enabledMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockEnabledFolderPath());
-	enabledMockNames.forEach(function (entry) {
+	var result = [];
+
+	var mocks = this.pathService.getListOfMockFiles(folder);
+	mocks.forEach(function (fileName) {
 		var mock = new Mock();
-		mock.setFileName(entry);
+		mock.setFileName(fileName);
 		mock.readFromFile();
-		result.enabled.push(mock);
+		result.push(mock);
 	});
 
-	// Get available mocks and add them to the result array
-	var availableMockNames = this.pathService.getListOfMockFiles(this.pathService.getMockAvailableFolderPath());
-	availableMockNames.forEach(function (entry) {
+	return result;
+};
+
+MockRepository.prototype.findAvailableMocks = function() {
+	return this._findByFolder(this.pathService.getMockEnabledFolderPath());
+};
+
+MockRepository.prototype.findEnabledMocks = function() {
+	return this._findByFolder(this.pathService.getMockEnabledFolderPath());
+};
+
+MockRepository.prototype.findDisabledMocks = function() {
+	var availableMocks = this.findAvailableMocks();
+	var enabledMocks = this.findEnabledMocks();
+	var disabledMocks = [];
+
+	availableMocks.forEach(function (fileName) {
+		console.log(fileName);
 		var mock = new Mock();
-		mock.setFileName(entry);
+		mock.setFileName(fileName);
 		mock.readFromFile();
+
 		var mockIsEnabled = false;
 		// determine, if mock is already enabled...
-		result.enabled.forEach(function(enabledMock) {
-			console.log(enabledMock.getId(),' === ', mock.getId(), enabledMock.getId() === mock.getId());
-
+		enabledMocks.forEach(function(enabledMock) {
 			if (enabledMock.getId() === mock.getId()) {
-
 				mockIsEnabled = true;
 			}
 		});
 
 		if (!mockIsEnabled) {
-			result.available.push(mock);
+			disabledMocks.push(mock);
 		}
 	});
 
-	return result;
+	return disabledMocks;
 };
+
 
 /**
  * Returns an object representing a mock which contains the following information:
@@ -97,6 +115,25 @@ MockRepository.prototype.findById = function(mockId){
 	});
 
 	return result;
+};
+
+MockRepository.prototype.toggleMockStateById = function(mockId, state) {
+	var mock = this.findById(mockId);
+	var fileName = mock.getFileName();
+
+	// @todo - check if mock is already in the state
+
+
+
+};
+
+
+MockRepository.prototype.enableMockById = function(mockId) {
+	this.toggleMockStateById(mockId, true);
+};
+
+MockRepository.prototype.disableMockById = function(mockId) {
+	this.toggleMockStateById(mockId, false);
 };
 
 module.exports = MockRepository;
