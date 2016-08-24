@@ -141,13 +141,10 @@ MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 
 MockRepository.prototype.deleteMockById = function(mockId) {
 	console.log('MockRepository', 'deleteMockById', mockId);
-	var mock = this.findById(mockId);
-
 	this.disableMockById(mockId);
 
 	var mock = this.findById(mockId);
-	var fileName = mock.getFileName();
-	fs.unlinkSync(fileName);
+	fs.unlinkSync(mock.getFileName());
 };
 
 
