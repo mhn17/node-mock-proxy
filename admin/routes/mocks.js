@@ -15,21 +15,12 @@ var mockRepository = new MockRepository(pathService);
 router.get('/', function(req, res) {
     console.log("List all mocks");
 
-	var allMocks = mockRepository.findAll();
+	var enabledMocks = mockRepository.findEnabledMocks();
+	var disabledMocks = mockRepository.findDisabledMocks();
 
 	var mockList = [];
 
-	allMocks.available.forEach(function(mock) {
-		mockList.push({
-						  id: mock.getId(),
-						  fileName: mock.getFileName(),
-						  name: mock.getName(),
-						  description: mock.getDescription(),
-						  enabled: false
-					  });
-	});
-
-	allMocks.enabled.forEach(function(mock) {
+	enabledMocks.forEach(function(mock) {
 		mockList.push({
 						  id: mock.getId(),
 						  fileName: mock.getFileName(),
@@ -39,7 +30,19 @@ router.get('/', function(req, res) {
 					  });
 	});
 
+	disabledMocks.forEach(function(mock) {
+		mockList.push({
+						  id: mock.getId(),
+						  fileName: mock.getFileName(),
+						  name: mock.getName(),
+						  description: mock.getDescription(),
+						  enabled: false
+					  });
+	});
+
     res.statusCode = 200;
+
+	// @TODO - Sort list by name...
     res.json(mockList);
 });
 
@@ -133,65 +136,22 @@ router.delete('/:id', function(req, res) {
 });
 
 // Move available mock to enabled mocks
-//@Todo: When the mock is enabled the previous folder structer will not be deleted -> Needs some better handling?
 router.put('/:id/enable', function(req, res) {
-	var mock = mockRepository.findById(req.params.id);
-    console.log("Enable mock: " + mock.fileName);
-
-    // Ensure that folder structure exists and write file
-    // ToDo: Extract that to the PathService
-    var pathTargetToMockArray = pathService.getMockPath(mock.fileName, true).split(path.sep);
-    var mockFileName = pathTargetToMockArray.pop();
-    var pathToMock = pathTargetToMockArray.join(path.sep);
-
-    mkdirp(pathToMock, function (err) {
-        if (err) {
-            res.statusCode = 500;
-            res.json({message: 'Failed to create folder structure for mock: ' + err});
-        } else {
-            mv(pathService.getMockPath(mock.fileName, false)
-                , pathService.getMockPath(mock.fileName, true), function(err) {
-                    // It seems there is always an error thrown? Strange.
-                    // No error handling for now.
-                    // @ToDo: Check this again for proper error handling.
-                    console.log(err);
-                });
-        }
-    });
+	console.log("Enable mock: " + req.params.id);
+	mockRepository.enableMockById(req.params.id);
 
 	res.statusCode = 200;
-	res.json({ message: 'OK: '});
+	res.json({ message: 'OK'});
 });
 
 // Move enabled mock to availabled mocks
 //@Todo: When the mock is disabled the previous folder structer will not be deleted -> Needs some better handling?
 router.put('/:id/disable', function(req, res) {
-    var mock = mockRepository.findById(req.params.id);
-	console.log("Disable mock: " + mock.fileName);
+	console.log("Disable mock: " + req.params.id);
+	mockRepository.disableMockById(req.params.id);
 
-    // Ensure that folder structure exists and write file
-    // ToDo: Extract that to the PathService
-    var pathTargetToMockArray = pathService.getMockPath(mock.fileName, false).split(path.sep);
-    var mockFileName = pathTargetToMockArray.pop();
-    var pathToMock = pathTargetToMockArray.join(path.sep);
-
-    mkdirp(pathToMock, function (err) {
-        if (err) {
-            res.statusCode = 500;
-            res.json({message: 'Failed to create folder structure for mock: ' + err});
-        } else {
-            mv(pathService.getMockPath(mock.fileName, true)
-                , pathService.getMockPath(mock.fileName, false), function(err) {
-                    // It seems there is always an error thrown? Strange.
-                    // No error handling for now.
-                    // @ToDo: Check this again for proper error handling.
-                    console.log(err);
-                });
-        }
-    });
-
-    res.statusCode = 200;
-    res.json({ message: 'OK: '});
+	res.statusCode = 200;
+	res.json({ message: 'OK'});
 });
 
 // Add last request to mocks

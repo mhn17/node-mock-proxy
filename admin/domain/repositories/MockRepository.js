@@ -118,8 +118,7 @@ MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 
 	// @todo - check if mock is already in the state
 	if (state) {
-		fs.symlink('./foo', './new-port');
-		fs.symlinkSync(this.pathService.getMockEnabledFolderPath() + fileName, this.pathService.getMockAvailableFolderPath() + fileName);
+		fs.symlinkSync(fileName, this.pathService.getMockAvailableFolderPath() + fileName);
 	}
 	else {
 		fs.unlinkSync(this.pathService.getMockEnabledFolderPath() + fileName);
@@ -128,10 +127,12 @@ MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 
 
 MockRepository.prototype.enableMockById = function(mockId) {
+	console.log('MockRepository', 'enableMockById', mockId);
 	this.toggleMockStateById(mockId, true);
 };
 
 MockRepository.prototype.disableMockById = function(mockId) {
+	console.log('MockRepository', 'disableMockById', mockId);
 	this.toggleMockStateById(mockId, false);
 };
 
