@@ -1,16 +1,22 @@
 process.env.NODE_ENV = 'test';
 
+require('app-module-path').addPath(__dirname + '/../../../app');
+require('app-module-path').addPath(__dirname + '/../../../admin');
+
 var expect = require('chai').expect;
 var fs = require('fs');
-var config = require('config');
+var path = require('path');
 var http = require('http');
+var config = require('config');
+var availableFolder = config.get('mocks').get('availableFolder');
+var enabledFolder = config.get('mocks').get('enabledFolder');
 
-var AdminServer = require("./../../../admin/AdminServer");
-var adminServer = new AdminServer();
+var AdminServer = require('AdminServer');
+var adminServer = new AdminServer().start();
 
 describe('Mocks API functional test:', function () {
 
-	beforeEach('clear log file and start admin server', function () {
+	beforeEach('clear log file, create sym links for enabled mocks and start admin server', function () {
 		try {
 			fs.accessSync(config.get('logging').get('forwaredRequests').get('file'));
 			fs.unlink(config.get('logging').get('forwaredRequests').get('file'));
@@ -18,14 +24,20 @@ describe('Mocks API functional test:', function () {
 			// do nothing, file does not exist
 		}
 
-		adminServer.start();
+		// create sym links for enables mocks
+		try {
+			fs.unlinkSync(path.resolve(enabledFolder + '/path/to/getMock.json'));
+			fs.unlinkSync(path.resolve(enabledFolder + '/path/to/postMock.json'));
+		} catch (e) {
+			// do nothing, sym links do not exist
+		}
+		fs.symlinkSync(path.resolve(availableFolder + '/path/to/getMock.json'),
+			path.resolve(enabledFolder + '/path/to/getMock.json'));
+		fs.symlinkSync(path.resolve(availableFolder + '/path/to/postMock.json'),
+			path.resolve(enabledFolder + '/path/to/postMock.json'));
 	});
 
-	afterEach('stop admin server', function() {
-		adminServer.stop();
-	});
-
-	it('should deliver a list of mocks', function (done) {
+	it('#GET /mocks: should deliver a list of mocks', function (done) {
 		var url = 'http://localhost:' + config.get("admin").get("port") + '/api/mocks';
 		http.get(url, function (response) {
 			// Continuously update stream with data
@@ -35,12 +47,22 @@ describe('Mocks API functional test:', function () {
 			});
 			response.on('end', function () {
 				var expected = JSON.parse(fs.readFileSync('test/fixtures/admin/mockList.json', 'utf8'));
-				expect(body).to.equal(expected);
+				expect(JSON.parse(body)).to.eql(expected);
 
 				done();
 			});
 		});
 	});
+
+	it('#POST /mocks: should create a new mock');
+
+	it('#GET /mocks/{id}: should get a single mock');
+
+	it('#DELETE /mocks/{id}: should delete a mock');
+
+	it('#PUT /mocks/{id}/enable: should enable a mock');
+
+	it('#PUT /mocks/{id}/disable: should disable a mock');
 
 	// it('should deliver a mock for a POST request', function (done) {
 	// 	var req = http.request({

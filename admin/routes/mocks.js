@@ -22,22 +22,38 @@ router.get('/', function(req, res) {
 
 	enabledMocks.forEach(function(mock) {
 		mockList.push({
-						  id: mock.getId(),
-						  fileName: mock.getFileName(),
-						  name: mock.getName(),
-						  description: mock.getDescription(),
-						  enabled: true
-					  });
+			id: mock.getId(),
+			fileName: mock.getFileName().replace(pathService.getMockEnabledFolderPath(),""),
+			name: mock.getName(),
+			description: mock.getDescription(),
+			request: {
+				uri: mock.getRequestUri(),
+				method: mock.getRequestMethod(),
+				body: mock.getRequestBody()
+			},
+			response: {
+				body: mock.getResponseBody()
+			},
+			enabled: true
+	  	});
 	});
 
 	disabledMocks.forEach(function(mock) {
 		mockList.push({
-						  id: mock.getId(),
-						  fileName: mock.getFileName(),
-						  name: mock.getName(),
-						  description: mock.getDescription(),
-						  enabled: false
-					  });
+			id: mock.getId(),
+			fileName: mock.getFileName().replace(pathService.getMockAvailableFolderPath(),""),
+			name: mock.getName(),
+			description: mock.getDescription(),
+			request: {
+				uri: mock.getRequestUri(),
+				method: mock.getRequestMethod(),
+				body: mock.getRequestBody()
+			},
+			response: {
+				body: mock.getResponseBody()
+			},
+			enabled: false
+	  	});
 	});
 
     res.statusCode = 200;

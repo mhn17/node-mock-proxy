@@ -1,20 +1,47 @@
 [
   {
-    "id": "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
-    "fileName": "path/to/getmock.txt",
-    "response": "{\"foo\":\"bar\"}",
+    "id": "3",
+    "fileName": "/path/to/postMock.json",
+    "name": "a POST mock",
+    "description": "a POST mock for testing",
+    "request": {
+      "uri": "/a/path/?param=2",
+      "method": "POST",
+      "body": "{param2:lorem}"
+    },
+    "response": {
+      "body": "{foo:postResponse}"
+    },
     "enabled": true
   },
   {
-    "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-    "fileName": "path/to/postmock__3118e5e88b135860123e5a86b153ad9fc8e581cf.txt",
-    "response": "{\"foo\":\"postResponse\"}",
+    "id": "2",
+    "fileName": "/path/to/getMock.json",
+    "name": "a GET mock",
+    "description": "a GET mock for testing",
+    "request": {
+      "uri": "/a/path/?param=1",
+      "method": "GET",
+      "body": ""
+    },
+    "response": {
+      "body": "{foo:baz}"
+    },
     "enabled": true
   },
   {
-    "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-    "fileName": "another/path/to/amock.txt",
-    "response": "{\"foo\":\"postResponse\"}",
+    "id": "1",
+    "fileName": "/path/to/aMock.json",
+    "name": "a mock",
+    "description": "a mock for testing",
+    "request": {
+      "uri": "/",
+      "method": "GET",
+      "body": ""
+    },
+    "response": {
+      "body": "{foo:bar}"
+    },
     "enabled": false
   }
 ]

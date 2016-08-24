@@ -17,6 +17,8 @@ var AdminServer = function() {
 
     // get admin config
     this.adminConfig = config.get('admin');
+
+	return this;
 };
 
 // Add a prototype start function for init stuff
@@ -39,10 +41,6 @@ AdminServer.prototype.start = function() {
     this.app.listen(this.adminConfig.get('port'), function () {
         console.log('Mock proxy admin API listening on port ' + that.adminConfig.get('port'));
     });
-};
-
-AdminServer.prototype.stop = function() {
-	this.app.stop();
 };
 
 // Add a prototype function to setup the route stuff
