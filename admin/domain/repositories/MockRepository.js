@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 var Mock = require('domain/models/Mock');
 
 var MockRepository = function(pathService) {
@@ -115,14 +116,38 @@ MockRepository.prototype.findById = function(mockId){
 MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 	var mock = this.findById(mockId);
 	var fileName = mock.getFileName();
+	var baseFileName = path.basename(fileName);
+	var target = this.pathService.getMockEnabledFolderPath() + path.sep + baseFileName;
 
-	// @todo - check if mock is already in the state
 	if (state) {
-		fs.symlinkSync(fileName, this.pathService.getMockAvailableFolderPath() + fileName);
+		try {
+			fs.symlinkSync(fileName, target);
+		}
+		catch(e) {
+			// if we cant create symlink (hello window) - copy file...
+			fs.createReadStream(fileName).pipe(fs.createWriteStream(target));
+		}
 	}
 	else {
-		fs.unlinkSync(this.pathService.getMockEnabledFolderPath() + fileName);
+		try {
+			fs.unlinkSync(target);
+		}
+		catch(e) {
+			// do nothing...
+		}
+
 	}
+};
+
+MockRepository.prototype.deleteMockById = function(mockId) {
+	console.log('MockRepository', 'deleteMockById', mockId);
+	var mock = this.findById(mockId);
+
+	this.disableMockById(mockId);
+
+	var mock = this.findById(mockId);
+	var fileName = mock.getFileName();
+	fs.unlinkSync(fileName);
 };
 
 

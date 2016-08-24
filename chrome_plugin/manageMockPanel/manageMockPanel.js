@@ -1,98 +1,104 @@
+var apiBridge = new ApiBridge();
+
 document.addEventListener('DOMContentLoaded', function() {
-  
+
     // Stuff to list requests
     var listRequestButton = document.getElementById('refreshMocksButton');
     listRequestButton.addEventListener('click', function() {
-  
-    // Get the list as an array of json objects via message passing to the backgound
-    // XHS is not directly possible in developer toolbar
-    var mockListRequest = chrome.runtime.connect({name: "GetMocks"});
-    mockListRequest.onMessage.addListener(function(message,sender){
-        // Get results and clear previous results
-        var mockList = message.result;
-        document.getElementById("mockList").innerHTML = "";
-        
-        // Create new element and add results!
-        // Gets a lot shorter when I find out how to use jQuery in here properly
-        mockList.forEach(function(entry) {
 
-            // Content
-            var container = document.getElementById("mockList");
-            var contentDiv = document.createElement("div");
+		apiBridge.getMockList(function(mockList) {
+			var contentTableBody = document.getElementById("mockList").getElementsByTagName('tbody')[0];
 
-            // Input
-            var enableCheckbox = document.createElement("input");
-            enableCheckbox.setAttribute("type", "checkbox");
-            enableCheckbox.checked = entry.enabled;
-            
-            // Register event listener to checkboxes
-            enableCheckbox.addEventListener("click", function(){
-                // If mock is being enabled get the mock name from the label and
-                // build get request 
-                if(this.checked){
-                   // XHS is not directly possible in developer toolbar
-                   var port = chrome.runtime.connect({name: "EnableMock?" + entry.id});
+			// delete the content
+			contentTableBody.innerHTML = '';
 
-                // If mock is being disabled get the mock name from the label and
-                // build get request 
-                }else{
-                    var mockName = this.nextSibling.innerHTML;
-                    // XHS is not directly possible in developer toolbar
-                    var port = chrome.runtime.connect({name: "DisableMock?" + entry.id});
-                }
-            });
-            contentDiv.appendChild(enableCheckbox);
+			// Create new element and add results!
+			// Gets a lot shorter when I find out how to use jQuery in here properly
+			mockList.forEach(function(entry) {
 
-            // Add text to checkbox
-            var textNode = document.createElement("label");        
-            var node = document.createTextNode(entry.fileName);
-            textNode.appendChild(node);
-            contentDiv.appendChild(textNode);
+				var tableRow = document.createElement("tr");
+				var tableCell;
 
-            // Add delete button
-            var deleteButton = document.createElement("button");
-            deleteButton.innerHTML = "Delete";
-            
-            // Send delete request and refresh mock list
-            deleteButton.addEventListener("click", function(){
-                var parameters = "?" + entry.id;
-                var port = chrome.runtime.connect({name: "DeleteMock" + parameters});
-            });
-            contentDiv.appendChild(deleteButton);
+				// Enabled
+				// ***********************************************************
+				var enableCheckbox = document.createElement("input");
+				enableCheckbox.setAttribute("type", "checkbox");
+				enableCheckbox.setAttribute("id", "enable_"+entry.id);
+				enableCheckbox.checked = entry.enabled;
 
-            // Button for the preview
-            var previewButton = document.createElement("button");
-            previewButton.innerHTML = "Preview";
+				tableCell = document.createElement("td");
+				tableCell.appendChild(enableCheckbox);
+				tableRow.appendChild(tableCell);
 
-            // Register event listener to checkboxes
-            previewButton.addEventListener("click", function(){
-                alert("Response:\n" + entry.response);
-            });
-            contentDiv.appendChild(previewButton);
+				enableCheckbox.addEventListener("change", function(){
+					if(this.checked){
+						apiBridge.enableMock(entry.id, function(response) {
+							console.log('enableMock', respsone);
+						});
+					} else {
+						apiBridge.disableMock(entry.id, function(response) {
+							console.log('disableMock', respsone);
+						});
+					}
+				});
 
-            // Add to the page
-            container.appendChild(contentDiv);    
-        });
-    });
-  
-   
 
-  }, false);
-  
-    // Save last request as mock
-    var saveLastRequestButton = document.getElementById('saveLastRequest');
-    saveLastRequestButton.addEventListener('click', function() {
+				// name
+				// ***********************************************************
+				var labelNode = document.createElement("label");
+				labelNode.setAttribute("for", "enable_"+entry.id);
+				var textNode = document.createTextNode(entry.name);
+				labelNode.appendChild(textNode);
+				tableCell = document.createElement("td");
+				tableCell.appendChild(labelNode);
+				tableRow.appendChild(tableCell);
 
-        var saveLastRequestRequest = chrome.runtime.connect({name: "SaveLastRequestToMocks"});
-        saveLastRequestRequest.onMessage.addListener(function(message,sender){
-        // Get result
-        var result = message.result;
-        alert(result);
-       
-        });
-        
-    }, false);
- 
+
+				// description
+				// ***********************************************************
+				var textNode = document.createTextNode(entry.description);
+				tableCell = document.createElement("td");
+				tableCell.appendChild(textNode);
+				tableRow.appendChild(tableCell);
+
+
+				// delete button
+				// ***********************************************************
+				var deleteButton = document.createElement("button");
+				deleteButton.innerHTML = "Delete";
+				tableCell = document.createElement("td");
+				tableCell.appendChild(deleteButton);
+				tableRow.appendChild(tableCell);
+
+				// Send delete request and refresh mock list
+				deleteButton.addEventListener("click", function(){
+					apiBridge.deleteMock(entry.id, function(response) {
+						console.log('deleteMock', respsone);
+					});
+				});
+
+
+				// Button for the preview
+				// ***********************************************************
+				var previewButton = document.createElement("button");
+				previewButton.innerHTML = "Preview";
+
+				tableCell = document.createElement("td");
+				tableCell.appendChild(previewButton);
+				tableRow.appendChild(tableCell);
+
+				// Register event listener to checkboxes
+				previewButton.addEventListener("click", function(){
+					alert("Response:\n" + entry.response);
+				});
+
+				contentTableBody.appendChild(tableRow);
+				// Add to the page
+			});
+
+		});
+	});
+
 }, false);
 
 /*

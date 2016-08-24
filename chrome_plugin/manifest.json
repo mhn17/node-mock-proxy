@@ -1,6 +1,9 @@
 {
   "name": "Mock proxy connector",
   "options_page": "options/options.html",
+  "browser_action": {
+    "default_popup": "popup/popup.html"
+  },
   "description": "Connects you to the mock proxy",
   "version": "2.0",
   "devtools_page": "panelCreation/createPanel.html",
@@ -8,7 +11,7 @@
     "http://*/"
   ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["lib/apiConnector.js", "lib/apiBridge.js", "background.js"],
     "persistent": false
   },
   "manifest_version": 2

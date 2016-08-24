@@ -121,16 +121,8 @@ router.get('/:id', function(req, res) {
 
 // Delete a mock
 router.delete('/:id', function(req, res) {
-	var mockId = req.params.id;
-    var mock = mockRepository.findById(mockId);
-
-	console.log("Attempting to delete mock.");
-    var path = pathService.getMockPath(mock.fileName, mock.enabled);
-	console.log("Mock to be deleted:" + path);
-
-	// Delete mock
-	fs.unlinkSync(path);
-
+	console.log("Delete mock: " + req.params.id);
+	mockRepository.deleteMockById(req.params.id);
     res.statusCode = 200;
     res.json({ message: 'OK: '});
 });

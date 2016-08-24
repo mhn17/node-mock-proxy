@@ -13,47 +13,6 @@ if(!localStorage.mockProxyServerTargetEndpoint){
 
 /* ----- Mocks ----- */
 
-// Mocks
-chrome.runtime.onConnect.addListener(function(port){
-     if(port.name === "GetMocks"){
-        // Send request and list
-        // This here must be changed so that the correct endpoint will be called
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", localStorage.mockProxyServerTargetEndpoint + "/api/mocks", false);
-        xhr.send();
-        var result = xhr.responseText;
-        var jsonResult = JSON.parse(result)
-        port.postMessage({result: jsonResult});
-     }
-});
-
-// Enable
-chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ...
-    if(port.name.includes("EnableMock")){
-        var mockId = port.name.split("?")[1];
-
-        // Send request and list
-        // This here must be changed so that the correct endpoint will be called
-        var xhr = new XMLHttpRequest();
-        xhr.open("PUT", localStorage.mockProxyServerTargetEndpoint + "/api/mocks/" + mockId + "/enable", false);
-        xhr.send();
-     }
-});
-
-// Disable
-chrome.runtime.onConnect.addListener(function(port){
-    // There has to be a better way to transfer the mock name ...
-    if(port.name.includes("DisableMock")){
-        var mockId = port.name.split("?")[1];
-
-        // Send request and list
-        // This here must be changed so that the correct endpoint will be called
-        var xhr = new XMLHttpRequest();
-        xhr.open("PUT", localStorage.mockProxyServerTargetEndpoint + "/api/mocks/" + mockId + "/disable", false);
-        xhr.send();
-     }
-});
 
 // Delete
 chrome.runtime.onConnect.addListener(function(port){
