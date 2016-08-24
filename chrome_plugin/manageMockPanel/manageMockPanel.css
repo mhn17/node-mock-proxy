@@ -1,0 +1,45 @@
+body {
+    background: #fff;
+
+}
+
+form {
+
+}
+
+form input,
+form select,
+form textarea {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #888;
+    margin-bottom: 5px;
+    -webkit-box-shadow: inset 0px 4px 8px 2px, 0.4);
+    -moz-box-shadow: inset 0px 4px 8px 2px, 0.4);
+    box-shadow: inset 0px 4px 8px 2px, 0.4);
+}
+
+form input {
+    width: 312px;
+    padding: 2px 4px;
+    font-size: 14px;
+}
+
+form select {
+    width: 322px;
+    font-size: 14px;
+}
+
+form textarea {
+    width: 312px;
+    font-size: 14px;
+    padding: 2px 4px;
+}
+
+form table tr td:nth-child(1) {
+    vertical-align: top;
+}
+
+form table tr td:nth-child(2) {
+
+}

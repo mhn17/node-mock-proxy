@@ -5,12 +5,14 @@
     <script src="../lib/apiConnector.js"></script>
     <script src="../lib/apiBridge.js"></script>
     <script src="manageMockPanel.js"></script>
+    <link rel="stylesheet" href="manageMockPanel.css" />
+
   </head>
   <body>
-    <h1>Mocklist</h1>
     <button id="refreshMocksButton">Refresh MockList</button>
     <button id="manuallyCreateMock">Create Mock manually</button>
     <div id="containerList">
+      <h1>Mocklist</h1>
       <table id="mockList">
         <thead>
           <tr>
@@ -27,6 +29,7 @@
 
     </div>
     <div id="containerManuallyCreate">
+      <h1>Create Mock</h1>
       <form id="formManuallyCreate" method="POST" action="#">
         <table>
           <tr>

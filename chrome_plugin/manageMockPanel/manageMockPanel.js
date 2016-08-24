@@ -82,11 +82,11 @@ document.addEventListener('DOMContentLoaded', function() {
 				enableCheckbox.addEventListener("change", function(){
 					if(this.checked){
 						apiBridge.enableMock(entry.id, function(response) {
-							console.log('enableMock', respsone);
+							console.log('enableMock', response);
 						});
 					} else {
 						apiBridge.disableMock(entry.id, function(response) {
-							console.log('disableMock', respsone);
+							console.log('disableMock', response);
 						});
 					}
 				});
@@ -122,7 +122,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				// Send delete request and refresh mock list
 				deleteButton.addEventListener("click", function(){
 					apiBridge.deleteMock(entry.id, function(response) {
-						console.log('deleteMock', respsone);
+						listRequestButton.click();
+						console.log('deleteMock', response);
 					});
 				});
 

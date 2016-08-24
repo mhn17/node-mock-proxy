@@ -101,7 +101,7 @@ MockRepository.prototype.findByFileName = function(mockFileName) {
  * @returns {Object} Returns a javascript object containing the mock data.
  */
 MockRepository.prototype.findById = function(mockId){
-	var result = {};
+	var result = null;
 	var mocks = this.findAll();
 
 	mocks.forEach(function(entry){
@@ -115,28 +115,30 @@ MockRepository.prototype.findById = function(mockId){
 
 MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 	var mock = this.findById(mockId);
-	var fileName = mock.getFileName();
-	var baseFileName = path.basename(fileName);
-	var target = this.pathService.getMockEnabledFolderPath() + path.sep + baseFileName;
+	if (mock) {
+		var fileName = mock.getFileName();
+		var baseFileName = path.basename(fileName);
+		var target = this.pathService.getMockEnabledFolderPath() + path.sep + baseFileName;
 
-	if (state) {
-		try {
-			fs.symlinkSync(fileName, target);
+		if (state) {
+			try {
+				fs.symlinkSync(fileName, target);
+			}
+			catch(e) {
+				// if we cant create symlink (hello window) - copy file...
+				fs.createReadStream(fileName).pipe(fs.createWriteStream(target));
+			}
 		}
-		catch(e) {
-			// if we cant create symlink (hello window) - copy file...
-			fs.createReadStream(fileName).pipe(fs.createWriteStream(target));
+		else {
+			try {
+				fs.unlinkSync(target);
+			}
+			catch(e) {
+				// do nothing...
+			}
 		}
 	}
-	else {
-		try {
-			fs.unlinkSync(target);
-		}
-		catch(e) {
-			// do nothing...
-		}
 
-	}
 };
 
 MockRepository.prototype.deleteMockById = function(mockId) {
@@ -144,9 +146,10 @@ MockRepository.prototype.deleteMockById = function(mockId) {
 	this.disableMockById(mockId);
 
 	var mock = this.findById(mockId);
-	fs.unlinkSync(mock.getFileName());
+	if (mock) {
+		fs.unlinkSync(mock.getFileName());
+	}
 };
-
 
 MockRepository.prototype.enableMockById = function(mockId) {
 	console.log('MockRepository', 'enableMockById', mockId);
