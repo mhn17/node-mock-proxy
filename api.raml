@@ -4,6 +4,29 @@ title: Node-Mock-Proxy-API
 version: v1
 baseUri: http://localhost/api
 
+types:
+  MockBase:
+    type: object
+    properties:
+      name: string
+      description: string
+      request:
+        type: object
+        properties:
+          uri: string
+          method: string
+          body: string
+      response:
+        type: object
+        properties:
+          body: string
+  MockFull:
+    type: MockBase
+    properties:
+      id: string
+      fileName: string
+      enabled: boolean
+
 /requests:
   get:
     description: List all requests
@@ -90,40 +113,57 @@ baseUri: http://localhost/api
           application/json:
             type: array
             items:
-              type: object
-              properties:
-                id: string
-                fileName: string
-                name: string
-                description: string
-                enabled: boolean
+              type: MockFull
             example: |
               [
                 {
                   "id": "684fb90",
-                  "fileName": "foo.txt",
-                  "description": "Some description",
+                  "fileName": "foo.json",
                   "name": "Mock name",
+                  "description": "Some description",
+                  "request": {
+                    "uri": "/path/to/getMock",
+                    "method": "GET",
+                    "body": ""
+                  },
+                  "response": {
+                    "body": "{foo:bar}"
+                  },
                   "enabled": true
                 },
                 {
                   "id": "1234567",
                   "fileName": "bar.json",
-                  "description": "Another description",
                   "name": "Another Mock name",
+                  "description": "Another description",
+                  "request": {
+                    "uri": "/path/to/postMock",
+                    "method": "POST",
+                    "body": "{foo:baz}"
+                  },
+                  "response": {
+                    "body": "{foo:baz}"
+                  },
                   "enabled": false
                 }
               ]
   post:
-    description: Create a new mock (initially disabled, file name and id is generated)
+    description: Create a new mock (initially disabled, id is generated)
     body:
       application/json:
-        type: object
-        properties:
-          response: string
+        type: MockBase
         example: |
           {
-            "response": "{foo:buzz}"
+            "name": "Another Mock name",
+            "description": "Another description",
+            "request": {
+              "uri": "/path/to/postMock",
+              "method": "POST",
+              "body": "{foo:baz}"
+            },
+            "response": {
+              "body": "{foo:baz}"
+            }
           }
   /{id}:
     get:
@@ -132,18 +172,22 @@ baseUri: http://localhost/api
         200:
           body:
             application/json:
-              type: object
-              properties:
-                id: string
-                fileName: string
-                response: string
-                enabled: boolean
+              type: MockFull
               example: |
                 {
-                  "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-                  "fileName": "path/to/46767364328463767346863.txt",
-                  "response": "{foo:buzz}",
-                  "enabled": true
+                  "id": "1234567",
+                  "fileName": "bar.json",
+                  "name": "Another Mock name",
+                  "description": "Another description",
+                  "request": {
+                    "uri": "/path/to/postMock",
+                    "method": "POST",
+                    "body": "{foo:baz}"
+                  },
+                  "response": {
+                    "body": "{foo:baz}"
+                  },
+                  "enabled": false
                 }
     delete:
       description: delete a certain mock
@@ -155,40 +199,48 @@ baseUri: http://localhost/api
         description: Enable a mock
         responses:
           200:
-            description: Mock was enabled
+            description: Mock has been enabled
             body:
               application/json:
-                type: object
-                properties:
-                  id: string
-                  fileName: string
-                  response: string
-                  enabled: boolean
+                type: MockFull
                 example: |
                   {
-                    "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-                    "fileName": "path/to/46767364328463767346863.txt",
-                    "response": "{foo:buzz}",
-                    "enabled": true
+                    "id": "1234567",
+                    "fileName": "bar.json",
+                    "name": "Another Mock name",
+                    "description": "Another description",
+                    "request": {
+                      "uri": "/path/to/postMock",
+                      "method": "POST",
+                      "body": "{foo:baz}"
+                    },
+                    "response": {
+                      "body": "{foo:baz}"
+                    },
+                    "enabled": false
                   }
       /disable:
         put:
           description: Disable a mock
           responses:
             200:
-              description: Mock was disabled
+              description: Mock has been disabled
               body:
                 application/json:
-                  type: object
-                  properties:
-                    id: string
-                    fileName: string
-                    response: string
-                    enabled: boolean
+                  type: MockFull
                   example: |
                     {
-                      "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-                      "fileName": "path/to/46767364328463767346863.txt",
-                      "response": "{foo:buzz}",
+                      "id": "1234567",
+                      "fileName": "bar.json",
+                      "name": "Another Mock name",
+                      "description": "Another description",
+                      "request": {
+                        "uri": "/path/to/postMock",
+                        "method": "POST",
+                        "body": "{foo:baz}"
+                      },
+                      "response": {
+                        "body": "{foo:baz}"
+                      },
                       "enabled": false
                     }
