@@ -54,6 +54,11 @@ AdminServer.prototype.setUpRoutes = function() {
         res.json({ message: 'hooray! welcome to our api!' });
     });
 
+    this.app.use(function (req, res, next) {
+        console.log(req.body) // populated!
+        next();
+    });
+
     this.app.use('/api/requests', requestRoutes);
     this.app.use('/api/mocks', mockRoutes);
 

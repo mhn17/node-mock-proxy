@@ -17,3 +17,7 @@ ApiBridge.prototype.getMockList = function(callback) {
 ApiBridge.prototype.deleteMock = function(mockId, callback) {
 	this.apiConnector.callApi("/api/mocks/" + mockId, "DELETE", null, callback);
 };
+
+ApiBridge.prototype.createMock = function(data, callback) {
+	this.apiConnector.callApi("/api/mocks", "POST", data, callback);
+};

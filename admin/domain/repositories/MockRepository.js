@@ -158,4 +158,16 @@ MockRepository.prototype.disableMockById = function(mockId) {
 	this.toggleMockStateById(mockId, false);
 };
 
+MockRepository.prototype.createMock = function(data) {
+	var mock = new Mock();
+	mock.setName(data.name);
+	mock.setDescription(data.description);
+	mock.setRequestUri(data.requestUri);
+	mock.setRequestMethod(data.requestMethod);
+	mock.setRequestBody(data.requestBody);
+	mock.setRequestBody(data.responseBody);
+
+	mock.safeToFile();
+};
+
 module.exports = MockRepository;

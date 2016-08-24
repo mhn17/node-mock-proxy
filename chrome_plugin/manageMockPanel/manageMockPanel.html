@@ -9,7 +9,8 @@
   <body>
     <h1>Mocklist</h1>
     <button id="refreshMocksButton">Refresh MockList</button>
-    <div>
+    <button id="manuallyCreateMock">Create Mock manually</button>
+    <div id="containerList">
       <table id="mockList">
         <thead>
           <tr>
@@ -24,6 +25,50 @@
         </tbody>
       </table>
 
+    </div>
+    <div id="containerManuallyCreate">
+      <form id="formManuallyCreate" method="POST" action="#">
+        <table>
+          <tr>
+            <td><label for="form_name">Name</label></td>
+            <td><input id="form_name" name="name"></td>
+          </tr>
+          <tr>
+            <td><label for="form_description">Description</label></td>
+            <td><textarea id="form_description" name="description"></textarea></td>
+          </tr>
+          <tr>
+            <td><label for="form_requestUri">Request URI</label></td>
+            <td><input id="form_requestUri" name="requestUri"></td>
+          </tr>
+          <tr>
+            <td><label for="form_requestMethod">Request Method</label></td>
+            <td>
+              <select id="form_requestMethod" name="requestMethod">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="form_requestBody">Request Body</label></td>
+            <td><textarea id="form_requestBody" name="requestBody"></textarea></td>
+          </tr>
+          <tr>
+            <td><label for="form_responseBody">Response Body</label></td>
+            <td><textarea id="form_responseBody" name="responseBody"></textarea></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><button id="form_submit">Submit</button></td>
+          </tr>
+        </table>
+
+
+
+      </form>
     </div>
   </body>
 </html>

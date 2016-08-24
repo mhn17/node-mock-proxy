@@ -3,8 +3,57 @@ var apiBridge = new ApiBridge();
 document.addEventListener('DOMContentLoaded', function() {
 
     // Stuff to list requests
-    var listRequestButton = document.getElementById('refreshMocksButton');
+	var containerList = document.getElementById('containerList');
+	var listRequestButton = document.getElementById('refreshMocksButton');
+
+	var manuallyCreateMock = document.getElementById('manuallyCreateMock');
+	var containerManuallyCreate = document.getElementById('containerManuallyCreate');
+
+	// INITIALIZE
+	containerList.style.display = 'none';
+	containerManuallyCreate.style.display = 'none';
+
+
+	manuallyCreateMock.addEventListener('click', function() {
+		containerList.style.display = 'none';
+		containerManuallyCreate.style.display = 'block';
+
+		var formSubmit = document.getElementById('form_submit');
+		var form = document.getElementById('formManuallyCreate');
+
+
+		form.addEventListener("submit", function(event){
+			event.preventDefault();
+
+			var data = {
+				"name": document.getElementById('form_name').value,
+				"description": document.getElementById('form_description').value,
+				"requestUri": document.getElementById('form_requestUri').value,
+				"requestMethod": document.getElementById('form_requestMethod').value,
+				"requestBody": document.getElementById('form_requestBody').value,
+				"responseBody": document.getElementById('form_responseBody').value
+			};
+
+			apiBridge.createMock(data, function(response) {
+				console.log('createMock', response);
+				listRequestButton.click();
+			});
+
+
+		});
+
+
+
+
+
+
+	});
+
+
     listRequestButton.addEventListener('click', function() {
+
+		containerList.style.display = 'block';
+		containerManuallyCreate.style.display = 'none';
 
 		apiBridge.getMockList(function(mockList) {
 			var contentTableBody = document.getElementById("mockList").getElementsByTagName('tbody')[0];
