@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			// Create new element and add results!
 			// Gets a lot shorter when I find out how to use jQuery in here properly
-			mockList.forEach(function(entry) {
+			mockList.forEach(function(mockdata) {
 
 				var tableRow = document.createElement("tr");
 				var tableCell;
@@ -72,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				// ***********************************************************
 				var enableCheckbox = document.createElement("input");
 				enableCheckbox.setAttribute("type", "checkbox");
-				enableCheckbox.setAttribute("id", "enable_"+entry.id);
-				enableCheckbox.checked = entry.enabled;
+				enableCheckbox.setAttribute("id", "enable_"+mockdata.id);
+				enableCheckbox.checked = mockdata.enabled;
 
 				tableCell = document.createElement("td");
 				tableCell.appendChild(enableCheckbox);
@@ -81,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				enableCheckbox.addEventListener("change", function(){
 					if(this.checked){
-						apiBridge.enableMock(entry.id, function(response) {
+						apiBridge.enableMock(mockdata.id, function(response) {
 							console.log('enableMock', response);
 						});
 					} else {
-						apiBridge.disableMock(entry.id, function(response) {
+						apiBridge.disableMock(mockdata.id, function(response) {
 							console.log('disableMock', response);
 						});
 					}
@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				// name
 				// ***********************************************************
 				var labelNode = document.createElement("label");
-				labelNode.setAttribute("for", "enable_"+entry.id);
-				var textNode = document.createTextNode(entry.name);
+				labelNode.setAttribute("for", "enable_"+mockdata.id);
+				var textNode = document.createTextNode(mockdata.name);
 				labelNode.appendChild(textNode);
 				tableCell = document.createElement("td");
 				tableCell.appendChild(labelNode);
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				// description
 				// ***********************************************************
-				var textNode = document.createTextNode(entry.description);
+				var textNode = document.createTextNode(mockdata.description);
 				tableCell = document.createElement("td");
 				tableCell.appendChild(textNode);
 				tableRow.appendChild(tableCell);
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				// Send delete request and refresh mock list
 				deleteButton.addEventListener("click", function(){
-					apiBridge.deleteMock(entry.id, function(response) {
+					apiBridge.deleteMock(mockdata.id, function(response) {
 						listRequestButton.click();
 						console.log('deleteMock', response);
 					});
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				// Register event listener to checkboxes
 				previewButton.addEventListener("click", function(){
-					alert("Response:\n" + entry.response);
+					alert("Response:\n" + mockdata.responseBody);
 				});
 
 				contentTableBody.appendChild(tableRow);

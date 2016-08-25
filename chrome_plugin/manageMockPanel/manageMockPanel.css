@@ -1,45 +1,44 @@
 body {
     background: #fff;
-
+    width: 400px;
 }
 
-form {
 
+#containerList  table tr td {
+    vertical-align: top;
 }
 
-form input,
-form select,
-form textarea {
+#containerManuallyCreate form input,
+#containerManuallyCreate form select,
+#containerManuallyCreate form textarea {
     margin: 0;
     padding: 0;
     border: 1px solid #888;
     margin-bottom: 5px;
-    -webkit-box-shadow: inset 0px 4px 8px 2px, 0.4);
-    -moz-box-shadow: inset 0px 4px 8px 2px, 0.4);
-    box-shadow: inset 0px 4px 8px 2px, 0.4);
 }
 
-form input {
+#containerManuallyCreate form input {
     width: 312px;
     padding: 2px 4px;
     font-size: 14px;
 }
 
-form select {
+#containerManuallyCreate form select {
     width: 322px;
     font-size: 14px;
 }
 
-form textarea {
+#containerManuallyCreate form textarea {
     width: 312px;
     font-size: 14px;
     padding: 2px 4px;
 }
 
-form table tr td:nth-child(1) {
+#containerManuallyCreate form table tr td:nth-child(1) {
     vertical-align: top;
 }
 
-form table tr td:nth-child(2) {
+#containerManuallyCreate form table tr td:nth-child(2) {
 
 }
+

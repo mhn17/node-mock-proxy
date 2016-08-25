@@ -6,7 +6,7 @@
       "19": "images/icon_19.png",
       "38": "images/icon_38.png"
     },
-    "default_popup": "popup/popup.html"
+    "default_popup": "manageMockPanel/manageMockPanel.html"
   },
   "description": "Connects you to the mock proxy",
   "version": "2.0",
