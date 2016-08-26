@@ -9,8 +9,19 @@
 
   </head>
   <body>
-    <button id="refreshMocksButton">MockList</button>
+    <button id="refreshRequestsButton">Requests</button>
+    <button id="refreshMocksButton">Mock List</button>
     <button id="manuallyCreateMock">Create</button>
+
+
+    <div id="requestsPane">
+      <h1>Requests</h1>
+      <button id="saveLastRequest">Save last request as mock</button>
+      <button id="clearRequests">Clear Requests</button>
+      <div id="requestList"></div>
+    </div>
+
+
     <div id="containerList">
       <h1>Mocklist</h1>
       <table id="mockList">
@@ -28,6 +39,8 @@
       </table>
 
     </div>
+
+
     <div id="containerManuallyCreate">
       <h1>Create Mock</h1>
       <form id="formManuallyCreate" method="POST" action="#">

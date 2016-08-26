@@ -2,25 +2,87 @@ var apiBridge = new ApiBridge();
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Stuff to list requests
+    // Stuff to list mocks
 	var containerList = document.getElementById('containerList');
-	var listRequestButton = document.getElementById('refreshMocksButton');
+	var listMocksButton = document.getElementById('refreshMocksButton');
 
 	var manuallyCreateMock = document.getElementById('manuallyCreateMock');
 	var containerManuallyCreate = document.getElementById('containerManuallyCreate');
 
+	var requestList = document.getElementById("requestsPane");
+	var listRequestButton = document.getElementById('refreshRequestsButton');
+
 	// INITIALIZE
 	containerList.style.display = 'none';
 	containerManuallyCreate.style.display = 'none';
+	requestList.style.display = 'none';
+
+	// Stuff to list requests
+	// ***********************************************************
+	listRequestButton.addEventListener('click', function() {
+
+		containerList.style.display = 'none';
+		containerManuallyCreate.style.display = 'none';
+		requestList.style.display = 'block';
+
+		// Get the list as an array of json objects via message passing to the backgound
+		// XHS is not directly possible in developer toolbar
+		apiBridge.getRequestList(function (requestList) {
+				// Delete old content
+				document.getElementById("requestList").innerHTML = "";
+
+				// Create new element and add results!
+				// Gets a lot shorter when I find out how to use jQuery in here properly
+				requestList.forEach(function(entry) {
+
+					// Content
+					var container = document.getElementById("requestList");
+					var contentDiv = document.createElement("div");
+
+					// Button to add the request to the mocks
+					// ***********************************************************
+					var addButton = document.createElement("button");
+					addButton.innerHTML = "Add";
+
+					// Register event listener to checkboxes
+					addButton.addEventListener("click", function(){
+						createMockFromRequest(entry);
+					});
+					contentDiv.appendChild(addButton);
+
+					// Text
+					var textNode = document.createElement("label");
+					var node = document.createTextNode(entry.fileName);
+					textNode.appendChild(node);
+					contentDiv.appendChild(textNode);
+
+					// Button for the preview
+					// ***********************************************************
+					var previewButton = document.createElement("button");
+					previewButton.innerHTML = "Preview";
+
+					// Register event listener to checkboxes
+					previewButton.addEventListener("click", function(){
+						alert("Response:\n" + entry.response);
+					});
+					contentDiv.appendChild(previewButton);
+
+					// Add the whole content to the page
+					container.appendChild(contentDiv);
+			});
+		});
+	});
 
 
+	// Stuff to manually create mocks
+	// ***********************************************************
 	manuallyCreateMock.addEventListener('click', function() {
 		containerList.style.display = 'none';
+		requestList.style.display = 'none';
 		containerManuallyCreate.style.display = 'block';
 
 		var formSubmit = document.getElementById('form_submit');
 		var form = document.getElementById('formManuallyCreate');
-
 
 		form.addEventListener("submit", function(event){
 			event.preventDefault();
@@ -36,24 +98,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			apiBridge.createMock(data, function(response) {
 				console.log('createMock', response);
-				listRequestButton.click();
+				listMocksButton.click();
 			});
 
 
 		});
-
-
-
-
-
-
 	});
 
-
-    listRequestButton.addEventListener('click', function() {
+	// Stuff to list mocks
+	// ***********************************************************
+    listMocksButton.addEventListener('click', function() {
 
 		containerList.style.display = 'block';
 		containerManuallyCreate.style.display = 'none';
+		requestList.style.display = 'none';
 
 		apiBridge.getMockList(function(mockList) {
 			var contentTableBody = document.getElementById("mockList").getElementsByTagName('tbody')[0];
@@ -122,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				// Send delete request and refresh mock list
 				deleteButton.addEventListener("click", function(){
 					apiBridge.deleteMock(mockdata.id, function(response) {
-						listRequestButton.click();
+						listMocksButton.click();
 						console.log('deleteMock', response);
 					});
 				});
@@ -151,11 +209,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 }, false);
 
-/*
-    for each (var item in jsonResult) {
-        var para = document.createElement("p");
-        var node = document.createTextNode(item);
-        para.appendChild(node);
-        var element = document.getElementById("MockTest");
-        element.appendChild(para);
-     }*/
+// Function to fill the create mock form
+function createMockFromRequest(request) {
+	var createMockButton = document.getElementById("manuallyCreateMock");
+	var requestUriField = document.getElementById("form_requestUri");
+	var requestMethodField = document.getElementById("form_requestMethod");
+	var requestBodyField = document.getElementById("form_requestBody");
+	var responseBodyField = document.getElementById("form_responseBody");
+
+	// Go to tab
+	createMockButton.click();
+
+	// Fill tab
+	requestUriField.value = request.method;
+	requestMethodField.value = request.method;
+	requestBodyField.value = request.request;
+	responseBodyField.value = request.response;
+}
