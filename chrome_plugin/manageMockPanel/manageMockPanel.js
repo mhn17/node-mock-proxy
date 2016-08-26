@@ -219,10 +219,15 @@ function createMockFromRequest(request) {
 
 	// Go to tab
 	createMockButton.click();
-
+        
 	// Fill tab
-	requestUriField.value = request.method;
+	requestUriField.value = request.requestUri;
 	requestMethodField.value = request.method;
-	requestBodyField.value = request.request;
 	responseBodyField.value = request.response;
+        
+        // Only set body field if value is nod undefined to avoid the text
+        // undefined in the text field
+        if(request.requestBody){
+            requestBodyField.value = request.requestBody;
+        }
 }

@@ -65,14 +65,20 @@ RequestProcessor.prototype.initProxy = function() {
 		})
 		.on('end', function (req, res) {
 			var mockFileName = that.mockFileNameService.getHashByRequest(req);
+                        
+                        // Fixes express bug in windows which causes originalUrl to
+                        // return the complete url with protocol and host
+                        var protAndHost = req.protocol + "://" + req.hostname;
+                        var reqUri = req.originalUrl.replace(protAndHost, "");
 
 			that.forwardedRequestsLogger.info(
 				{
-					id: uuid.v1(),
-					fileName: mockFileName,
-                    method: req.method,
-					request: req.body,
-					response: responseData
+                                    id: uuid.v1(),
+                                    fileName: mockFileName,
+                                    method: req.method,
+                                    requestUri: reqUri,
+                                    requestBody: req.body,
+                                    response: responseData
 				},
 				'not matched incoming request'
 			);

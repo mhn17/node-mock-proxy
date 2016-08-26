@@ -18,11 +18,13 @@ router.get('/', function (req, res) {
         var requests = [];
         rawRequests.forEach(function(rawRequest) {
             var request = JSON.parse(rawRequest);
+           
             requests.push({
                 id: request.id,
                 fileName: request.fileName,
                 method: request.method,
-                request: request.request,
+                requestUri: request.requestUri,
+                requestBody: request.requestBody,
                 response: request.response
             });
         });
