@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		containerManuallyCreate.style.display = 'none';
 		requestList.style.display = 'block';
 
-		// Get the list as an array of json objects via message passing to the backgound
-		// XHS is not directly possible in developer toolbar
+		// Get the list of requests and add them to the list
 		apiBridge.getRequestList(function (requestList) {
 				// Delete old content
 				document.getElementById("requestList").innerHTML = "";
@@ -36,50 +35,62 @@ document.addEventListener('DOMContentLoaded', function() {
 				requestList.forEach(function(entry) {
 
 					// Content
-					var container = document.getElementById("requestList");
-					var contentDiv = document.createElement("div");
+                                var container = document.getElementById("requestList");
+                                var contentDiv = document.createElement("div");
 
-					// Button to add the request to the mocks
-					// ***********************************************************
-					var addButton = document.createElement("button");
-					addButton.innerHTML = "Add";
+                                // Button to add the request to the mocks
+                                // ***********************************************************
+                                var addButton = document.createElement("button");
+                                addButton.innerHTML = "Add";
 
-					// Register event listener to checkboxes
-					addButton.addEventListener("click", function(){
-						createMockFromRequest(entry);
-					});
-					contentDiv.appendChild(addButton);
+                                // Register event listener to checkboxes
+                                addButton.addEventListener("click", function(){
+                                        createMockFromRequest(entry);
+                                });
+                                contentDiv.appendChild(addButton);
 
-					// Text
-					var textNode = document.createElement("label");
-					var node = document.createTextNode(entry.fileName);
-					textNode.appendChild(node);
-					contentDiv.appendChild(textNode);
+                                // Text
+                                var textNode = document.createElement("label");
+                                var node = document.createTextNode(entry.fileName);
+                                textNode.appendChild(node);
+                                contentDiv.appendChild(textNode);
 
-					// Button for the preview
-					// ***********************************************************
-					var previewButton = document.createElement("button");
-					previewButton.innerHTML = "Preview";
+                                // Button for the preview
+                                // ***********************************************************
+                                var previewButton = document.createElement("button");
+                                previewButton.innerHTML = "Preview";
 
-					// Register event listener to checkboxes
-					previewButton.addEventListener("click", function(){
-						alert("Response:\n" + entry.response);
-					});
-					contentDiv.appendChild(previewButton);
+                                // Register event listener to checkboxes
+                                previewButton.addEventListener("click", function(){
+                                        alert("Response:\n" + entry.response);
+                                });
+                                contentDiv.appendChild(previewButton);
 
-					// Add the whole content to the page
-					container.appendChild(contentDiv);
+                                // Add the whole content to the page
+                                container.appendChild(contentDiv);
 			});
 		});
                 
-        // Stuff to manually create mocks
-	// ***********************************************************
-        var clearRequestButton = document.getElementById('clearRequests');
-        clearRequestButton.addEventListener('click', function() {
-            apiBridge.clearRequestList(function(){
-                    console.log("Request list cleared.");
+            // Save last request as mock
+            // ***********************************************************
+            var saveLastRequestButton = document.getElementById('saveLastRequest');
+            saveLastRequestButton.addEventListener('click', function() {
+                apiBridge.getRequestList(function (requestList){
+                    // Need extra error handling here?
+                    var lastRequest = requestList[requestList.length - 1];
+                    
+                    createMockFromRequest(lastRequest);
                 });
-            }, false);
+            });    
+                
+            // Clear the request list
+            // ***********************************************************
+            var clearRequestButton = document.getElementById('clearRequests');
+            clearRequestButton.addEventListener('click', function() {
+                apiBridge.clearRequestList(function(){
+                        console.log("Request list cleared.");
+                    });
+                }, false);
 	});
 
 
