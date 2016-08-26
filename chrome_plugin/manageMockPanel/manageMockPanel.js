@@ -71,6 +71,15 @@ document.addEventListener('DOMContentLoaded', function() {
 					container.appendChild(contentDiv);
 			});
 		});
+                
+        // Stuff to manually create mocks
+	// ***********************************************************
+        var clearRequestButton = document.getElementById('clearRequests');
+        clearRequestButton.addEventListener('click', function() {
+            apiBridge.clearRequestList(function(){
+                    console.log("Request list cleared.");
+                });
+            }, false);
 	});
 
 

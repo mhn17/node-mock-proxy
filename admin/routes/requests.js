@@ -41,7 +41,7 @@ router.get('/', function (req, res) {
 });
 
 // Clear log entries from request log
-router.delete('/delete', function(req, res) {
+router.delete('/', function(req, res) {
     console.log("Clear request log.");
 
     fs.writeFile(pathService.getLogFilePath(), "", function(err){

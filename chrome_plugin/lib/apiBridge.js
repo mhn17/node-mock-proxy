@@ -25,3 +25,7 @@ ApiBridge.prototype.createMock = function(data, callback) {
 ApiBridge.prototype.getRequestList = function(callback) {
 	this.apiConnector.callApi("/api/requests", "GET", null, callback);
 };
+
+ApiBridge.prototype.clearRequestList = function(callback) {
+	this.apiConnector.callApi("/api/requests/", "DELETE", null, callback);
+};
