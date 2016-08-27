@@ -1,8 +1,15 @@
 var apiBridge = new ApiBridge();
 
+// If the local storage value does not exist (user never changed anything ot it is empty), then warn the user
+// and use a default value
+if(!localStorage.mockProxyServerTargetEndpoint){
+    localStorage.mockProxyServerTargetEndpoint = "http://localhost:8001";
+    alert("No target endpoint configuration found. Requests target is: " + localStorage.mockProxyServerTargetEndpoint);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Stuff to list mocks
+        // Stuff to list mocks
 	var containerList = document.getElementById('containerList');
 	var listMocksButton = document.getElementById('refreshMocksButton');
 
@@ -16,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	containerList.style.display = 'none';
 	containerManuallyCreate.style.display = 'none';
 	requestList.style.display = 'none';
-
+        
 	// Stuff to list requests
 	// ***********************************************************
 	listRequestButton.addEventListener('click', function() {
@@ -68,6 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                                 // Add the whole content to the page
                                 container.appendChild(contentDiv);
+                                contentDiv.appendChild(previewButton);
+
+                                // Add the whole content to the page
+                                // ***********************************************************
+                                container.appendChild(contentDiv);
 			});
 		});
                 
@@ -89,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearRequestButton.addEventListener('click', function() {
                 apiBridge.clearRequestList(function(){
                         console.log("Request list cleared.");
+                        alert("cleared");
                     });
                 }, false);
 	});
@@ -103,11 +116,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		var formSubmit = document.getElementById('form_submit');
 		var form = document.getElementById('formManuallyCreate');
-
+                form.reset();
+                
 		form.addEventListener("submit", function(event){
 			event.preventDefault();
 
 			var data = {
+                                "id": document.getElementById('form_id').value,
 				"name": document.getElementById('form_name').value,
 				"description": document.getElementById('form_description').value,
 				"requestUri": document.getElementById('form_requestUri').value,
@@ -150,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				// ***********************************************************
 				var enableCheckbox = document.createElement("input");
 				enableCheckbox.setAttribute("type", "checkbox");
-				enableCheckbox.setAttribute("id", "enable_"+mockdata.id);
+				enableCheckbox.setAttribute("id", "enable_" + mockdata.id);
 				enableCheckbox.checked = mockdata.enabled;
 
 				tableCell = document.createElement("td");
@@ -222,6 +237,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				contentTableBody.appendChild(tableRow);
 				// Add to the page
+                                
+                                      // Button for edit
+                                // ***********************************************************
+                                var editButton = document.createElement("button");
+                                editButton.innerHTML = "Edit";
+
+                                tableCell = document.createElement("td");
+				tableCell.appendChild(editButton);
+				tableRow.appendChild(tableCell);
+
+                                // Register event listener to checkboxes
+                                editButton.addEventListener("click", function(){
+                                    updateMock(mockdata);
+                                });
 			});
 
 		});
@@ -229,25 +258,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
 }, false);
 
-// Function to fill the create mock form
+// Function to fill the create new mock form to create a new mock
 function createMockFromRequest(request) {
-	var createMockButton = document.getElementById("manuallyCreateMock");
-	var requestUriField = document.getElementById("form_requestUri");
+        // Only set id if it exists
+        fillCreateMockFields(null, null, null, 
+            request.requestUri, request.method, request.requestBody, request.response);
+}
+
+// Function to fill the create new mock form to update an existing mock
+function updateMock(mockData) {
+        // Only set id if it exists
+        fillCreateMockFields(mockData.id, mockData.name, mockData.description, 
+            mockData.request.uri, mockData.request.method,
+            mockData.request.body, mockData.response.body);
+}
+
+// Fills the the create new mock form
+function fillCreateMockFields(id, name, desc, requestUri, method, requestBody, responseBody){
+    	var createMockButton = document.getElementById("manuallyCreateMock");        
+        var idField = document.getElementById("form_id");
+        var nameField = document.getElementById("form_name");	
+        var descField = document.getElementById("form_description");    
+        var requestUriField = document.getElementById("form_requestUri");
 	var requestMethodField = document.getElementById("form_requestMethod");
 	var requestBodyField = document.getElementById("form_requestBody");
 	var responseBodyField = document.getElementById("form_responseBody");
-
+       // alert(desc);
 	// Go to tab
 	createMockButton.click();
         
-	// Fill tab
-	requestUriField.value = request.requestUri;
-	requestMethodField.value = request.method;
-	responseBodyField.value = request.response;
+	// Fill pane
+	requestUriField.value = requestUri;
+	requestMethodField.value = method;
+	responseBodyField.value = responseBody;
         
-        // Only set body field if value is nod undefined to avoid the text
-        // undefined in the text field
-        if(request.requestBody){
-            requestBodyField.value = request.requestBody;
+        // Only set fields if value is not undefined to avoid the text
+        // undefined in the text field  
+        if(id){
+            idField.value = id;
+        }
+        
+        if(name){
+            nameField.value = name;
+        }
+        
+        if(desc){
+            descField.value = desc;
+        }
+        
+        if(requestBody){
+            requestBodyField.value = requestBody;
         }
 }

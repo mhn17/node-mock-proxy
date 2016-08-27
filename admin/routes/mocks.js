@@ -164,57 +164,11 @@ router.put('/:id/disable', function(req, res) {
 	res.json({ message: 'OK'});
 });
 
-// Add last request to mocks
-// Duplicate code with the normal create method
-// Needs to be refactored
-router.post('/createFromLastRequest', function(req, res) {
-	console.log("Adding last request to mocks.");
-
-	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
-
-		// prepare data
-		var rawRequests = data.split('\n');
-		rawRequests.pop();
-
-		var requests = [];
-		rawRequests.forEach(function(rawRequest) {
-			var request = JSON.parse(rawRequest);
-
-			requests.push({
-							  id: request.id,
-							  fileName: request.fileName,
-							  request: request.request,
-							  response: request.response,
-							  method: request.method
-						  });
-		});
-
-		// save response
-		if(typeof err === 'undefined' || err === null) {
-			// Get correct request
-			var requestToMock = requests.pop();
-
-			// Write file
-			fs.writeFile(pathService.getMockPath(requestToMock.fileName, false), JSON.stringify(requestToMock), function(err) {
-				if (err) {
-					res.statusCode = 500;
-					res.json({message: 'Failed to add to mocks: ' + err});
-				} else {
-					res.json({message: 'Request saved with filename: ' + requestToMock.fileName});
-				}
-			});
-		}
-		else {
-			res.statusCode = 500;
-			res.json({message: 'Failed to add to mocks: ' + err});
-		}
-	});
-});
-
 // create manually
 router.post('/', function(req, res) {
 	console.log("creating mock manually");
-	mockRepository.createMock(req.body);
+        
+	mockRepository.createMockOrUpdate(req.body);
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
