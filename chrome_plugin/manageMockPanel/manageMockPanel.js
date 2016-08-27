@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				// Register event listener to checkboxes
 				previewButton.addEventListener("click", function(){
-					alert("Response:\n" + mockdata.responseBody);
+					alert("Response:\n" + mockdata.response.body);
 				});
 
 				contentTableBody.appendChild(tableRow);
