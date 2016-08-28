@@ -34,53 +34,63 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Get the list of requests and add them to the list
 		apiBridge.getRequestList(function (requestList) {
-				// Delete old content
-				document.getElementById("requestList").innerHTML = "";
+                        // Delete old content
+                        var contentTableBody = document.getElementById("requestList").getElementsByTagName("tbody")[0];
+                        contentTableBody.innerHTML = "";
+                        
+                        // Create new element and add results!
+                        // Gets a lot shorter when I find out how to use jQuery in here properly
+                        requestList.forEach(function(entry) {
+                            var tableRow = document.createElement("tr");
+                            var tableCell;
+                            
+                            // Add different text information
+                            // ***********************************************************
 
-				// Create new element and add results!
-				// Gets a lot shorter when I find out how to use jQuery in here properly
-				requestList.forEach(function(entry) {
+                            // Uri
+                            textNode = document.createTextNode(entry.requestUri);
+                            tableCell = document.createElement("td");
+                            tableCell.appendChild(textNode);
+                            tableRow.appendChild(tableCell);
+                            
+                            // Method
+                            textNode = document.createTextNode(entry.method);
+                            tableCell = document.createElement("td");
+                            tableCell.appendChild(textNode);
+                            tableRow.appendChild(tableCell);
+                            
+                            // Button to add the request to the mocks
+                            // ***********************************************************
+                            var addButton = document.createElement("button");
+                            tableCell = document.createElement("td");
+                            addButton.innerHTML = "Add";
 
-					// Content
-                                var container = document.getElementById("requestList");
-                                var contentDiv = document.createElement("div");
+                            // Register event listener to checkboxes
+                            addButton.addEventListener("click", function(){
+                                    createMockFromRequest(entry);
+                            });
 
-                                // Button to add the request to the mocks
-                                // ***********************************************************
-                                var addButton = document.createElement("button");
-                                addButton.innerHTML = "Add";
+                            tableCell.appendChild(addButton);
+                            tableRow.appendChild(tableCell);
 
-                                // Register event listener to checkboxes
-                                addButton.addEventListener("click", function(){
-                                        createMockFromRequest(entry);
-                                });
-                                contentDiv.appendChild(addButton);
+                            // Button for the preview
+                            // ***********************************************************
+                            var previewButton = document.createElement("button");
+                            tableCell = document.createElement("td");
+                            previewButton.innerHTML = "Preview";
 
-                                // Text
-                                var textNode = document.createElement("label");
-                                var node = document.createTextNode(entry.fileName);
-                                textNode.appendChild(node);
-                                contentDiv.appendChild(textNode);
-
-                                // Button for the preview
-                                // ***********************************************************
-                                var previewButton = document.createElement("button");
-                                previewButton.innerHTML = "Preview";
-
-                                // Register event listener to checkboxes
-                                previewButton.addEventListener("click", function(){
-                                        alert("Response:\n" + entry.response);
-                                });
-                                contentDiv.appendChild(previewButton);
-
-                                // Add the whole content to the page
-                                container.appendChild(contentDiv);
-                                contentDiv.appendChild(previewButton);
-
-                                // Add the whole content to the page
-                                // ***********************************************************
-                                container.appendChild(contentDiv);
-			});
+                            // Register event listener to checkboxes
+                            previewButton.addEventListener("click", function(){
+                                    alert("Response:\n" + entry.response);
+                            });
+                            
+                            tableCell.appendChild(previewButton);
+                            tableRow.appendChild(tableCell)
+                            
+                            // Add the whole content to the page
+                            // ***********************************************************
+                            contentTableBody.appendChild(tableRow);
+                    });
 		});
                 
             // Save last request as mock
@@ -234,11 +244,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				previewButton.addEventListener("click", function(){
 					alert("Response:\n" + mockdata.response.body);
 				});
-
-				contentTableBody.appendChild(tableRow);
-				// Add to the page
                                 
-                                      // Button for edit
+                                // Button for edit
                                 // ***********************************************************
                                 var editButton = document.createElement("button");
                                 editButton.innerHTML = "Edit";
@@ -251,6 +258,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 editButton.addEventListener("click", function(){
                                     updateMock(mockdata);
                                 });
+                                
+                                // Add to the page
+				contentTableBody.appendChild(tableRow);
 			});
 
 		});
