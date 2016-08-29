@@ -21,6 +21,8 @@ RequestProcessor.prototype.processRequest = function(req, res) {
 	var mock = this.mockLUT.getMockByHash(hash);
 
 	if (mock) {
+		console.log("Mock found, delivering response from " + mock.getFileName());
+
 		// set file contents as response body
 		res.writeHead(
 			200,
@@ -65,7 +67,7 @@ RequestProcessor.prototype.initProxy = function() {
 		})
 		.on('end', function (req, res) {
 			var mockFileName = that.mockFileNameService.getHashByRequest(req);
-                        
+
                         // Fixes express bug in windows which causes originalUrl to
                         // return the complete url with protocol and host
                         var protAndHost = req.protocol + "://" + req.hostname;
