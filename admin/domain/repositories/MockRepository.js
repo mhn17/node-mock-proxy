@@ -163,18 +163,20 @@ MockRepository.prototype.disableMockById = function(mockId) {
 
 MockRepository.prototype.createMockOrUpdate = function(data) {
 	var mock = new Mock();
+
+	// If id is set the already existing mock will be updated
+	if(data.id){
+		console.log(data.id);
+		mock = this.findById(data.id);
+	}
+
 	mock.setName(data.name);
 	mock.setDescription(data.description);
 	mock.setRequestUri(data.requestUri);
 	mock.setRequestMethod(data.requestMethod);
 	mock.setRequestBody(data.requestBody);
 	mock.setResponseBody(data.responseBody);
-        
-        // If id is set the already existing mock will be updated
-        if(data.id){
-            mock.setId(data.id);
-        }
-        
+
 	mock.saveToFile();
 };
 
