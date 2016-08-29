@@ -1,31 +1,40 @@
 var ApiBridge = function() {
-	this.apiConnector = new ApiConnector();
+
 }
 
 ApiBridge.prototype.enableMock = function(mockId, callback) {
-	this.apiConnector.callApi("/api/mocks/" + mockId + "/enable", "PUT", null, callback);
+	this.sendRequest("/api/mocks/" + mockId + "/enable", "PUT", null, callback);
 };
 
 ApiBridge.prototype.disableMock = function(mockId, callback) {
-	this.apiConnector.callApi("/api/mocks/" + mockId + "/disable", "PUT", null, callback);
+	this.sendRequest("/api/mocks/" + mockId + "/disable", "PUT", null, callback);
 };
 
 ApiBridge.prototype.getMockList = function(callback) {
-	this.apiConnector.callApi("/api/mocks", "GET", null, callback);
+	this.sendRequest("/api/mocks", "GET", null, callback);
 };
 
 ApiBridge.prototype.deleteMock = function(mockId, callback) {
-	this.apiConnector.callApi("/api/mocks/" + mockId, "DELETE", null, callback);
+	this.sendRequest("/api/mocks/" + mockId, "DELETE", null, callback);
 };
 
 ApiBridge.prototype.createMock = function(data, callback) {
-	this.apiConnector.callApi("/api/mocks", "POST", data, callback);
+	this.sendRequest("/api/mocks", "POST", data, callback);
 };
 
 ApiBridge.prototype.getRequestList = function(callback) {
-	this.apiConnector.callApi("/api/requests", "GET", null, callback);
+	this.sendRequest("/api/requests", "GET", null, callback);
 };
 
 ApiBridge.prototype.clearRequestList = function(callback) {
-	this.apiConnector.callApi("/api/requests/", "DELETE", null, callback);
+	this.sendRequest("/api/requests", "DELETE", null, callback);
 };
+
+ApiBridge.prototype.sendRequest = function(endpoint, method, data, callback) {
+	var request = { "endpoint": endpoint, "method": method, "data": data};
+
+	chrome.runtime.sendMessage(request, function(response) {
+		callback(response);
+	});
+};
+

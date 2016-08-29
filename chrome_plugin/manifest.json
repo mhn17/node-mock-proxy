@@ -18,7 +18,7 @@
     "http://*/"
   ],
   "background": {
-    "scripts": ["lib/apiConnector.js", "lib/apiBridge.js", "background.js"],
+    "scripts": ["lib/apiConnector.js", "lib/apiBridge.js"],
     "css": ["moxy.css"],
     "persistent": false
   },

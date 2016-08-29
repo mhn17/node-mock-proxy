@@ -1,28 +1,20 @@
-var ApiConnector = function() {
+chrome.runtime.onMessage.addListener(
+	function(request, sender, sendResponse) {
+		console.log('callApi', request.endpoint, request.method, request.data);
 
-};
+		var xhr = new XMLHttpRequest();
+		xhr.open(request.method, localStorage.mockProxyServerTargetEndpoint + request.endpoint, false);
 
-ApiConnector.prototype.callApi =  function(endpoint, method, data, callback) {
-	console.log('callApi', endpoint, method, data, callback);
+		if (typeof request.data === 'object' && request.data !== null) {
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.send(JSON.stringify(request.data));
+		}
+		else {
+			xhr.send();
+		}
 
-	var xhr = new XMLHttpRequest();
-	xhr.open(method, localStorage.mockProxyServerTargetEndpoint + endpoint, false);
+		var result = xhr.responseText;
+		var jsonResult = JSON.parse(result)
 
-	if (typeof data === 'object' && data !== null) {
-		xhr.setRequestHeader("Content-type", "application/json");
-		xhr.send(JSON.stringify(data));
-	}
-	else {
-		xhr.send();
-	}
-
-	var result = xhr.responseText;
-	var jsonResult = JSON.parse(result)
-	// port.postMessage({result: jsonResult});
-
-	console.log('callApi', endpoint, method, data, callback);
-
-	callback(jsonResult);
-};
-
-
+		sendResponse(jsonResult);
+	});

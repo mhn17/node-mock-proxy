@@ -5,11 +5,13 @@ var fs = require('fs');
 var mv = require('mv');
 var mkdirp = require('mkdirp');
 var path = require("path");
+var MockLUT = require('services/MockLUT');
 
 // Services, repositories
 var pathService = require("services/PathService");
 var MockRepository = require("domain/repositories/MockRepository");
 var mockRepository = new MockRepository(pathService);
+var mockLUT = new MockLUT();
 
 // Get list of mocks
 router.get('/', function(req, res) {
@@ -62,70 +64,6 @@ router.get('/', function(req, res) {
     res.json(mockList);
 });
 
-// Add request to mocks
-/*
-router.post('/', function(req, res) {
-	var mockId = req.body.id;
-
-	console.log("Add request to mocks: " + mockId);
-	fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
-
-		// Prepare data
-		var rawRequests = data.split('\n');
-		rawRequests.pop();
-		var requests = [];
-
-		rawRequests.forEach(function(rawRequest) {
-			var request = JSON.parse(rawRequest);
-			requests.push({
-				id: request.id,
-				fileName: request.fileName,
-				request: request.request,
-				response: request.response,
-				method: request.method
-			});
-		});
-
-		// Save response
-		if(typeof err === 'undefined' || err === null) {
-			// Get correct request
-			var requestToMock = {};
-			requests.forEach(function(entry){
-				if(entry.id === mockId){
-					requestToMock = entry;
-				}
-			});
-
-			// Ensure that folder structure exists and write file
-            // ToDo: Extract that to the PathService
-            var pathToMockArray = pathService.getMockPath(requestToMock.fileName, false).split(path.sep);
-            var mockFileName = pathToMockArray.pop();
-            var pathToMock = pathToMockArray.join(path.sep);
-
-            mkdirp(pathToMock, function (err) {
-                if (err) {
-                    res.statusCode = 500;
-                    res.json({message: 'Failed to create folder structure for mock: ' + err});
-                } else {
-                    fs.writeFile(pathToMock + path.sep + mockFileName, JSON.stringify(requestToMock), function(err) {
-                        if (err) {
-                            res.statusCode = 500;
-                            res.json({message: 'Failed to add to mocks: ' + err});
-                        } else {
-                            res.json({message: 'Request saved with filename: ' + requestToMock.fileName});
-                        }
-                    });
-                }
-            });
-		}
-		else {
-			res.statusCode = 500;
-			res.json({message: 'Failed to add to mocks: ' + err});
-		}
-	});
-});
-*/
-
 // Get response for a mock
 router.get('/:id', function(req, res) {
     var mockId = req.params.id;
@@ -143,6 +81,9 @@ router.delete('/:id', function(req, res) {
 	mockRepository.deleteMockById(req.params.id);
     res.statusCode = 200;
     res.json({ message: 'OK: '});
+
+	mockLUT.clearCache();
+	mockLUT.buildCache();
 });
 
 // Move available mock to enabled mocks
@@ -152,6 +93,9 @@ router.put('/:id/enable', function(req, res) {
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
+
+	mockLUT.clearCache();
+	mockLUT.buildCache();
 });
 
 // Move enabled mock to availabled mocks
@@ -162,6 +106,9 @@ router.put('/:id/disable', function(req, res) {
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
+
+	mockLUT.clearCache();
+	mockLUT.buildCache();
 });
 
 // create manually
@@ -172,6 +119,9 @@ router.post('/', function(req, res) {
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
+
+	mockLUT.clearCache();
+	mockLUT.buildCache();
 });
 
 module.exports = router;

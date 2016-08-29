@@ -92,30 +92,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 contentTableBody.appendChild(tableRow);
             });
         });
-
-        // Save last request as mock
-        // ***********************************************************
-        var saveLastRequestButton = document.getElementById('saveLastRequest');
-        saveLastRequestButton.addEventListener('click', function () {
-            apiBridge.getRequestList(function (requestList) {
-                // Need extra error handling here?
-                var lastRequest = requestList[requestList.length - 1];
-
-                createMockFromRequest(lastRequest);
-            });
-        });
-
-        // Clear the request list
-        // ***********************************************************
-        var clearRequestButton = document.getElementById('clearRequests');
-        clearRequestButton.addEventListener('click', function () {
-            apiBridge.clearRequestList(function () {
-                console.log("Request list cleared.");
-                alert("cleared");
-            });
-        }, false);
     });
 
+    // Save last request as mock
+    // ***********************************************************
+    var saveLastRequestButton = document.getElementById('saveLastRequest');
+    saveLastRequestButton.addEventListener('click', function () {
+        apiBridge.getRequestList(function (requestList) {
+            // Need extra error handling here?
+            var lastRequest = requestList[requestList.length - 1];
+
+            createMockFromRequest(lastRequest);
+        });
+    });
+
+    // Clear the request list
+    // ***********************************************************
+    var clearRequestButton = document.getElementById('clearRequests');
+    clearRequestButton.addEventListener('click', function () {
+        apiBridge.clearRequestList(function () {
+            console.log("Request list cleared.");
+            listRequestButton.click();
+        });
+    }, false);
 
     // Stuff to manually create mocks
     // ***********************************************************
@@ -273,9 +272,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Function to fill the create new mock form to create a new mock
 function createMockFromRequest(request) {
-    // Only set id if it exists
-    fillCreateMockFields(null, null, null,
-        request.requestUri, request.method, request.requestBody, request.response);
+    if(request.requestBody && request.requestBody  != null && Object.keys(request.requestBody).length > 0){
+        fillCreateMockFields(null, null, null,
+            request.requestUri, request.method, request.requestBody, request.response);
+    } else{
+        fillCreateMockFields(null, null, null,
+            request.requestUri, request.method, null, request.response);
+    }
 }
 
 // Function to fill the create new mock form to update an existing mock
