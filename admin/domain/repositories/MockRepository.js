@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var Mock = require('domain/models/Mock');
 
@@ -126,7 +126,7 @@ MockRepository.prototype.toggleMockStateById = function(mockId, state) {
 			}
 			catch(e) {
 				// if we cant create symlink (hello window) - copy file...
-				fs.createReadStream(fileName).pipe(fs.createWriteStream(target));
+				fs.copySync(fileName, target)
 			}
 		}
 		else {
