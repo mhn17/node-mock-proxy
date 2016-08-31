@@ -21,6 +21,15 @@ PathService.getLogFilePath = function() {
 };
 
 /**
+ * Returns the path to the file where the mocks which were returned to the caller are stored.
+ *
+ * @returns {String} Returns the path to the file where the mocks which were returned to the caller are stored.
+ */
+PathService.getReturnedMocksLogFilePath = function() {
+    return path.resolve(loggingConfig.get("returnedMocks").get("file"));
+};
+
+/**
  * Returns the path to the folder where the enabled mocks are being stored.
  *
  * @returns {String} Returns the path to the folder where the enabled mocks are being stored.
@@ -105,7 +114,7 @@ PathService.getListOfMockFiles = function(dir) {
 		if (fileStat.isDirectory()) {
 			mockFiles = mockFiles.concat(this.getListOfMockFiles(filePath));
 		} else {
-			mockFiles.push(filePath);
+			mockFiles.push(path.resolve(filePath));
 		}
 	}
 

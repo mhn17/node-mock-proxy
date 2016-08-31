@@ -86,7 +86,7 @@ describe('MockLUT', function() {
 			var mockLUT = new MockLUT().buildCache();
 			var fileName = mockLUT.getFileNameByHash('abcdaddc2988d9829443b3bb1f9ccdbdd44c2ac8');
 
-			expect(fileName).to.have.string(enabledFolder + '/path/to/postMock.json');
+			expect(fileName).to.have.string(path.resolve(enabledFolder + '/path/to/postMock.json'));
 		});
 
 		it('should return null', function() {

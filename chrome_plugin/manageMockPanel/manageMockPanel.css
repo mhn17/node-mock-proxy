@@ -3,6 +3,9 @@ body {
     width: 400px;
 }
 
+#mockList label.recentlyActive {
+    color: green;
+}
 
 #containerList  table tr td {
     vertical-align: top;

@@ -99,7 +99,7 @@ Mock.prototype.readFromFile = function() {
 		that.setRequestBody(jsonData.request.body);
 		that.setResponseBody(jsonData.response.body);
 	} catch (e) {
-		throw new Error("Could nor read mock file " + this.getFileName());
+		throw new Error("Could not read mock file " + this.getFileName());
 	}
 };
 
@@ -130,7 +130,7 @@ Mock.prototype.saveToFile = function() {
 	try {
 		fs.writeFileSync(this.getFileName(), JSON.stringify(content), 'utf8');
 	} catch (e) {
-		throw new Error("Could nor write mock file " + this.getFileName());
+		throw new Error("Could not write mock file " + this.getFileName());
 	}
 };
 

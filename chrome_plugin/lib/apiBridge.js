@@ -22,6 +22,10 @@ ApiBridge.prototype.createMock = function(data, callback) {
 	this.sendRequest("/api/mocks", "POST", data, callback);
 };
 
+ApiBridge.prototype.getReturnedMocks = function(limit, callback) {
+	this.sendRequest("/api/mocks/getReturnedMocks" + "?limit=" + limit, "GET", null, callback);
+};
+
 ApiBridge.prototype.getRequestList = function(callback) {
 	this.sendRequest("/api/requests", "GET", null, callback);
 };

@@ -66,6 +66,31 @@ MockRepository.prototype.findDisabledMocks = function() {
 	return disabledMocks;
 };
 
+/**
+ * Returns all mocks which were returned to the caller (the mocks may to exist anymore).
+ *
+ * @param maxNumber The maximum number of returned results.
+ * @returns {Array} An array of Mock objects. The most recently returned mock will be in [0], the second most recently returned will be at [1] etc.
+ */
+MockRepository.prototype.findReturnedMocks = function(limit) {
+	var mockFiles = [];
+	var fileData = fs.readFileSync(this.pathService.getReturnedMocksLogFilePath(), 'utf8');
+	var mockStrings = fileData.split("\n").reverse();
+
+	// Filter empty string
+	mockStrings = mockStrings.filter(function(value){
+		return value !== "";
+	});
+
+	// Add mocks to result list
+	mockStrings.forEach(function (entry, index) {
+		if(index < limit){
+			mockFiles.push(JSON.parse(entry));
+		}
+	});
+
+	return mockFiles;
+};
 
 /**
  * Returns an object representing a mock which contains the following information:

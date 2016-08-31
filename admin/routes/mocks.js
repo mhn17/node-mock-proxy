@@ -64,6 +64,15 @@ router.get('/', function(req, res) {
     res.json(mockList);
 });
 
+// Get list of mocks
+router.get('/getReturnedMocks', function(req, res) {
+	console.log("List last returned mocks with limit " + req.query.limit);
+	var mockList = mockRepository.findReturnedMocks(req.query.limit);
+
+	res.statusCode = 200;
+	res.json(mockList);
+});
+
 // Get response for a mock
 router.get('/:id', function(req, res) {
     var mockId = req.params.id;

@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Stuff to list mocks
     var containerList = document.getElementById('containerList');
     var listMocksButton = document.getElementById('refreshMocksButton');
+    var trackMockStateInMockListCheckbox = document.getElementById('changeTrackMockStateInMockListCheckbox');
+    var trackMockStateInMockListField = document.getElementById('limitOfTrackedMockInMockListField');
+    var trackMocksInMockListTimer;
 
     var manuallyCreateMock = document.getElementById('manuallyCreateMock');
     var containerManuallyCreate = document.getElementById('containerManuallyCreate');
@@ -19,10 +22,90 @@ document.addEventListener('DOMContentLoaded', function () {
     var requestList = document.getElementById("requestsPane");
     var listRequestButton = document.getElementById('refreshRequestsButton');
 
+    var trackedMocksPane = document.getElementById("trackedMocksPane");
+    var trackMocksButton = document.getElementById('trackReturnedMocksButton');
+    var trackMocksCheckbox = document.getElementById("changeTrackMocksStateCheckbox");
+    var trackMocksTimer;
+
     // INITIALIZE
     containerList.style.display = 'none';
     containerManuallyCreate.style.display = 'none';
     requestList.style.display = 'none';
+    trackedMocksPane.style.display = 'none';
+
+    // Stuff to list tracked mocks
+    // ***********************************************************
+    trackMocksButton.addEventListener('click', function () {
+        containerList.style.display = 'none';
+        containerManuallyCreate.style.display = 'none';
+        requestList.style.display = 'none';
+        trackedMocksPane.style.display = 'block';
+
+        refreshTrackMockTable();
+    }, false);
+
+    // Activly track last returned mocks
+    trackMocksCheckbox.addEventListener("click", function(){
+        if(trackMocksCheckbox.checked){
+            trackMocksTimer = window.setInterval(refreshTrackMockTable, 2000);
+        }else{
+            window.clearInterval(trackMocksTimer);
+        }
+    });
+
+    function refreshTrackMockTable(limit){
+        var trackMocksLimitField = document.getElementById("limitOfTrackedMocksField");
+
+        apiBridge.getReturnedMocks(trackMocksLimitField.value, function (mockList) {
+            var contentTableBody = document.getElementById("trackMockList").getElementsByTagName('tbody')[0];
+
+            // Delete the content
+            contentTableBody.innerHTML = '';
+
+            // Create new element and add results!
+            // Gets a lot shorter when I find out how to use jQuery in here properly
+            mockList.forEach(function (mockData) {
+
+                var tableRow = document.createElement("tr");
+                var tableCell;
+
+                // Name
+                // ***********************************************************
+                var labelNode = document.createElement("label");
+                labelNode.setAttribute("for", "enable_" + mockData.id);
+                var textNode = document.createTextNode(mockData.name);
+                labelNode.appendChild(textNode);
+                tableCell = document.createElement("td");
+                tableCell.appendChild(labelNode);
+                tableRow.appendChild(tableCell);
+
+                // Description
+                // ***********************************************************
+                var textNode = document.createTextNode(mockData.description);
+                tableCell = document.createElement("td");
+                tableCell.appendChild(textNode);
+                tableRow.appendChild(tableCell);
+
+                // Button for the preview
+                // ***********************************************************
+                var previewButton = document.createElement("button");
+                previewButton.innerHTML = "Preview";
+
+                tableCell = document.createElement("td");
+                tableCell.appendChild(previewButton);
+                tableRow.appendChild(tableCell);
+
+                // Register event listener to checkboxes
+                previewButton.addEventListener("click", function () {
+                    alert("Response:\n" + mockData.requestBody);
+                });
+
+                // Add the whole content to the page
+                // ***********************************************************
+                contentTableBody.appendChild(tableRow);
+            });
+        });
+    }
 
     // Stuff to list requests
     // ***********************************************************
@@ -31,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         containerList.style.display = 'none';
         containerManuallyCreate.style.display = 'none';
         requestList.style.display = 'block';
+        trackedMocksPane.style.display = 'none';
 
         // Get the list of requests and add them to the list
         apiBridge.getRequestList(function (requestList) {
@@ -122,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
         containerList.style.display = 'none';
         requestList.style.display = 'none';
         containerManuallyCreate.style.display = 'block';
+        trackedMocksPane.style.display = 'none';
 
         var formSubmit = document.getElementById('form_submit');
         var form = document.getElementById('formManuallyCreate');
@@ -159,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
         containerList.style.display = 'block';
         containerManuallyCreate.style.display = 'none';
         requestList.style.display = 'none';
+        trackedMocksPane.style.display = 'none';
 
         apiBridge.getMockList(function (mockList) {
             var contentTableBody = document.getElementById("mockList").getElementsByTagName('tbody')[0];
@@ -168,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Create new element and add results!
             // Gets a lot shorter when I find out how to use jQuery in here properly
-            mockList.forEach(function (mockdata) {
+            mockList.forEach(function (mockData) {
 
                 var tableRow = document.createElement("tr");
                 var tableCell;
@@ -177,8 +263,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // ***********************************************************
                 var enableCheckbox = document.createElement("input");
                 enableCheckbox.setAttribute("type", "checkbox");
-                enableCheckbox.setAttribute("id", "enable_" + mockdata.id);
-                enableCheckbox.checked = mockdata.enabled;
+                enableCheckbox.setAttribute("id", "enable_" + mockData.id);
+                enableCheckbox.checked = mockData.enabled;
 
                 tableCell = document.createElement("td");
                 tableCell.appendChild(enableCheckbox);
@@ -186,37 +272,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 enableCheckbox.addEventListener("change", function () {
                     if (this.checked) {
-                        apiBridge.enableMock(mockdata.id, function (response) {
+                        apiBridge.enableMock(mockData.id, function (response) {
                             console.log('enableMock', response);
                         });
                     } else {
-                        apiBridge.disableMock(mockdata.id, function (response) {
+                        apiBridge.disableMock(mockData.id, function (response) {
                             console.log('disableMock', response);
                         });
                     }
                 });
 
-
-                // name
+                // Name
                 // ***********************************************************
                 var labelNode = document.createElement("label");
-                labelNode.setAttribute("for", "enable_" + mockdata.id);
-                var textNode = document.createTextNode(mockdata.name);
+                labelNode.setAttribute("for", "enable_" + mockData.id);
+                var textNode = document.createTextNode(mockData.name);
                 labelNode.appendChild(textNode);
                 tableCell = document.createElement("td");
                 tableCell.appendChild(labelNode);
                 tableRow.appendChild(tableCell);
 
-
-                // description
+                // Description
                 // ***********************************************************
-                var textNode = document.createTextNode(mockdata.description);
+                var textNode = document.createTextNode(mockData.description);
                 tableCell = document.createElement("td");
                 tableCell.appendChild(textNode);
                 tableRow.appendChild(tableCell);
 
+                // Track mock state
+                // ***********************************************************
+                var mockTrackedStateLabelNode = document.createElement("label");
+                mockTrackedStateLabelNode.setAttribute("id", mockData.id);
+                //var mockTrackedtextNode = document.createTextNode(mockdata.name);
+                //mockTrackedStateLabelNode.appendChild(mockTrackedtextNode);
+                tableCell = document.createElement("td");
+                tableCell.appendChild(mockTrackedStateLabelNode);
+                tableRow.appendChild(tableCell);
 
-                // delete button
+                // Delete button
                 // ***********************************************************
                 var deleteButton = document.createElement("button");
                 deleteButton.innerHTML = "Delete";
@@ -226,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Send delete request and refresh mock list
                 deleteButton.addEventListener("click", function () {
-                    apiBridge.deleteMock(mockdata.id, function (response) {
+                    apiBridge.deleteMock(mockData.id, function (response) {
                         listMocksButton.click();
                         console.log('deleteMock', response);
                     });
@@ -244,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Register event listener to checkboxes
                 previewButton.addEventListener("click", function () {
-                    alert("Response:\n" + mockdata.response.body);
+                    alert("Response:\n" + mockData.response.body);
                 });
 
                 // Button for edit
@@ -258,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Register event listener to checkboxes
                 editButton.addEventListener("click", function () {
-                    updateMock(mockdata);
+                    updateMock(mockData);
                 });
 
                 // Add to the page
@@ -266,16 +359,59 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         });
+        refreshTrackedMocksInMockList();
     });
 
+    // Actively track last returned mocks in mocklist
+    trackMockStateInMockListCheckbox.addEventListener("click", function(){
+        if(trackMockStateInMockListCheckbox.checked){
+            trackMocksInMockListTimer = window.setInterval(refreshTrackedMocksInMockList, 2000);
+        }else{
+            window.clearInterval(trackMocksInMockListTimer);
+        }
+    });
+
+    // Gets the mocks which were returned to the caller and display them in the fields
+    function refreshTrackedMocksInMockList(){
+        apiBridge.getReturnedMocks(trackMockStateInMockListField.value, function(mockList){
+
+            var contentTableBody = document.getElementById("mockList").getElementsByTagName('tbody')[0];
+            var labelFields = Array.from(contentTableBody.getElementsByTagName("label"));
+            var resultLabelList = [];
+
+            // Clear the previous content of the labels
+            labelFields.forEach(function(labelField){
+                labelField.textContent = "";
+            });
+
+            // Go through all mocks
+            mockList.forEach(function(mock){
+                // Go through all labels
+                labelFields.forEach(function(labelField){
+                    // If the id of mock and label are identical and the label has not already been added add it
+                    if(mock.id === labelField.id){
+                        if(resultLabelList.indexOf(labelField) < 0){
+                            resultLabelList.push(labelField);
+                        }
+                    }
+                });
+            });
+
+            // Go through result list and set classes and add text
+            resultLabelList.forEach(function(labelField, index){
+                labelField.setAttribute("class", "recentlyActive");
+                labelField.textContent = index;
+            });
+        });
+    }
 }, false);
 
 // Function to fill the create new mock form to create a new mock
 function createMockFromRequest(request) {
-    if(request.requestBody && request.requestBody  != null && Object.keys(request.requestBody).length > 0){
+    if (request.requestBody && request.requestBody != null && Object.keys(request.requestBody).length > 0) {
         fillCreateMockFields(null, null, null,
             request.requestUri, request.method, request.requestBody, request.response);
-    } else{
+    } else {
         fillCreateMockFields(null, null, null,
             request.requestUri, request.method, null, request.response);
     }

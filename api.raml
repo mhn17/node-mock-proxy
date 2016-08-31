@@ -147,6 +147,51 @@ types:
                   "enabled": false
                 }
               ]
+    /getReturnedMocks
+      get:
+          description: List mocks which have been returned to the caller. The do not net to be active anymore.
+          queryParameters:
+            limit:
+              type: number
+              description: The number of results to be returned.
+          responses:
+            200:
+              body:
+                application/json:
+                  type: array
+                  items:
+                    type: MockFull
+                  example: |
+                    [
+                      {
+                        "id": "684fb90",
+                        "fileName": "foo.json",
+                        "name": "Mock name",
+                        "description": "Some description",
+                        "request": {
+                          "uri": "/path/to/getMock",
+                          "method": "GET",
+                          "body": ""
+                        },
+                        "response": {
+                          "body": "{foo:bar}"
+                        }
+                      },
+                      {
+                        "id": "1234567",
+                        "fileName": "bar.json",
+                        "name": "Another Mock name",
+                        "description": "Another description",
+                        "request": {
+                          "uri": "/path/to/postMock",
+                          "method": "POST",
+                          "body": "{foo:baz}"
+                        },
+                        "response": {
+                          "body": "{foo:baz}"
+                        }
+                      }
+                    ]
   post:
     description: Create a new mock (initially disabled, id is generated)
     body:
