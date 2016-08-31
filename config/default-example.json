@@ -15,6 +15,13 @@
 				"period": "1d",
 				"count": 3
 			}
+		},
+		"returnedMocks": {
+			"file": "logs/returnedMocks.log",
+			"rotation": {
+				"period": "1d",
+				"count": 3
+			}
 		}
 	},
 	"admin": {
