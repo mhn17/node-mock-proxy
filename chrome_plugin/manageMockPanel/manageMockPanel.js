@@ -284,10 +284,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Name
                 // ***********************************************************
-                var labelNode = document.createElement("label");
+                var labelNode = document.createElement("div");
                 labelNode.setAttribute("for", "enable_" + mockData.id);
-                var textNode = document.createTextNode(mockData.name);
-                labelNode.appendChild(textNode);
+                var textNode1 = document.createTextNode(mockData.name);
+                labelNode.appendChild(textNode1);
                 tableCell = document.createElement("td");
                 tableCell.appendChild(labelNode);
                 tableRow.appendChild(tableCell);
