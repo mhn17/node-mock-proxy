@@ -5,113 +5,119 @@
     <script src="../lib/apiConnector.js"></script>
     <script src="../lib/apiBridge.js"></script>
     <script src="manageMockPanel.js"></script>
+    <link rel="stylesheet" href="../css/base.css" />
+
+
     <link rel="stylesheet" href="manageMockPanel.css" />
 
   </head>
   <body>
-    <button id="refreshRequestsButton">Requests</button>
-    <button id="refreshMocksButton">Mock List</button>
-    <button id="manuallyCreateMock">Create</button>
-    <button id="trackReturnedMocksButton">Track Mocks</button>
+    <nav>
+      <button id="refreshRequestsButton">Requests</button>
+      <button id="refreshMocksButton">Mock List</button>
+      <button id="manuallyCreateMock">Create</button>
+      <button id="trackReturnedMocksButton">Track Mocks</button>
+    </nav>
+    <div id="stage">
+      <div id="requestsPane">
+        <h1>Requests</h1>
+        <button id="saveLastRequest">Save last request as mock</button>
+        <button id="clearRequests">Clear Requests</button>
 
-    <div id="requestsPane">
-      <h1>Requests</h1>
-      <button id="saveLastRequest">Save last request as mock</button>
-      <button id="clearRequests">Clear Requests</button>
+        <table id="requestList">
+          <thead>
+            <tr>
+              <th>Uri</th>
+              <th>Method</th>
+              <th colspan="2">Tools</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
 
-      <table id="requestList">
-        <thead>
+      <div id="containerList">
+        <h1>Mocklist</h1>
+        <input type="checkbox"  id="changeTrackMockStateInMockListCheckbox"/>
+        <label for="changeTrackMockStateInMockListCheckbox">Track Mocks</label>
+        <input type="text" id="limitOfTrackedMockInMockListField" value="5"/>
+        <table id="mockList">
+          <thead>
+            <tr>
+              <th>Enabled</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Activated</th>
+              <th colspan="3">Tools</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="containerManuallyCreate">
+        <h1>Create/Update Mock</h1>
+        <form id="formManuallyCreate" method="POST" action="#">
+          <table>
+            <tr>
+              <td><label for="form_name">Name</label></td>
+              <td><input id="form_name" name="name"></td>
+            </tr>
+            <tr>
+              <td><label for="form_description">Description</label></td>
+              <td><textarea id="form_description" name="description"></textarea></td>
+            </tr>
+            <tr>
+              <td><label for="form_requestUri">Request URI</label></td>
+              <td><input id="form_requestUri" name="requestUri"></td>
+            </tr>
+            <tr>
+              <td><label for="form_requestMethod">Request Method</label></td>
+              <td>
+                <select id="form_requestMethod" name="requestMethod">
+                  <option value="GET">GET</option>
+                  <option value="POST">POST</option>
+                  <option value="PUT">PUT</option>
+                  <option value="DELETE">DELETE</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td><label for="form_requestBody">Request Body</label></td>
+              <td><textarea id="form_requestBody" name="requestBody"></textarea></td>
+            </tr>
+            <tr>
+              <td><label for="form_responseBody">Response Body</label></td>
+              <td><textarea id="form_responseBody" name="responseBody"></textarea></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><button id="form_submit">Submit</button></td>
+            </tr>
+          </table>
+          <input id="form_id" type="hidden">
+        </form>
+      </div>
+
+      <div id="trackedMocksPane">
+        <h1>Tracked Mocks</h1>
+        <input type="checkbox"  id="changeTrackMocksStateCheckbox"/>
+        <label for="changeTrackMocksStateCheckbox">Track Mocks</label>
+        <input type="text" id="limitOfTrackedMocksField" value="5"/>
+        <table id="trackMockList">
+          <thead>
           <tr>
-            <th>Uri</th>
-            <th>Method</th>
-            <th colspan="2">Tools</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-
-    <div id="containerList">
-      <h1>Mocklist</h1>
-      <input type="checkbox"  id="changeTrackMockStateInMockListCheckbox"/>
-      <label for="changeTrackMockStateInMockListCheckbox">Track Mocks</label>
-      <input type="text" id="limitOfTrackedMockInMockListField" value="5"/>
-      <table id="mockList">
-        <thead>
-          <tr>
-            <th>Enabled</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Activated</th>
-            <th colspan="3">Tools</th>
+            <th>Tools</th>
           </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
-
-    <div id="containerManuallyCreate">
-      <h1>Create/Update Mock</h1>
-      <form id="formManuallyCreate" method="POST" action="#">
-        <table>
-          <tr>
-            <td><label for="form_name">Name</label></td>
-            <td><input id="form_name" name="name"></td>
-          </tr>
-          <tr>
-            <td><label for="form_description">Description</label></td>
-            <td><textarea id="form_description" name="description"></textarea></td>
-          </tr>
-          <tr>
-            <td><label for="form_requestUri">Request URI</label></td>
-            <td><input id="form_requestUri" name="requestUri"></td>
-          </tr>
-          <tr>
-            <td><label for="form_requestMethod">Request Method</label></td>
-            <td>
-              <select id="form_requestMethod" name="requestMethod">
-                <option value="GET">GET</option>
-                <option value="POST">POST</option>
-                <option value="PUT">PUT</option>
-                <option value="DELETE">DELETE</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td><label for="form_requestBody">Request Body</label></td>
-            <td><textarea id="form_requestBody" name="requestBody"></textarea></td>
-          </tr>
-          <tr>
-            <td><label for="form_responseBody">Response Body</label></td>
-            <td><textarea id="form_responseBody" name="responseBody"></textarea></td>
-          </tr>
-          <tr>
-            <td></td>
-            <td><button id="form_submit">Submit</button></td>
-          </tr>
+          </thead>
+          <tbody>
+          </tbody>
         </table>
-        <input id="form_id" type="hidden">
-      </form>
-    </div>
-
-    <div id="trackedMocksPane">
-      <h1>Tracked Mocks</h1>
-      <input type="checkbox"  id="changeTrackMocksStateCheckbox"/>
-      <label for="changeTrackMocksStateCheckbox">Track Mocks</label>
-      <input type="text" id="limitOfTrackedMocksField" value="5"/>
-      <table id="trackMockList">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Tools</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      </div>
     </div>
   </body>
 </html>
