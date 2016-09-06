@@ -7,7 +7,29 @@ if (!localStorage.mockProxyServerTargetEndpoint) {
     alert("No target endpoint configuration found. Requests target is: " + localStorage.mockProxyServerTargetEndpoint);
 }
 
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    // css & bodyclass for panel or popups
+    var styleSheetName = '';
+    if (document.location.hash === '#popup') {
+        styleSheetName = 'popup';
+    }
+    else {
+        styleSheetName = 'panel';
+    }
+
+    // css
+    var styleSheet = document.createElement('link');
+    styleSheet.setAttribute('rel', 'stylesheet');
+    styleSheet.setAttribute('href', '../css/'+styleSheetName+'.css');
+    document.getElementsByTagName('head')[0].appendChild(styleSheet);
+
+    // bodyclass
+    var body = document.getElementsByTagName('body')[0];
+    body.setAttribute('class', (body.getAttribute('class') ? body.getAttribute('class'):'') +' '+styleSheetName);
+
+
 
     // Stuff to list mocks
     var containerList = document.getElementById('containerList');
@@ -26,6 +48,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var trackMocksButton = document.getElementById('trackReturnedMocksButton');
     var trackMocksCheckbox = document.getElementById("changeTrackMocksStateCheckbox");
     var trackMocksTimer;
+
+    // start with mocklist
+    window.setTimeout(function() {
+        listMocksButton.click();
+    }, 10);
+
 
     // INITIALIZE
     containerList.style.display = 'none';
@@ -309,13 +337,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 tableCell.appendChild(mockTrackedStateLabelNode);
                 tableRow.appendChild(tableCell);
 
+
+                var toolsTableCell = document.createElement("td");
                 // Delete button
                 // ***********************************************************
                 var deleteButton = document.createElement("button");
                 deleteButton.innerHTML = "Delete";
-                tableCell = document.createElement("td");
-                tableCell.appendChild(deleteButton);
-                tableRow.appendChild(tableCell);
+                toolsTableCell.appendChild(deleteButton);
 
                 // Send delete request and refresh mock list
                 deleteButton.addEventListener("click", function () {
@@ -331,9 +359,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var previewButton = document.createElement("button");
                 previewButton.innerHTML = "Preview";
 
-                tableCell = document.createElement("td");
-                tableCell.appendChild(previewButton);
-                tableRow.appendChild(tableCell);
+                toolsTableCell.appendChild(previewButton);
 
                 // Register event listener to checkboxes
                 previewButton.addEventListener("click", function () {
@@ -345,14 +371,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 var editButton = document.createElement("button");
                 editButton.innerHTML = "Edit";
 
-                tableCell = document.createElement("td");
-                tableCell.appendChild(editButton);
-                tableRow.appendChild(tableCell);
+                toolsTableCell.appendChild(editButton);
+
+
 
                 // Register event listener to checkboxes
                 editButton.addEventListener("click", function () {
                     updateMock(mockData);
                 });
+
+                tableRow.appendChild(toolsTableCell);
 
                 // Add to the page
                 contentTableBody.appendChild(tableRow);

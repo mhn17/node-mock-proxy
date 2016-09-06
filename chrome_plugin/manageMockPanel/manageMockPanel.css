@@ -1,10 +1,41 @@
-body {
-    background: #fff;
-    width: 400px;
-}
+
 
 #mockList label.recentlyActive {
     color: green;
+}
+
+
+#mockList tr td:nth-child(1),
+#mockList tr th:nth-child(1) {
+    /* size is very small (1px) - and max 25 - will be extended 25 with ellipsis */
+    width: 1px;
+    max-width: 25px;
+}
+
+#mockList tr td:nth-child(2),
+#mockList tr th:nth-child(2) {
+    min-width: 100px;
+    max-width: 200px;
+}
+
+#mockList tr td:nth-child(3),
+#mockList tr th:nth-child(3){
+    /* take every space you can! */
+    max-width: 100%;
+}
+
+#mockList tr td:nth-child(4),
+#mockList tr th:nth-child(4){
+    /* size is very small (1px) - and max 25 - will be extended 25 with ellipsis */
+    width: 1px;
+    max-width: 25px;
+}
+
+#mockList tr td:nth-child(5),
+#mockList tr th:nth-child(5){
+    /* take every space you need */
+    width: 1px;
+    white-space: nowrap;
 }
 
 #containerList  table tr td {
