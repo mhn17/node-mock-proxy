@@ -1,4 +1,6 @@
 var crypto = require("crypto");
+var Extensions = require('services/ExtensionService');
+var extension = new Extensions();
 
 /**
  * Returns a hash based on a request
@@ -32,5 +34,6 @@ module.exports.getHashByRequest = function(req) {
  * @returns {string}
  */
 module.exports.getHash = function(uri, method, body) {
+	body = extension.processPreProcessors(body);
 	return crypto.createHash("sha1").update(uri + "###" + method + "###" + body).digest("hex");
 };

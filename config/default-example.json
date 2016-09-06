@@ -29,6 +29,11 @@
 	},
 	"mocks": {
 		"enabledFolder": "mocks-enabled",
-                "availableFolder": "mocks-available"
+		"availableFolder": "mocks-available",
+		"requests": {
+			"preProcessors": [
+				"RemoveString"
+			]
+		}
 	}
 }
