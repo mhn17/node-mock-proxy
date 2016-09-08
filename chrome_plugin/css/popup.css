@@ -5,20 +5,3 @@ body {
 #stage {
     padding: 10px;
 }
-
-#previewWindow {
-    display: none;
-    background: #fff;
-    position: fixed;
-    left: 10px;
-    top: 10px;
-    bottom: 10px;
-    right: 10px;
-    border: 1px solid #000;
-    padding: 10px;
-}
-
-#previewWindow code {
-    // word-break: break-all;
-// white-space: normal;
-}

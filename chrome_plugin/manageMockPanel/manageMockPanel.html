@@ -14,16 +14,28 @@
 
     <script src="manageMockPanel.js"></script>
     <script src="listMocks.js"></script>
+    <script src="preview.js"></script>
 
   </head>
   <body>
+
     <nav>
       <button id="refreshRequestsButton">Requests</button>
       <button id="refreshMocksButton">Mock List</button>
       <button id="manuallyCreateMock">Create</button>
       <button id="trackReturnedMocksButton">Track Mocks</button>
     </nav>
-    <div id="previewWindow"></div>
+
+    <div id="previewWindow">
+      <button class="closeButton" data-action="close">X</button>
+      <pre><code></code></pre>
+      <div id="previewLanguage">
+        <button data-language="xml">XML</button>
+        <button data-language="json">JSON</button>
+        <button data-language="">PlainText</button>
+      </div>
+    </div>
+
     <div id="stage">
       <div id="requestsPane">
         <h1>Requests</h1>

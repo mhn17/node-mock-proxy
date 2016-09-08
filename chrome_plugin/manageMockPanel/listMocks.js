@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
 	var apiBridge = new ApiBridge();
+	var preview = new Preview();
 
 	// Stuff to list mocks
 	// ***********************************************************
@@ -47,26 +48,7 @@ $(document).ready(function() {
 				});
 
 				$row.find('button[data-action=preview]').on('click', function() {
-					$('#previewWindow').show();
-					$('#previewWindow').html('<pre><code></code></pre>');
-					var $code = $('#previewWindow').find('code');
-					var body = mockData.response.body;
-					$code.text(body);
-
-					hljs.highlightBlock($code.get(0));
-					var classes = $code.attr('class').split(' ');
-					$code.text('');
-
-					if ($.inArray('xml', classes) !== -1) {
-						body = vkbeautify.xml(body);
-					}
-
-					if ($.inArray('json', classes) !== -1) {
-						body = vkbeautify.json(body);
-					}
-
-					$code.text(body);
-					hljs.highlightBlock($code.get(0));
+					preview.setContent(mockData.response.body).show();
 				});
 
 				$row.find('button[data-action=edit]').on('click', function() {
