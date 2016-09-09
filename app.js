@@ -13,6 +13,7 @@ var bodyParser = require('body-parser');
 var AdminServer = require('AdminServer');
 
 // config
+console.log('Loading Configuration for '+process.env.NODE_ENV);
 var config = require('config');
 var proxyConfig = config.get("proxy");
 
