@@ -55,7 +55,9 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         }
         // end of fix
 
-        var target = this.targetConfig.get("url") + req.originalUrl;
+        var target = this.targetConfig.get("url") + req.baseUrl;
+
+        // req.setHeader('host', '127.0.0.1:8081');
         this.proxy.web(req, res, {target: target});
     }
 };
@@ -66,7 +68,7 @@ RequestProcessor.prototype.initProxy = function () {
     var responseData = '';
 
     // create proxy server
-    var proxy = httpProxy.createProxyServer({})
+    var proxy = httpProxy.createProxyServer({'ignorePath': true})
         .on('error', function (e) {
             console.log(JSON.stringify(e, null, ' '));
         })
