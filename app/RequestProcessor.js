@@ -56,12 +56,12 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         // end of fix
 
 		console.log('PassThru: '+req.originalUrl);
-        var target = this.targetConfig.get("url") + req.baseUrl;
 
-        // check, if the original uri ends with "/"
-        if (req.originalUrl.split('?')[0].slice(-1) === '/') {
-            target += '/';
-        }
+        // use
+        var target = this.targetConfig.get("url") + req.originalUrl;
+
+        // kill parsed query params, cause they already sit in the url!
+        req.query = {};
 
         this.proxy.web(req, res, {target: target});
     }
