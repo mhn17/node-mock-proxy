@@ -1,20 +1,24 @@
+// Constructor to init stuff
 var PaneMockList = function() {
 
-	this.$container = $('#PaneMockList');
-	this.apiBridge = new ApiBridge();
-	this.preview = new UiPreview();
+	this.$container = $('#PaneMockList');		// The corresponding pane
+	this.apiBridge = new ApiBridge();			// The object to communicate with the proxy server
+	this.preview = new UiPreview();				// The preview window object
 
 	this.bindEvents();
-	this.draw();
 };
 
+// Draw this pane
 PaneMockList.prototype.draw = function() {
 	var that = this;
 	this.apiBridge.getMockList(function (mockList) {
-
 		var $contentTableBody = that.$container.find('tbody');
-		$contentTableBody.html();
+		var tableContent = '';
 
+		// Remove old content in order to add data to the already existing data and draw the table anew
+		$contentTableBody.empty()
+
+		// Draw table content
 		mockList.forEach(function (mockData) {
 			var rowContent = '';
 			rowContent += '<td><input data-mock-id="' + mockData.id + '" data-action="enableMock" type="checkbox" id="enable_' + mockData.id + '" ' + (mockData.enabled ? 'checked' : '') + '></td>';
@@ -27,14 +31,18 @@ PaneMockList.prototype.draw = function() {
 			rowContent += '<button data-mock-id="' + mockData.id + '" data-action="edit">Edit</button>';
 			rowContent += '</td>';
 
-			$contentTableBody.append($('<tr>' + rowContent + '</tr>'));
+			tableContent += '<tr>' + rowContent + '</tr>';
 		});
+		
+		$contentTableBody.append($(tableContent));
 	});
 };
 
+// Bind events for checkboxes and buttons
 PaneMockList.prototype.bindEvents = function() {
 	var that = this;
 
+	// Enable/Disable mock via checkbox
 	this.$container.on('change', 'input[data-action=enableMock]', function() {
 		var mockId = $(this).data('mockId');
 		if (this.checked) {
@@ -48,6 +56,7 @@ PaneMockList.prototype.bindEvents = function() {
 		}
 	});
 
+	// Delete mock
 	this.$container.on('click', 'button[data-action=delete]', function() {
 		var mockId = $(this).data('mockId');
 		that.apiBridge.deleteMock(mockId, function (response) {
@@ -55,15 +64,15 @@ PaneMockList.prototype.bindEvents = function() {
 		});
 	});
 
+	// Show preview
 	this.$container.on('click', 'button[data-action=preview]', function() {
 		var mockData = decodeURI($(this).data('mockData'));
 		that.preview.setContent(mockData).show();
 	});
 
+	// Edit mock
 	this.$container.on('click', 'button[data-action=edit]', function() {
 
 	});
-
-
 };
 

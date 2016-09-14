@@ -1,3 +1,4 @@
+// Constructor to init stuff
 var UiNavigation = function() {
 
 	this.buttonSelector = 'nav button';
@@ -6,6 +7,7 @@ var UiNavigation = function() {
 	this.init();
 	this.bindEvents();
 
+	// Create pane objects for later navigation
 	this.panes = {
 		'PaneMockList': new PaneMockList(),
 		'PaneTrackMocks': new PaneTrackMocks(),
@@ -13,19 +15,21 @@ var UiNavigation = function() {
 		'PaneShowRequests': new PaneShowRequests()
 	};
 
-	console.log('My Panes', this.panes);
-
 	this.switchPanel($('nav').data('defaultPane'));
 };
 
+// Init method to init more stuff
 UiNavigation.prototype.init = function() {
 	var that = this;
+
+	// Get ids from pane buttons
 	$(this.buttonSelector).each(function() {
 		var paneId = $(this).data('pane');
-		that.allContainer.push($('#'+paneId));
+		that.allContainer.push($('#' + paneId));
 	});
 };
 
+// Hide all panes
 UiNavigation.prototype.hideAllPanes = function() {
 	console.log(this.allContainer);
 	$.each(this.allContainer, function(idx, $pane) {
@@ -33,6 +37,7 @@ UiNavigation.prototype.hideAllPanes = function() {
 	});
 };
 
+// Bind click event to enable pane switch
 UiNavigation.prototype.bindEvents = function() {
 	var that = this;
 	$(this.buttonSelector).on('click', function() {
@@ -40,6 +45,8 @@ UiNavigation.prototype.bindEvents = function() {
 	})
 };
 
+// Switch to another pane
+// Id: paneId The pane to which should be switched
 UiNavigation.prototype.switchPanel = function(paneId) {
 	console.log('switchPanel', paneId);
 	this.hideAllPanes();
@@ -50,10 +57,10 @@ UiNavigation.prototype.switchPanel = function(paneId) {
 	if (paneObj) {
 		console.log(paneObj);
 		if (typeof(paneObj.draw) !== 'function') {
-			throw Error('Cant open pane '+paneId);
+			throw Error('Cant open pane ' + paneId);
 		}
 		paneObj.draw();
 	}
 
-	$('#'+paneId).show();
+	$('#' + paneId).show();
 };
