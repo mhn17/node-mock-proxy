@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				// ***********************************************************
 				var previewButton = document.createElement("button");
 				tableCell = document.createElement("td");
-				previewButton.innerHTML = "Preview";
+				previewButton.innerHTML = "UiPreview";
 
 				// Register event listener to checkboxes
 				previewButton.addEventListener("click", function () {

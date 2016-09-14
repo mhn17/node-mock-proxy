@@ -1,11 +1,11 @@
-var Preview = function() {
+var UiPreview = function() {
 
 	this.supportedLanguages = ['xml', 'json'];
 	this.bindEvents();
 	this.content = '';
 };
 
-Preview.prototype.bindEvents = function() {
+UiPreview.prototype.bindEvents = function() {
 	var that = this;
 
 	$(document).unbind('.preview')
@@ -23,9 +23,19 @@ Preview.prototype.bindEvents = function() {
 				var mode = $(this).data('language');
 			that.close();
 		});
+
+	$(document).on('keydown', function(event) {
+		if ($('#previewWindow').is(':visible')) {
+			if (event.keyCode === 27) {
+				event.preventDefault();
+				that.close();
+			}
+		}
+	});
+
 };
 
-Preview.prototype.autoDetectLanguage = function() {
+UiPreview.prototype.autoDetectLanguage = function() {
 	var language = null;
 	var autoDetect = hljs.highlightAuto(this.content);
 	if ($.inArray(autoDetect.language, this.supportedLanguages) !== -1) {
@@ -39,12 +49,12 @@ Preview.prototype.autoDetectLanguage = function() {
 	return language;
 };
 
-Preview.prototype.setContent = function(content) {
+UiPreview.prototype.setContent = function(content) {
 	this.content = content;
 	return this;
 };
 
-Preview.prototype.show = function(language) {
+UiPreview.prototype.show = function(language) {
 
 	if (typeof(language) === 'undefined') {
 		language = this.autoDetectLanguage();
@@ -75,6 +85,6 @@ Preview.prototype.show = function(language) {
 	$('#previewWindow').show();
 };
 
-Preview.prototype.close = function(language) {
+UiPreview.prototype.close = function(language) {
 	$('#previewWindow').hide();
 };

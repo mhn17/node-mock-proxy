@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Button for the preview
                 // ***********************************************************
                 var previewButton = document.createElement("button");
-                previewButton.innerHTML = "Preview";
+                previewButton.innerHTML = "UiPreview";
 
                 tableCell = document.createElement("td");
                 tableCell.appendChild(previewButton);
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // ***********************************************************
                 var previewButton = document.createElement("button");
                 tableCell = document.createElement("td");
-                previewButton.innerHTML = "Preview";
+                previewButton.innerHTML = "UiPreview";
 
                 // Register event listener to checkboxes
                 previewButton.addEventListener("click", function () {
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Button for the preview
                 // ***********************************************************
                 var previewButton = document.createElement("button");
-                previewButton.innerHTML = "Preview";
+                previewButton.innerHTML = "UiPreview";
 
                 toolsTableCell.appendChild(previewButton);
 
