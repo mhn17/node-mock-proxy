@@ -12,32 +12,41 @@
     <script src="../lib/vkbeautify.js"></script>
     <script src="../lib/jquery.js"></script>
 
+    <script src="../lib/uiNavigation.js"></script>
+    <script src="../lib/uiPreview.js"></script>
+
+    <script src="PaneMockList.js"></script>
+    <script src="PaneCreateMock.js"></script>
+    <script src="PaneShowRequests.js"></script>
+    <script src="PaneTrackMocks.js"></script>
+
     <script src="manageMockPanel.js"></script>
-    <script src="listMocks.js"></script>
-    <script src="preview.js"></script>
+
+
 
   </head>
   <body>
 
-    <nav>
-      <button id="refreshRequestsButton">Requests</button>
-      <button id="refreshMocksButton">Mock List</button>
-      <button id="manuallyCreateMock">Create</button>
-      <button id="trackReturnedMocksButton">Track Mocks</button>
+    <nav data-default-pane="PaneMockList">
+      <button data-pane="PaneShowRequests" id="refreshRequestsButton">Requests</button>
+      <button data-pane="PaneMockList" id="refreshMocksButton" >Mock List</button>
+      <button data-pane="PaneCreateMock" id="manuallyCreateMock">Create</button>
+      <button data-pane="PaneTrackMocks" id="trackReturnedMocksButton">Track Mocks</button>
     </nav>
 
     <div id="previewWindow">
-      <button class="closeButton" data-action="close">X</button>
-      <pre><code></code></pre>
       <div id="previewLanguage">
         <button data-language="xml">XML</button>
         <button data-language="json">JSON</button>
         <button data-language="">PlainText</button>
       </div>
+      <button class="closeButton" data-action="close">X</button>
+      <pre><code></code></pre>
+
     </div>
 
     <div id="stage">
-      <div id="requestsPane">
+      <div id="PaneShowRequests">
         <h1>Requests</h1>
         <button id="saveLastRequest">Save last request as mock</button>
         <button id="clearRequests">Clear Requests</button>
@@ -55,7 +64,7 @@
         </table>
       </div>
 
-      <div id="containerList">
+      <div id="PaneMockList">
         <h1>Mocklist</h1>
         <input type="checkbox"  id="changeTrackMockStateInMockListCheckbox"/>
         <label for="changeTrackMockStateInMockListCheckbox">Track Mocks</label>
@@ -75,7 +84,7 @@
         </table>
       </div>
 
-      <div id="containerManuallyCreate">
+      <div id="PaneCreateMock">
         <h1>Create/Update Mock</h1>
         <form id="formManuallyCreate" method="POST" action="#">
           <table>
@@ -119,7 +128,7 @@
         </form>
       </div>
 
-      <div id="trackedMocksPane">
+      <div id="PaneTrackMocks">
         <h1>Tracked Mocks</h1>
         <input type="checkbox"  id="changeTrackMocksStateCheckbox"/>
         <label for="changeTrackMocksStateCheckbox">Track Mocks</label>

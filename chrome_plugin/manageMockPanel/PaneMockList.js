@@ -1,8 +1,8 @@
 var PaneMockList = function() {
 
-	this.$container = $('#mockList');
+	this.$container = $('#PaneMockList');
 	this.apiBridge = new ApiBridge();
-	this.preview = new Preview();
+	this.preview = new UiPreview();
 
 	this.bindEvents();
 	this.draw();
@@ -23,7 +23,7 @@ PaneMockList.prototype.draw = function() {
 			rowContent += '<td><span class="mockActivated" data-mock-id="' + mockData.id + '"></span></td>';
 			rowContent += '<td>';
 			rowContent += '<button data-mock-id="' + mockData.id + '" data-action="delete">Delete</button>';
-			rowContent += '<button data-mock-data="' + encodeURI(mockData.response.body) + '" data-action="preview">Preview</button>';
+			rowContent += '<button data-mock-data="' + encodeURI(mockData.response.body) + '" data-action="preview">UiPreview</button>';
 			rowContent += '<button data-mock-id="' + mockData.id + '" data-action="edit">Edit</button>';
 			rowContent += '</td>';
 

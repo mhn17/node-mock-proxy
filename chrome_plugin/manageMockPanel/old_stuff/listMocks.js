@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	var apiBridge = new ApiBridge();
-	var preview = new Preview();
+	var preview = new UiPreview();
 
 	// Stuff to list mocks
 	// ***********************************************************
@@ -22,7 +22,7 @@ $(document).ready(function() {
 				rowContent += '<td><span class="mockActivated" data-mock-id="' + mockData.id + '"></span></td>';
 				rowContent += '<td>';
 				rowContent += '<button data-action="delete">Delete</button>';
-				rowContent += '<button data-action="preview">Preview</button>';
+				rowContent += '<button data-action="preview">UiPreview</button>';
 				rowContent += '<button data-action="edit">Edit</button>';
 				rowContent += '</td>';
 

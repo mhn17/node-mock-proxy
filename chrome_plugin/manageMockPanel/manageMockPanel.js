@@ -1,4 +1,4 @@
-var apiBridge = new ApiBridge();
+
 
 // If the local storage value does not exist (user never changed anything ot it is empty), then warn the user
 // and use a default value
@@ -8,7 +8,7 @@ if (!localStorage.mockProxyServerTargetEndpoint) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function () {
+$(document).ready(function() {
 
 	// css & bodyclass for panel or popups
 	var styleSheetName = '';
@@ -19,31 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		styleSheetName = 'panel';
 	}
 
-	// css
-	var styleSheet = document.createElement('link');
-	styleSheet.setAttribute('rel', 'stylesheet');
-	styleSheet.setAttribute('href', '../css/'+styleSheetName+'.css');
-	document.getElementsByTagName('head')[0].appendChild(styleSheet);
+	$('head').append('<link rel="stylesheet" href="../css/'+styleSheetName+'.css">');
+	$('body').addClass(styleSheetName);
 
-	// bodyclass
-	var body = document.getElementsByTagName('body')[0];
-	body.setAttribute('class', (body.getAttribute('class') ? body.getAttribute('class'):'') +' '+styleSheetName);
-
-
-	var listMocksButton = document.getElementById('refreshMocksButton');
-	var containerList = document.getElementById('containerList');
-	var manuallyCreateMock = document.getElementById('manuallyCreateMock');
-	var requestList = document.getElementById("requestsPane");
-	var trackedMocksPane = document.getElementById("trackedMocksPane");
-
-	containerList.style.display = 'none';
-	containerManuallyCreate.style.display = 'none';
-	requestList.style.display = 'none';
-	trackedMocksPane.style.display = 'none';
-
-
-	window.setTimeout(function() {
-		listMocksButton.click();
-	}, 10);
-
-}, false);
+	new UiNavigation();
+});
