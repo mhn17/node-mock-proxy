@@ -2,6 +2,7 @@ var PaneShowRequests = function() {
 
 	this.$container = $('#PaneShowRequests');
 	this.apiBridge = new ApiBridge();
+	this.preview = new UiPreview();				// The preview window object
 
 	this.bindEvents();
 };
@@ -25,7 +26,7 @@ PaneShowRequests.prototype.draw = function() {
 			rowContent += '<td><label>' + entry.method + '</label></td>';
 			rowContent += '<td>';
 			rowContent += '<button>Add</button>';
-			rowContent += '<button>Preview</button>';
+			rowContent += '<button data-request-data="' + encodeURI(entry.response) + '" data-action="requestPreview">Preview</button>';
 			rowContent += '</td>';
 
 			tableContent += '<tr>' + rowContent + '</tr>';
@@ -35,7 +36,23 @@ PaneShowRequests.prototype.draw = function() {
 	});
 };
 
+// Bind buttons to actions
 PaneShowRequests.prototype.bindEvents = function() {
+	var that = this;
 
+	// Show preview
+	this.$container.on('click', 'button[data-action=requestPreview]', function() {
+		console.log(this);
+		var requestData = decodeURI($(this).data('request-data'));
+		that.preview.setContent(requestData).show();
+	});
+
+	// Delete all requests
+	this.$container.on('click', 'button[data-action=deleteRequests]', function() {
+		that.apiBridge.clearRequestList(function (response) {
+			console.log('Cleared requests.', response);
+			that.draw();
+		});
+	});
 };
 
