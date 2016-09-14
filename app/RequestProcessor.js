@@ -55,7 +55,14 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         }
         // end of fix
 
+		console.log('PassThru: '+req.originalUrl);
+
+        // use
         var target = this.targetConfig.get("url") + req.originalUrl;
+
+        // kill parsed query params, cause they already sit in the url!
+        req.query = {};
+
         this.proxy.web(req, res, {target: target});
     }
 };
@@ -66,7 +73,7 @@ RequestProcessor.prototype.initProxy = function () {
     var responseData = '';
 
     // create proxy server
-    var proxy = httpProxy.createProxyServer({})
+    var proxy = httpProxy.createProxyServer({'ignorePath': true})
         .on('error', function (e) {
             console.log(JSON.stringify(e, null, ' '));
         })
