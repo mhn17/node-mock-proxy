@@ -55,9 +55,14 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         }
         // end of fix
 
+		console.log('PassThru: '+req.originalUrl);
         var target = this.targetConfig.get("url") + req.baseUrl;
 
-        // req.setHeader('host', '127.0.0.1:8081');
+        // check, if the original uri ends with "/"
+        if (req.originalUrl.split('?')[0].slice(-1) === '/') {
+            target += '/';
+        }
+
         this.proxy.web(req, res, {target: target});
     }
 };
