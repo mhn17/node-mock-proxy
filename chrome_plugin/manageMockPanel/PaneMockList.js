@@ -27,7 +27,7 @@ PaneMockList.prototype.draw = function() {
 			rowContent += '<td><span class="mockActivated" data-mock-id="' + mockData.id + '"></span></td>';
 			rowContent += '<td>';
 			rowContent += '<button data-mock-id="' + mockData.id + '" data-action="delete">Delete</button>';
-			rowContent += '<button data-mock-data="' + encodeURI(mockData.response.body) + '" data-action="preview">UiPreview</button>';
+			rowContent += '<button data-mock-data="' + encodeURI(mockData.response.body) + '" data-action="preview">Preview</button>';
 			rowContent += '<button data-mock-id="' + mockData.id + '" data-action="edit">Edit</button>';
 			rowContent += '</td>';
 
@@ -54,6 +54,8 @@ PaneMockList.prototype.bindEvents = function() {
 				console.log('disableMock', response);
 			});
 		}
+
+		that.draw();
 	});
 
 	// Delete mock
@@ -61,6 +63,7 @@ PaneMockList.prototype.bindEvents = function() {
 		var mockId = $(this).data('mockId');
 		that.apiBridge.deleteMock(mockId, function (response) {
 			console.log('deleteMock', response);
+            that.draw();
 		});
 	});
 
