@@ -4,6 +4,7 @@ var PaneCreateMock = function() {
 	this.$container = $('#PaneCreateMock');
 	this.$form = $('#formManuallyCreate');
 	this.apiBridge = new ApiBridge();
+	this.languageDetector = new LanguageDetector();
 	this.bindEvents();
 };
 
@@ -54,10 +55,14 @@ PaneCreateMock.prototype.fillCreateMockFields = function (id, name, desc, reques
 	// Go to create tab
 	new UiNavigation().switchPanel('PaneCreateMock');
 
+	// Autoformat code
+	var responseBodyFormatted = this.languageDetector.autoDetectLanguageAndFormatCode(responseBody);
+	var requestBodyFormatted = this.languageDetector.autoDetectLanguageAndFormatCode(requestBody);
+
 	// Fill pane
 	$requestUriField.val(requestUri);
 	$requestMethodField.val(method);
-	$responseBodyField.val(responseBody);
+	$responseBodyField.val(responseBodyFormatted);
 
 	// Only set fields if value is not undefined to avoid the text
 	// undefined in the text field
@@ -73,7 +78,7 @@ PaneCreateMock.prototype.fillCreateMockFields = function (id, name, desc, reques
 		$descField.val(desc);
 	}
 
-	if (requestBody) {
-		$requestBodyField.val(requestBody);
+	if (requestBodyFormatted) {
+		$requestBodyField.val(requestBodyFormatted);
 	}
 }

@@ -1,7 +1,6 @@
 // Constructor to init stuff
 var UiPreview = function() {
-
-	this.supportedLanguages = ['xml', 'json'];
+	this.languageDetector = new LanguageDetector();
 	this.bindEvents();
 	this.content = '';
 };
@@ -41,53 +40,28 @@ UiPreview.prototype.bindEvents = function() {
 
 };
 
-// Try to autodetect language
-UiPreview.prototype.autoDetectLanguage = function() {
-	var language = null;
-	var autoDetect = hljs.highlightAuto(this.content);
-
-	// Try to find the best language else use the second best identified by the 3rd party library
-	if ($.inArray(autoDetect.language, this.supportedLanguages) !== -1) {
-		language = autoDetect.language;
-	}
-	else {
-		if ($.inArray(autoDetect.second_best.language, this.supportedLanguages) !== -1) {
-			language = autoDetect.second_best.language;
-		}
-	}
-
-	// Else give plaintext
-	return language;
-};
-
 UiPreview.prototype.setContent = function(content) {
 	this.content = content;
 	return this;
 };
 
 // Show the popup
-// param language: The language is used to format the code. If no language is given, auto code formating will be tried.
+// param language: The language is used to format the code. If no language is given, auto code formatting will be tried.
 UiPreview.prototype.show = function(language) {
+	var content = this.content;
 
 	// Try to autoformat code if no parameter was given
 	if (typeof(language) === 'undefined') {
-		language = this.autoDetectLanguage();
+		language = this.languageDetector.autoDetectLanguage(content);
 	}
 
-	var content = this.content;
 	// Try to format code if a parameter was given
 	try {
-		if (language === 'xml') {
-			content = vkbeautify.xml(content);
-		}
-
-		if (language === 'json') {
-			content = vkbeautify.json(content);
-		}
+		content = this.languageDetector.formatCode(content, language);
 
 		// If no supported language was given, try autoformat.
 		if (language) {
-			content = hljs.highlight(language, content).value;
+			content = this.languageDetector.highlightCode(content, language);
 			$('#previewWindow').find('code').html(content);
 		}
 		else {
