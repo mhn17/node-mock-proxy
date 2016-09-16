@@ -55,12 +55,18 @@ PaneShowRequests.prototype.bindEvents = function() {
 		});
 	});
 
+	// Get the request which is associated with the button and fill its data into the create mock pane
 	this.$container.on('click', 'button[data-action=addToMock]', function() {
-		alert($(this).data('request-id'));
-		that.apiBridge.getRequest($(this).data('request-id'), function (response) {
-			console.log('Add to mocks.', response);
-			alert(JSON.stringify(response));
-			//new PaneCreateMock().fillCreateMockFields(null,);
+		that.apiBridge.getRequest($(this).data('request-id'), function (request) {
+			// Check if the request body is an empty object and call the create mock method with null if it is the case
+			// to avoid the [Object object] string
+			if(request.message.requestBody && request.message.requestBody != null && Object.keys(request.message.requestBody).length > 0) {
+				new PaneCreateMock().fillCreateMockFields(null, null, null, request.message.requestUri,
+					request.message.method, request.message.requestBody, request.message.response);
+			} else {
+				new PaneCreateMock().fillCreateMockFields(null, null, null, request.message.requestUri,
+					request.message.method, null, request.message.response);
+			}
 		});
 	});
 };
