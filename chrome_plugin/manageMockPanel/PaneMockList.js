@@ -75,7 +75,12 @@ PaneMockList.prototype.bindEvents = function() {
 
 	// Edit mock
 	this.$container.on('click', 'button[data-action=edit]', function() {
+		var $updateMockPane = new PaneCreateMock();
 
+		that.apiBridge.getMock($(this).data('mockId'), function (mock) {
+			$updateMockPane.fillCreateMockFields(mock.message.id, mock.message.name,
+				mock.message.description, mock.message.requestUri, mock.message.requestMethod, mock.message.requestBody, mock.message.responseBody);
+		});
 	});
 };
 
