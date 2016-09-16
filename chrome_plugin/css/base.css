@@ -127,6 +127,7 @@ table tbody tr:hover td {
     right: 10px;
     border: 1px solid #000;
     padding: 10px;
+    overflow: auto;
 }
 
 #previewWindow code {
