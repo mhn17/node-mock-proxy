@@ -25,7 +25,7 @@ PaneShowRequests.prototype.draw = function() {
 			rowContent += '<td><label>' + entry.requestUri + '</label></td>';
 			rowContent += '<td><label>' + entry.method + '</label></td>';
 			rowContent += '<td>';
-			rowContent += '<button>Add</button>';
+			rowContent += '<button data-request-id="' + entry.id + '" data-action="addToMock">Add</button>';
 			rowContent += '<button data-request-data="' + encodeURI(entry.response) + '" data-action="requestPreview">Preview</button>';
 			rowContent += '</td>';
 
@@ -52,6 +52,15 @@ PaneShowRequests.prototype.bindEvents = function() {
 		that.apiBridge.clearRequestList(function (response) {
 			console.log('Cleared requests.', response);
 			that.draw();
+		});
+	});
+
+	this.$container.on('click', 'button[data-action=addToMock]', function() {
+		alert($(this).data('request-id'));
+		that.apiBridge.getRequest($(this).data('request-id'), function (response) {
+			console.log('Add to mocks.', response);
+			alert(JSON.stringify(response));
+			//new PaneCreateMock().fillCreateMockFields(null,);
 		});
 	});
 };

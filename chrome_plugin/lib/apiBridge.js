@@ -38,6 +38,10 @@ ApiBridge.prototype.getMock = function(mockId, callback) {
 	this.sendRequest("/api/mocks/" + mockId, "GET", null, callback);
 };
 
+ApiBridge.prototype.getRequest = function(requestId, callback) {
+	this.sendRequest("/api/requests/" + requestId, "GET", null, callback);
+};
+
 ApiBridge.prototype.sendRequest = function(endpoint, method, data, callback) {
 	var request = { "endpoint": endpoint, "method": method, "data": data};
 
