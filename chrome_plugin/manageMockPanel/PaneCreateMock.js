@@ -4,13 +4,13 @@ var PaneCreateMock = function() {
 	this.$container = $('#PaneCreateMock');
 	this.$form = $('#formManuallyCreate');
 	this.apiBridge = new ApiBridge();
-
 	this.bindEvents();
 };
 
 // Reset the form to its empty state
 PaneCreateMock.prototype.draw = function() {
 	this.$form.trigger('reset');
+	$('#form_id').val('');
 };
 
 // Bind events to send the request to the server
@@ -22,19 +22,20 @@ PaneCreateMock.prototype.bindEvents = function() {
 	this.$form.submit(function (event) {
 		event.preventDefault();
 		var data = {
-			'id': document.getElementById('form_id').value,
-			'name': document.getElementById('form_name').value,
-			'description': document.getElementById('form_description').value,
-			'requestUri': document.getElementById('form_requestUri').value,
-			'requestMethod': document.getElementById('form_requestMethod').value,
-			'requestBody': document.getElementById('form_requestBody').value,
-			'responseBody': document.getElementById('form_responseBody').value
+			'id': $('#form_id').val(),
+			'name': $('#form_name').val(),
+			'description': $('#form_description').val(),
+			'requestUri': $('#form_requestUri').val(),
+			'requestMethod': $('#form_requestMethod').val(),
+			'requestBody': $('#form_requestBody').val(),
+			'responseBody': $('#form_responseBody').val()
 		};
 
 		// Send create/update request to server
 		that.apiBridge.createMock(data, function (response) {
 			console.log('createMock', response);
 			that.draw();
+			new UiNavigation().switchPanel('PaneMockList');
 		});
 	});
 };
@@ -50,7 +51,7 @@ PaneCreateMock.prototype.fillCreateMockFields = function (id, name, desc, reques
 	var $requestBodyField = $('#form_requestBody');
 	var $responseBodyField = $('#form_responseBody');
 
-	// Go to tab
+	// Go to create tab
 	new UiNavigation().switchPanel('PaneCreateMock');
 
 	// Fill pane
