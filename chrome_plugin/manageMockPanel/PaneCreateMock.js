@@ -37,5 +37,42 @@ PaneCreateMock.prototype.bindEvents = function() {
 			that.draw();
 		});
 	});
-
 };
+
+// Fills the the create new mock form
+PaneCreateMock.prototype.fillCreateMockFields = function (id, name, desc, requestUri, method, requestBody, responseBody) {
+	var $createMockButton = $('#manuallyCreateMock');
+	var $idField = $('#form_id');
+	var $nameField = $('#form_name');
+	var $descField = $('#form_description');
+	var $requestUriField = $('#form_requestUri');
+	var $requestMethodField = $('#form_requestMethod');
+	var $requestBodyField = $('#form_requestBody');
+	var $responseBodyField = $('#form_responseBody');
+
+	// Go to tab
+	new UiNavigation().switchPanel('PaneCreateMock');
+
+	// Fill pane
+	$requestUriField.val(requestUri);
+	$requestMethodField.val(method);
+	$responseBodyField.val(responseBody);
+
+	// Only set fields if value is not undefined to avoid the text
+	// undefined in the text field
+	if (id) {
+		$idField.val(id);
+	}
+
+	if (name) {
+		$nameField.val(name);
+	}
+
+	if (desc) {
+		$descField.val(desc);
+	}
+
+	if (requestBody) {
+		$requestBodyField.val(requestBody);
+	}
+}
