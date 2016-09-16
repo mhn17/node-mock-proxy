@@ -24,7 +24,7 @@ PaneMockList.prototype.draw = function() {
 			rowContent += '<td><input data-mock-id="' + mockData.id + '" data-action="enableMock" type="checkbox" id="enable_' + mockData.id + '" ' + (mockData.enabled ? 'checked' : '') + '></td>';
 			rowContent += '<td><label for="enable_' + mockData.id + '">' + mockData.name + '</label></td>';
 			rowContent += '<td>' + mockData.description + '</td>';
-			rowContent += '<td><span class="mockActivated" data-mock-id="' + mockData.id + '"></span></td>';
+			rowContent += '<td><span class="mockActivated" data-mock-action="displayTrackedMock" data-mock-id="' + mockData.id + '"></span></td>';
 			rowContent += '<td>';
 			rowContent += '<button data-mock-id="' + mockData.id + '" data-action="delete">Delete</button>';
 			rowContent += '<button data-mock-data="' + encodeURI(mockData.response.body) + '" data-action="preview">Preview</button>';
@@ -80,6 +80,38 @@ PaneMockList.prototype.bindEvents = function() {
 		that.apiBridge.getMock($(this).data('mockId'), function (mock) {
 			$updateMockPane.fillCreateMockFields(mock.message.id, mock.message.name,
 				mock.message.description, mock.message.requestUri, mock.message.requestMethod, mock.message.requestBody, mock.message.responseBody);
+		});
+	});
+
+	// Track mocks
+	this.$container.on('click', 'button[data-action=trackMocks]', function() {
+		that.apiBridge.getReturnedMocks(5, function (mockList) {
+			var resultList = [];
+			var mockTrackFields = $('span[data-mock-action="displayTrackedMock"]');
+
+			// Go through all returned mocks
+			mockList.forEach(function (mock) {
+				// Get all currently displayed mock fields
+				mockTrackFields.each(function () {
+					// Check if returned mock id and the saved id in the field are the same
+					if($(this).data('mock-id') === mock.id) {
+						// If they are the same and the field was not added to the result list before, then add it now
+						if(resultList.indexOf(this) < 0){
+							resultList.push(this);
+						}
+					}
+				});
+			});
+
+			// Clear old values in the labels
+			mockTrackFields.each(function () {
+				$(this).val('');
+			});
+
+			// Go through result list and add text
+			resultList.forEach(function(labelField, index){
+				labelField.textContent = index;
+			});
 		});
 	});
 };
