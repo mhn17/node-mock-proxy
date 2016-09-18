@@ -30,6 +30,8 @@
 	"mocks": {
 		"enabledFolder": "mocks-enabled",
 		"availableFolder": "mocks-available",
+                "enabledMockSetFolder": "sets-enabled",
+                "availableMockSetFolder": "sets-available",
 		"requests": {
 			"preProcessors": [
 				"RemoveString"
