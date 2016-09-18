@@ -1,11 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var config = require('config');
-var fs = require('fs');
-var mv = require('mv');
-var mkdirp = require('mkdirp');
-var path = require("path");
-var MockLUT = require('services/MockLUT');
 
 // Services, repositories
 var pathService = require("services/PathService");
@@ -18,7 +12,6 @@ router.get('/', function(req, res) {
     var mockSetList = mockSetRepository.findAll();
     
     res.statusCode = 200;
-
     res.json(mockSetList);
 });
 
@@ -49,6 +42,24 @@ router.post('/', function(req, res) {
 
     res.statusCode = 200;
     res.json({ message: 'OK'});
+});
+
+// Move available mockSet to enabled mocks
+router.put('/:id/enable', function(req, res) {
+	console.log("Enable mockSet: " + req.params.id);
+	mockSetRepository.enableMockSetById(req.params.id);
+
+	res.statusCode = 200;
+	res.json({ message: 'OK'});
+});
+
+// Move enabled mockSet to availabled mocks
+router.put('/:id/disable', function(req, res) {
+	console.log("Disable mockSet: " + req.params.id);
+	mockSetRepository.disableSetMockById(req.params.id);
+
+	res.statusCode = 200;
+	res.json({ message: 'OK'});
 });
 
 module.exports = router;
