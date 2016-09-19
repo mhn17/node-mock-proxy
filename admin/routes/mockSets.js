@@ -6,10 +6,10 @@ var pathService = require("services/PathService");
 var MockSetRepository = require("domain/repositories/MockSetRepository");
 var mockSetRepository = new MockSetRepository(pathService);
 
-// Get list of mockSets
+// Get list of mock sets
 router.get('/', function(req, res) {
-    console.log("List all mocks");
     var mockSetList = mockSetRepository.findAll();
+    console.log("List all mock sets");
     
     res.statusCode = 200;
     res.json(mockSetList);
@@ -18,7 +18,6 @@ router.get('/', function(req, res) {
 // Get response for a mockSet
 router.get('/:id', function(req, res) {
     var mockSetId = req.params.id;
-
     console.log("Get mockSet with id: " + mockSetId);
 
     // Set response
@@ -37,14 +36,13 @@ router.delete('/:id', function(req, res) {
 // Create mockSet
 router.post('/', function(req, res) {
     console.log("Creating mockSet");
-
     mockSetRepository.createOrUpdate(req.body);
 
     res.statusCode = 200;
     res.json({ message: 'OK'});
 });
 
-// Move available mockSet to enabled mocks
+// Enable mocks in a mock set
 router.put('/:id/enable', function(req, res) {
 	console.log("Enable mockSet: " + req.params.id);
 	mockSetRepository.enableMockSetById(req.params.id);
@@ -53,7 +51,7 @@ router.put('/:id/enable', function(req, res) {
 	res.json({ message: 'OK'});
 });
 
-// Move enabled mockSet to availabled mocks
+// Disable mocks in a mock set
 router.put('/:id/disable', function(req, res) {
 	console.log("Disable mockSet: " + req.params.id);
 	mockSetRepository.disableMockSetById(req.params.id);
