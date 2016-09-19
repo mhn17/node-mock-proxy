@@ -13,7 +13,7 @@ describe('Mock', function() {
 	describe('#readFromFile', function() {
 		it('should read a file and create a mock object', function() {
 			var mock = new Mock();
-			mock.setFileName(path.resolve(availableFolder + '/path/to/getmock.json'));
+			mock.setFileName(path.resolve(availableFolder + '/path/to/getMock.json'));
 			mock.readFromFile();
 
 			expect(mock.id).to.equal('2');
