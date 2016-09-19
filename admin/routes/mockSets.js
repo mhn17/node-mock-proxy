@@ -56,7 +56,7 @@ router.put('/:id/enable', function(req, res) {
 // Move enabled mockSet to availabled mocks
 router.put('/:id/disable', function(req, res) {
 	console.log("Disable mockSet: " + req.params.id);
-	mockSetRepository.disableSetMockById(req.params.id);
+	mockSetRepository.disableMockSetById(req.params.id);
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});

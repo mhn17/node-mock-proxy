@@ -30,21 +30,12 @@ PathService.getReturnedMocksLogFilePath = function() {
 };
 
 /**
- * Returns the path to the folder where the available mock sets are being saved.
+ * Returns the path to the folder where the mock sets are being saved.
  * 
- * @returns {String} Path to the folder where the available mock sets are being saved.
+ * @returns {String} Path to the folder where the mock sets are being saved.
  */
 PathService.getMockSetPath = function() {
-    return path.resolve(mockConfig.get("availableMockSetFolder"));
-};
-
-/**
- *  Returns the path to the folder where the enabled mock sets are being saved.
- *  
- * @returns {String} Returns the path to the folder where the enabled mock sets are being saved.
- */
-PathService.getMockSetEnabledPath = function() {
-    return path.resolve(mockConfig.get("enabledMockSetFolder"));
+    return path.resolve(mockConfig.get("mockSetFolder"));
 };
 
 /**

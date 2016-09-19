@@ -60,38 +60,10 @@ MockSetRepository.prototype.deleteMockSetById = function(mockSetId) {
 	}
 };
 
-MockSetRepository.prototype.toggleMockSetStateById = function(mockSetId, state) {
-    var mockSet = this.findById(mockSetId);
-    if (mockSet) {
-        var fileName = mockSet.getFileName();
-        var baseFileName = path.basename(fileName);
-        var target = this.pathService.getMockSetEnabledFolderPath() + path.sep + baseFileName;
-
-        if (state) {
-            try {
-                    fs.symlinkSync(fileName, target);
-            }
-            catch(e) {
-                    // if we cant create symlink (hello window) - copy file...
-                    fs.copySync(fileName, target)
-            }
-        }
-        else {
-            try {
-                    fs.unlinkSync(target);
-            }
-            catch(e) {
-                    // do nothing...
-            }
-        }
-    }
-};
-
 MockSetRepository.prototype.enableMockSetById = function(mockSetId) {
     console.log('MockSetRepository', 'enableMockSetById', mockSetId);
     var that = this;
     var mockSet = this.findById(mockSetId);
-    this.toggleMockSetStateById(mockSetId, true);
     
     mockSet.getMockIds().forEach(function(mockId) {
         that.mockRepository.enableMockById(mockId);
@@ -102,7 +74,6 @@ MockSetRepository.prototype.disableMockSetById = function(mockSetId) {
     console.log('MockSetRepository', 'disableMockSetById', mockSetId);
     var that = this;
     var mockSet = this.findById(mockSetId);
-    this.toggleMockSetStateById(mockSetId, false);
     
     mockSet.getMockIds().forEach(function(mockId) {
         that.mockRepository.disableMockById(mockId);
