@@ -25,7 +25,7 @@ MockSetRepository.prototype.findAll = function() {
 MockSetRepository.prototype.createOrUpdate = function(data) {
     var mockSet = new MockSet();
     
-    	// If id is set the already existing mock will be updated
+    // If id is set the already existing mock will be updated
 	if(data.id){
             console.log("Load mock set with id: ", data.id);
             mockSet = this.findById(data.id);

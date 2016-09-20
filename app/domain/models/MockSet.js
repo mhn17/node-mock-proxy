@@ -48,7 +48,7 @@ MockSet.prototype.getDescription = function() {
 };
 
 MockSet.prototype.addMockIds = function (mockIds) {
-    this.mockIds.concat(mockIds);
+	this.mockIds = this.mockIds.concat(mockIds);
 };
 
 
