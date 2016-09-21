@@ -56,13 +56,13 @@ AdminServer.prototype.setUpRoutes = function() {
     });
 
     this.app.use(function (req, res, next) {
-        console.log(req.body) // populated!
+        console.log(req.body); // populated!
         next();
     });
 
     this.app.use('/api/requests', requestRoutes);
     this.app.use('/api/mocks', mockRoutes);
-    this.app.use('/api/mocksets', mockSetRoutes);
+    this.app.use('/api/mock-sets', mockSetRoutes);
     this.app.use('/api', router);
 };
 
