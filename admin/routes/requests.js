@@ -59,7 +59,7 @@ router.delete('/', function(req, res) {
 router.get('/:id', function(req, res) {
 
     var requestId = req.params.id;
-    console.log(req);
+    //console.log("Request", req);
     console.log("Get response for request: " + requestId);
 
     fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
@@ -75,8 +75,9 @@ router.get('/:id', function(req, res) {
             requests.push({
                 id: request.id,
                 fileName: request.fileName,
-                methid: request.method,
-                request: request.request,
+                method: request.method,
+                requestUri: request.requestUri,
+                requestBody: request.requestBody,
                 response: request.response
             });
         });
@@ -84,16 +85,18 @@ router.get('/:id', function(req, res) {
         // Get correct request
         var requestToResponse = {};
         requests.forEach(function(entry){
-                if(entry.fileName === requestId){
+                if(entry.id === requestId){
                         requestToResponse = entry;
                 }
         });
+
+        console.log(requestToResponse);
 
         // Set error response
         if (typeof err === 'undefined' || err === null) {
             // Set response
             res.statusCode = 200;
-            res.json({ message: requestToResponse.response });
+            res.json({ message: requestToResponse });
         } else {
             res.statusCode = 500;
             res.json({ message: 'Could not get response for the request: ' + err });

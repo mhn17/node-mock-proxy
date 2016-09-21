@@ -14,6 +14,7 @@
 
     <script src="../lib/uiNavigation.js"></script>
     <script src="../lib/uiPreview.js"></script>
+    <script src="../lib/languageDetector.js"></script>
 
     <script src="PaneMockList.js"></script>
     <script src="PaneCreateMock.js"></script>
@@ -28,10 +29,10 @@
   <body>
 
     <nav data-default-pane="PaneMockList">
-      <button data-pane="PaneShowRequests" id="refreshRequestsButton">Requests</button>
-      <button data-pane="PaneMockList" id="refreshMocksButton" >Mock List</button>
-      <button data-pane="PaneCreateMock" id="manuallyCreateMock">Create</button>
-      <button data-pane="PaneTrackMocks" id="trackReturnedMocksButton">Track Mocks</button>
+      <button data-pane="PaneShowRequests">Requests</button>
+      <button data-pane="PaneMockList" >Mock List</button>
+      <button data-pane="PaneCreateMock">Create</button>
+      <button data-pane="PaneTrackMocks">Track Mocks</button>
     </nav>
 
     <div id="previewWindow">
@@ -48,8 +49,7 @@
     <div id="stage">
       <div id="PaneShowRequests">
         <h1>Requests</h1>
-        <button id="saveLastRequest">Save last request as mock</button>
-        <button id="clearRequests">Clear Requests</button>
+        <button data-action="deleteRequests">Clear Requests</button>
 
         <table id="requestList">
           <thead>
@@ -66,9 +66,7 @@
 
       <div id="PaneMockList">
         <h1>Mocklist</h1>
-        <input type="checkbox"  id="changeTrackMockStateInMockListCheckbox"/>
-        <label for="changeTrackMockStateInMockListCheckbox">Track Mocks</label>
-        <input type="text" id="limitOfTrackedMockInMockListField" value="5"/>
+        <button data-action="trackMocks">Track Mocks</button>
         <table id="mockList">
           <thead>
             <tr>
@@ -130,12 +128,10 @@
 
       <div id="PaneTrackMocks">
         <h1>Tracked Mocks</h1>
-        <input type="checkbox"  id="changeTrackMocksStateCheckbox"/>
-        <label for="changeTrackMocksStateCheckbox">Track Mocks</label>
-        <input type="text" id="limitOfTrackedMocksField" value="5"/>
-        <table id="trackMockList">
+        <table>
           <thead>
           <tr>
+            <th>Order</th>
             <th>Name</th>
             <th>Description</th>
             <th>Tools</th>
