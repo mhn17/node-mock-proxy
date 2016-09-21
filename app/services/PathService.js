@@ -30,6 +30,15 @@ PathService.getReturnedMocksLogFilePath = function() {
 };
 
 /**
+ * Returns the path to the folder where the mock sets are being saved.
+ * 
+ * @returns {String} Path to the folder where the mock sets are being saved.
+ */
+PathService.getMockSetPath = function() {
+    return path.resolve(mockConfig.get("mockSetFolder"))  + path.sep;
+};
+
+/**
  * Returns the path to the folder where the enabled mocks are being stored.
  *
  * @returns {String} Returns the path to the folder where the enabled mocks are being stored.
