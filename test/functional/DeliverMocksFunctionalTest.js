@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 var expect = require('chai').expect;
 var fs = require('fs');
 var path = require('path');
@@ -42,6 +40,11 @@ describe('Deliver mock functional test:', function () {
 		// create sym links for enables mocks
 		fs.unlinkSync(path.resolve(enabledFolder + '/path/to/getMock.json'));
 		fs.unlinkSync(path.resolve(enabledFolder + '/path/to/postMock.json'));
+	});
+
+	after('', function() {
+		process.mainModule.mockProxyServer.stop();
+		process.mainModule.adminServer.stop();
 	});
 
 	it('should deliver a mock for a GET request', function (done) {

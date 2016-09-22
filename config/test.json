@@ -22,6 +22,9 @@
 	},
 	"mocks": {
 		"enabledFolder": "test/fixtures/mocks-enabled",
-		"availableFolder": "test/fixtures/mocks-available"
+		"availableFolder": "test/fixtures/mocks-available",
+		"requests": {
+			"preProcessors": []
+		}
 	}
 }

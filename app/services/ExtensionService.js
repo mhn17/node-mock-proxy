@@ -47,5 +47,4 @@ ExtensionService.prototype.processPreProcessors = function(body) {
 	return body;
 };
 
-
 module.exports = ExtensionService;

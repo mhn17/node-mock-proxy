@@ -3,13 +3,16 @@ var httpProxy = require('http-proxy');
 var bunyan = require('bunyan');
 var path = require("path");
 var uuid = require('node-uuid');
+var MockLUT = require('services/MockLUT');
+var MockFileNameService = require('services/MockFileNameService');
+var config = require('config');
 
-var RequestProcessor = function (config, mockFileNameService, mockLUT) {
+var RequestProcessor = function () {
     this.targetConfig = config.get("target");
     this.proxyConfig = config.get("proxy");
     this.mockConfig = config.get("mocks");
-    this.mockFileNameService = mockFileNameService;
-    this.mockLUT = mockLUT;
+    this.mockFileNameService = new MockFileNameService();
+    this.mockLUT = new MockLUT();
 
     this.proxy = this.initProxy();
     this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));

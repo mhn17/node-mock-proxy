@@ -8,12 +8,11 @@ var fs          = require('fs');
 var requestRoutes = require('routes/requests');
 var mockRoutes = require('routes/mocks');
 
-// Make the AdminServer to a real webserver via the express module
+// Make the AdminServer to a real web inserver via the express module
 var AdminServer = function() {
-    console.log("Init admin server");
-
-    // Make this a server
+    // init server
     this.app = express();
+    this.server = null;
 
     // get admin config
     this.adminConfig = config.get('admin');
@@ -23,11 +22,6 @@ var AdminServer = function() {
 
 // Add a prototype start function for init stuff
 AdminServer.prototype.start = function() {
-
-    console.log("Starting admin server");
-
-    // The beautifully this/that pattern
-    // But why?
     var that = this;
 
     // configure app to use bodyParser()
@@ -38,17 +32,21 @@ AdminServer.prototype.start = function() {
     this.setUpRoutes();
 
     // start server
-    this.app.listen(this.adminConfig.get('port'), function () {
+    this.server = this.app.listen(this.adminConfig.get('port'), function () {
         console.log('Mock proxy admin API listening on port ' + that.adminConfig.get('port'));
     });
+};
+
+// Add a prototype stop function for shutting down the server
+AdminServer.prototype.stop = function() {
+    if (this.server) {
+        this.server.close();
+    }
 };
 
 // Add a prototype function to setup the route stuff
 // Save requests and responses
 AdminServer.prototype.setUpRoutes = function() {
-
-    console.log("Setting up routes acting for the different endpoints");
-
     // root URL
     router.get('/', function(req, res) {
         res.json({ message: 'hooray! welcome to our api!' });
@@ -65,5 +63,4 @@ AdminServer.prototype.setUpRoutes = function() {
     this.app.use('/api', router);
 };
 
-// When this file is required return the AdminServer instead
 module.exports = AdminServer;

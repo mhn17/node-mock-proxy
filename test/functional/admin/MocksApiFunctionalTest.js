@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 require('app-module-path').addPath(__dirname + '/../../../app');
 require('app-module-path').addPath(__dirname + '/../../../admin');
 
@@ -12,7 +10,7 @@ var availableFolder = config.get('mocks').get('availableFolder');
 var enabledFolder = config.get('mocks').get('enabledFolder');
 
 var AdminServer = require('AdminServer');
-new AdminServer().start();
+var adminServer = new AdminServer();
 
 describe('Mocks API functional test:', function () {
 
@@ -35,6 +33,13 @@ describe('Mocks API functional test:', function () {
 			path.resolve(enabledFolder + '/path/to/getMock.json'));
 		fs.symlinkSync(path.resolve(availableFolder + '/path/to/postMock.json'),
 			path.resolve(enabledFolder + '/path/to/postMock.json'));
+
+		adminServer.stop();
+		adminServer.start();
+	});
+
+	afterEach('shutdown server', function() {
+		adminServer.stop();
 	});
 
 	it('#GET /mocks: should deliver a list of mocks', function (done) {

@@ -1,5 +1,5 @@
 var Mock = require('domain/models/Mock');
-var mockFileNameService = require('services/MockFileNameService');
+var MockFileNameService = require('services/MockFileNameService');
 var pathService = require('services/PathService');
 
 var MockLUT = function() {
@@ -9,6 +9,7 @@ var MockLUT = function() {
 
 	// array of Mock objects
 	this.lookUpTable = {};
+	this.mockFileNameService = new MockFileNameService();
 
 	process.mainModule.instances.mockLUT = this;
 	return this;
@@ -56,7 +57,7 @@ MockLUT.prototype._addFileToTable = function(filePath) {
 	mock.setFileName(filePath);
 	mock.readFromFile();
 
-	var key = mockFileNameService.getHash(mock.getRequestUri(), mock.getRequestMethod(), mock.getRequestBody());
+	var key = this.mockFileNameService.getHash(mock.getRequestUri(), mock.getRequestMethod(), mock.getRequestBody());
 	this.lookUpTable[key] = {
 		'fileName': mock.getFileName(),
 		'id': mock.getId()

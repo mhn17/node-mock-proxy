@@ -1,5 +1,3 @@
-process.env.NODE_ENV = 'test';
-
 require('app-module-path').addPath(__dirname + '/../../../../app');
 
 var expect = require('chai').expect;

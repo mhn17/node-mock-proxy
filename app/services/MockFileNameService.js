@@ -1,6 +1,9 @@
 var crypto = require("crypto");
-var Extensions = require('services/ExtensionService');
-var extension = new Extensions();
+var ExtensionService = require('services/ExtensionService');
+
+var MockFileNameService = function() {
+	this.extensionService = new ExtensionService();
+};
 
 /**
  * Returns a hash based on a request
@@ -8,7 +11,7 @@ var extension = new Extensions();
  * @param {IncomingMessage} req
  * @returns string
  */
-module.exports.getHashByRequest = function(req) {
+MockFileNameService.prototype.getHashByRequest = function(req) {
 	// Builds a string out of the protocol and hostname to replace that part of the originalUrl from express in windows
 	// with "" because express seems to take the wrong delimiter. example: http:\www.test.com
 	var protAndHost = req.protocol + ":\\" + req.hostname;
@@ -33,7 +36,9 @@ module.exports.getHashByRequest = function(req) {
  * @param body
  * @returns {string}
  */
-module.exports.getHash = function(uri, method, body) {
-	body = extension.processPreProcessors(body);
+MockFileNameService.prototype.getHash = function(uri, method, body) {
+	body = this.extensionService.processPreProcessors(body);
 	return crypto.createHash("sha1").update(uri + "###" + method + "###" + body).digest("hex");
 };
+
+module.exports = MockFileNameService;

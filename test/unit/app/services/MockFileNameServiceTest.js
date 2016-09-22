@@ -1,17 +1,15 @@
-process.env.NODE_ENV = 'test';
-
 require('app-module-path').addPath(__dirname + '/../../../../app');
-
+var rewire = require("rewire");
 var assert = require('chai').assert;
-var mockFileNameService = require('./../../../../app/services/MockFileNameService.js');
+
+var ExtensionServiceMock = require('./../../../mocks/extensionServiceMock/services/ExtensionService');
+var MockFileNameService = rewire('./../../../../app/services/MockFileNameService.js');
+MockFileNameService.__set__('ExtensionService', ExtensionServiceMock);
+var mockFileNameService = new MockFileNameService();
 var IncomingMessage = require('http').IncomingMessage;
 
 describe('MockFileNameService', function() {
-	
-	beforeEach('before each', function() {
-		process.mainModule.instances = {};
-	});
-	
+
 	describe('#getHashByRequest()', function() {
 		describe('get hash for GET requests', function() {
 			it('should return the hash for a normal request without path', function() {

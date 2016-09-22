@@ -1,10 +1,15 @@
-process.env.NODE_ENV = 'test';
-
+var rewire = require('rewire');
 var expect = require('chai').expect;
-var sinon = require('sinon');
 var fs = require('fs');
 var config = require('config');
-var RequestProcessor = require('./../../../app/RequestProcessor');
+
+var mockFileNameServiceMock = {};
+var mockLUTMock = {};
+
+var RequestProcessor = rewire('./../../../app/RequestProcessor');
+RequestProcessor.__set__('mockFileNameService', mockFileNameServiceMock);
+RequestProcessor.__set__('mockLUT', mockLUTMock);
+var requestProcessor = new RequestProcessor();
 
 describe('RequestProcessor:', function() {
 
@@ -18,12 +23,6 @@ describe('RequestProcessor:', function() {
 	});
 
 	describe('init', function() {
-		var mockFileNameServiceMock = sinon.stub();
-		mockFileNameServiceMock.getHashByRequest = function () {
-			return 'fileName';
-		};
-		var requestProcessor = new RequestProcessor(config, mockFileNameServiceMock);
-
 		it('should set up the proxy server', function() {
 			var proxy = requestProcessor.getProxy();
 			expect(proxy).to.not.be.undefined;
