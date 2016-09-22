@@ -24,7 +24,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.5.3",
-    "sinon": "^1.17.4"
+    "rewire": "^2.5.2"
   },
   "scripts": {
     "start": "node app.js",
