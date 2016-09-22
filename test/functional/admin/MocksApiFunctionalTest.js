@@ -1,7 +1,10 @@
+process.mainModule.instances = {};
+
 require('app-module-path').addPath(__dirname + '/../../../app');
 require('app-module-path').addPath(__dirname + '/../../../admin');
 
 var expect = require('chai').expect;
+var assert = require('chai').assert;
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
@@ -14,21 +17,23 @@ var adminServer = new AdminServer();
 
 describe('Mocks API functional test:', function () {
 
-	beforeEach('clear log file, create sym links for enabled mocks and start admin server', function () {
+	beforeEach('set up', function () {
 		try {
-			fs.accessSync(config.get('logging').get('forwaredRequests').get('file'));
-			fs.unlink(config.get('logging').get('forwaredRequests').get('file'));
-		} catch (e) {
-			// do nothing, file does not exist
-		}
+			fs.unlinkSync(config.get('logging').get('forwaredRequests').get('file'));
+		} catch (e) { }
 
-		// create sym links for enables mocks
+		try {
+			fs.unlinkSync(path.resolve(availableFolder + '/anotherMockName.json'));
+		} catch (e) { }
+
 		try {
 			fs.unlinkSync(path.resolve(enabledFolder + '/path/to/getMock.json'));
+		} catch (e) { }
+
+		try {
 			fs.unlinkSync(path.resolve(enabledFolder + '/path/to/postMock.json'));
-		} catch (e) {
-			// do nothing, sym links do not exist
-		}
+		} catch (e) { }
+
 		fs.symlinkSync(path.resolve(availableFolder + '/path/to/getMock.json'),
 			path.resolve(enabledFolder + '/path/to/getMock.json'));
 		fs.symlinkSync(path.resolve(availableFolder + '/path/to/postMock.json'),
@@ -59,9 +64,61 @@ describe('Mocks API functional test:', function () {
 		});
 	});
 
-	it('#POST /mocks: should create a new mock');
+	it('#POST /mocks: should create a new mock', function (done) {
+		var options = {
+			hostname: 'localhost',
+			port: config.get("admin").get("port"),
+			path: '/api/mocks',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		};
+		var body = JSON.stringify(
+			{
+				"name": "Another Mock name",
+				"description": "Another description",
+				"request": {
+					"uri": "/path/to/postMock",
+					"method": "POST",
+					"body": "{foo:baz}"
+				},
+				"response": {
+					"body": "{foo:baz}"
+				}
+			}
+		);
 
-	it('#GET /mocks/{id}: should get a single mock');
+		var request = http.request(options, function(response) {
+			expect(response.statusCode).to.eql(200);
+
+			try {
+				fs.unlinkSync(path.resolve(availableFolder + '/anotherMockName.json'));
+			} catch (e) {
+				assert.fail('mock file does not exist', 'mock file exists');
+			}
+
+			done();
+		});
+		request.end(body);
+	});
+
+	it('#GET /mocks/{id}: should get a single mock', function(done) {
+		var url = 'http://localhost:' + config.get("admin").get("port") + '/api/mocks/2';
+		http.get(url, function (response) {
+			// Continuously update stream with data
+			var body = '';
+			response.on('data', function (d) {
+				body += d;
+			});
+			response.on('end', function () {
+				var expected = JSON.parse(fs.readFileSync('test/fixtures/admin/getMock.json', 'utf8'));
+				expect(JSON.parse(body)).to.eql(expected);
+
+				done();
+			});
+		});
+	});
 
 	it('#DELETE /mocks/{id}: should delete a mock');
 

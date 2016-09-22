@@ -1,6 +1,7 @@
 var fs = require('fs');
 var uuid = require('node-uuid');
 var sanitize = require('sanitize-filename');
+var camelCase = require('camelcase');
 var pathService = require('services/PathService');
 
 var Mock = function() {
@@ -109,7 +110,7 @@ Mock.prototype.saveToFile = function() {
 	}
 
 	if (!this.getFileName()) {
-		var fileName = pathService.getMockAvailableFolderPath() + sanitize(this.getName()) + ".json";
+		var fileName = pathService.getMockAvailableFolderPath() + camelCase(sanitize(this.getName())) + ".json";
 		this.setFileName(fileName);
 	}
 

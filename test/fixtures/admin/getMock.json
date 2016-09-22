@@ -1,0 +1,16 @@
+{
+  "message": {
+    "description": "a GET mock for testing",
+    "fileName": "/path/to/getMock.json",
+    "id": "2",
+    "name": "a GET mock",
+    "request": {
+      "body": "",
+      "method": "GET",
+      "uri": "/a/path/?param=1"
+    },
+    "response": {
+      "body": "{foo:baz}"
+    }
+  }
+}
