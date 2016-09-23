@@ -1,5 +1,5 @@
 var path = require("path");
-var fs = require('fs');
+var fs = require('fs-extra');
 
 // load config
 var config = require('config');
@@ -8,15 +8,40 @@ var loggingConfig = config.get("logging");
 
 /**
  * PathService object declaration. Could be made a function object for more flexibility.
+ * Creates the folders for mocks if they do not already exist.
  */
-var PathService = {};
+var PathService = function() {
+    this._createDirectoryIfItDoesNotExist(this.getMockSetPath());
+    this._createDirectoryIfItDoesNotExist(this.getMockAvailableFolderPath());
+    this._createDirectoryIfItDoesNotExist(this.getMockEnabledFolderPath());
+};
+
+/**
+ * Creates a folder if it does not already exist.
+ * @param folderPath The folder path which should be created if it does not exist.
+ * @private
+ */
+PathService.prototype._createDirectoryIfItDoesNotExist = function(folderPath) {
+    console.log('Creating folder structure: ' + folderPath);
+    fs.stat(folderPath, function (err, stat) {
+        // Create file if it does not exist
+        if(err == null || err == 'undefined'){
+            console.log("Folder path aready exists: " + folderPath);
+        } else if(err.code == 'ENOENT') {
+            console.log('Creating folder structure: ' + folderPath);
+            fs.mkdirs(folderPath);
+        } else {
+            throw 'Failed to check for folder existence: ' + folderPath + " with error code: " +  err.code;
+        }
+    });
+};
 
 /**
  * Returns the path to the file where the requests are being saved.
  *
  * @returns {String} Returns the path to the file where the requests are being saved.
  */
-PathService.getLogFilePath = function() {
+PathService.prototype.getLogFilePath = function() {
    return path.resolve(loggingConfig.get("forwardedRequests").get("file"));
 };
 
@@ -25,7 +50,7 @@ PathService.getLogFilePath = function() {
  *
  * @returns {String} Returns the path to the file where the mocks which were returned to the caller are stored.
  */
-PathService.getReturnedMocksLogFilePath = function() {
+PathService.prototype.getReturnedMocksLogFilePath = function() {
     return path.resolve(loggingConfig.get("returnedMocks").get("file"));
 };
 
@@ -34,7 +59,7 @@ PathService.getReturnedMocksLogFilePath = function() {
  * 
  * @returns {String} Path to the folder where the mock sets are being saved.
  */
-PathService.getMockSetPath = function() {
+PathService.prototype.getMockSetPath = function() {
     return path.resolve(mockConfig.get("mockSetFolder"))  + path.sep;
 };
 
@@ -43,7 +68,7 @@ PathService.getMockSetPath = function() {
  *
  * @returns {String} Returns the path to the folder where the enabled mocks are being stored.
  */
-PathService.getMockEnabledFolderPath = function() {
+PathService.prototype.getMockEnabledFolderPath = function() {
     return path.resolve(mockConfig.get("enabledFolder")) + path.sep;
 };
 
@@ -52,7 +77,7 @@ PathService.getMockEnabledFolderPath = function() {
 *
 * @returns {String} Returns the path to the folder where the available mocks are being stored.
 */
-PathService.getMockAvailableFolderPath = function() {
+PathService.prototype.getMockAvailableFolderPath = function() {
     return path.resolve(mockConfig.get("availableFolder")) + path.sep;
 };
 
@@ -64,7 +89,7 @@ PathService.getMockAvailableFolderPath = function() {
  * 					corresponding folder.
  * @returns {Object} The file path of the mock
  */
-PathService.getMockPath = function(mockFileName, mockEnabled) {
+PathService.prototype.getMockPath = function(mockFileName, mockEnabled) {
     var mockPath = '';
 
     // Determine if the mock is enabled or disabled
@@ -87,7 +112,7 @@ PathService.getMockPath = function(mockFileName, mockEnabled) {
  *   - filePath: The file path of the mock
  *   - enabled: True or false depending if the mock is enabled or disabled
  */
-PathService.getMockPathBySearch = function(mockFileName) {
+PathService.prototype.getMockPathBySearch = function(mockFileName) {
     // ToDo: What should happen if the mock is not found? Throw an exception?
     if(fs.existsSync(PathService.getMockPath(mockFileName, false))){
         return {
@@ -109,7 +134,7 @@ PathService.getMockPathBySearch = function(mockFileName) {
  * @param {String} dir The directory to look for mock files
  * @returns {Array}
  */
-PathService.getListOfMockFiles = function(dir) {
+PathService.prototype.getListOfMockFiles = function(dir) {
 	var mockFiles = [];
 	var fileList = fs.readdirSync(dir);
 
@@ -130,4 +155,4 @@ PathService.getListOfMockFiles = function(dir) {
 	return mockFiles;
 };
 
-module.exports = PathService;
+module.exports = new PathService();
