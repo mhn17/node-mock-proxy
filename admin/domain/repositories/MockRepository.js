@@ -1,6 +1,8 @@
 var fs = require('fs-extra');
 var path = require('path');
 var Mock = require('domain/models/Mock');
+var MockRequest = require('domain/models/MockRequest');
+var MockResponse = require('domain/models/MockResponse');
 
 var MockRepository = function(pathService) {
 	this.pathService = pathService;
@@ -195,12 +197,18 @@ MockRepository.prototype.createMockOrUpdate = function(data) {
 		mock = this.findById(data.id);
 	}
 
+	var request = new MockRequest();
+	request.setUri(data.request.uri);
+	request.setMethod(data.request.method);
+	request.setBody(data.request.body);
+
+	var response = new MockResponse();
+	response.setBody(data.response.body);
+
 	mock.setName(data.name);
 	mock.setDescription(data.description);
-	mock.setRequestUri(data.requestUri);
-	mock.setRequestMethod(data.requestMethod);
-	mock.setRequestBody(data.requestBody);
-	mock.setResponseBody(data.responseBody);
+	mock.setRequest(request);
+	mock.setResponse(response);
 
 	mock.saveToFile();
 };

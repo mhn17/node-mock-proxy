@@ -19,10 +19,10 @@ describe('Mock', function() {
 			expect(mock.id).to.equal('2');
 			expect(mock.name).to.equal('a GET mock');
 			expect(mock.description).to.equal('a GET mock for testing');
-			expect(mock.requestUri).to.equal('/a/path/?param=1');
-			expect(mock.requestMethod).to.equal('GET');
-			expect(mock.requestBody).to.be.empty;
-			expect(mock.responseBody).to.equal('{foo:baz}');
+			expect(mock.request.uri).to.equal('/a/path/?param=1');
+			expect(mock.request.method).to.equal('GET');
+			expect(mock.request.body).to.be.empty;
+			expect(mock.response.body).to.equal('{foo:baz}');
 		});
 
 		it('should throw an error when the path is not set', function() {

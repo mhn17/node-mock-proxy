@@ -29,12 +29,12 @@ router.get('/', function(req, res) {
 			name: mock.getName(),
 			description: mock.getDescription(),
 			request: {
-				uri: mock.getRequestUri(),
-				method: mock.getRequestMethod(),
-				body: mock.getRequestBody()
+				uri: mock.getRequest().getUri(),
+				method: mock.getRequest().getMethod(),
+				body: mock.getRequest().getBody()
 			},
 			response: {
-				body: mock.getResponseBody()
+				body: mock.getResponse().getBody()
 			},
 			enabled: true
 	  	});
@@ -47,12 +47,12 @@ router.get('/', function(req, res) {
 			name: mock.getName(),
 			description: mock.getDescription(),
 			request: {
-				uri: mock.getRequestUri(),
-				method: mock.getRequestMethod(),
-				body: mock.getRequestBody()
+				uri: mock.getRequest().getUri(),
+				method: mock.getRequest().getMethod(),
+				body: mock.getRequest().getBody()
 			},
 			response: {
-				body: mock.getResponseBody()
+				body: mock.getResponse().getBody()
 			},
 			enabled: false
 	  	});
@@ -123,7 +123,7 @@ router.put('/:id/disable', function(req, res) {
 // create manually
 router.post('/', function(req, res) {
 	console.log("creating mock manually");
-        
+
 	mockRepository.createMockOrUpdate(req.body);
 
 	res.statusCode = 200;

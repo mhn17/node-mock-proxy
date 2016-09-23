@@ -1,3 +1,5 @@
+require('./testBootstrap');
+
 var expect = require('chai').expect;
 var fs = require('fs');
 var path = require('path');
@@ -6,8 +8,8 @@ var config = require('config');
 var availableFolder = config.get('mocks').get('availableFolder');
 var enabledFolder = config.get('mocks').get('enabledFolder');
 
-require("./../../app");
-var MockLUT = require('services/MockLUT');
+var MockProxyServer = require('MockProxyServer');
+var mockProxyServer = new MockProxyServer();
 
 describe('Deliver mock functional test:', function () {
 
@@ -32,19 +34,17 @@ describe('Deliver mock functional test:', function () {
 		fs.symlinkSync(path.resolve(availableFolder + '/path/to/postMock.json'),
 			path.resolve(enabledFolder + '/path/to/postMock.json'));
 
-		// rebuild cache
-		new MockLUT().buildCache();
+		// restart server
+		mockProxyServer.stop();
+		mockProxyServer.start();
 	});
 
 	afterEach('after each', function() {
 		// create sym links for enables mocks
 		fs.unlinkSync(path.resolve(enabledFolder + '/path/to/getMock.json'));
 		fs.unlinkSync(path.resolve(enabledFolder + '/path/to/postMock.json'));
-	});
 
-	after('', function() {
-		process.mainModule.mockProxyServer.stop();
-		process.mainModule.adminServer.stop();
+		mockProxyServer.stop();
 	});
 
 	it('should deliver a mock for a GET request', function (done) {

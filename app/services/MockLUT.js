@@ -57,7 +57,11 @@ MockLUT.prototype._addFileToTable = function(filePath) {
 	mock.setFileName(filePath);
 	mock.readFromFile();
 
-	var key = this.mockFileNameService.getHash(mock.getRequestUri(), mock.getRequestMethod(), mock.getRequestBody());
+	var key = this.mockFileNameService.getHash(
+		mock.getRequest().getUri(),
+		mock.getRequest().getMethod(),
+		mock.getRequest().getBody()
+	);
 	this.lookUpTable[key] = {
 		'fileName': mock.getFileName(),
 		'id': mock.getId()

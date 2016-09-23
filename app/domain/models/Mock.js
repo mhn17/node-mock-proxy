@@ -3,6 +3,8 @@ var uuid = require('node-uuid');
 var sanitize = require('sanitize-filename');
 var camelCase = require('camelcase');
 var pathService = require('services/PathService');
+var Request = require('domain/models/MockRequest');
+var Response = require('domain/models/MockResponse');
 
 var Mock = function() {
 	this.fileName = "";
@@ -10,10 +12,8 @@ var Mock = function() {
 	this.id = "";
 	this.name = "";
 	this.description = "";
-	this.requestUri = "";
-	this.requestMethod = "";
-	this.requestBody = "";
-	this.responseBody = "";
+	this.request = null;
+	this.response = null;
 
 	return this;
 };
@@ -50,37 +50,22 @@ Mock.prototype.getDescription = function() {
 	return this.description;
 };
 
-Mock.prototype.setRequestUri = function(requestUri) {
-	this.requestUri = requestUri;
+Mock.prototype.setRequest = function(request) {
+	this.request = request;
 };
 
-Mock.prototype.getRequestUri = function() {
-	return this.requestUri;
+Mock.prototype.getRequest = function() {
+	return this.request;
 };
 
-Mock.prototype.setRequestMethod = function(requestMethod) {
-	this.requestMethod = requestMethod;
+Mock.prototype.setResponse = function(response) {
+	this.response = response;
 };
 
-Mock.prototype.getRequestMethod = function() {
-	return this.requestMethod;
+Mock.prototype.getResponse = function() {
+	return this.response;
 };
 
-Mock.prototype.setRequestBody = function(requestBody) {
-	this.requestBody = requestBody;
-};
-
-Mock.prototype.getRequestBody = function() {
-	return this.requestBody;
-};
-
-Mock.prototype.setResponseBody = function(responseBody) {
-	this.responseBody = responseBody;
-};
-
-Mock.prototype.getResponseBody = function() {
-	return this.responseBody;
-};
 
 Mock.prototype.readFromFile = function() {
 	if (!this.getFileName()) {
@@ -92,13 +77,21 @@ Mock.prototype.readFromFile = function() {
 	try {
 		var data = fs.readFileSync(this.getFileName(), {"encoding": "utf-8"});
 		var jsonData = JSON.parse(data);
+
+		var request = new Request();
+		request.setUri(jsonData.request.uri);
+		request.setMethod(jsonData.request.method);
+		request.setBody(jsonData.request.body);
+
+		var response = new Response();
+		response.setBody(jsonData.response.body);
+
 		that.setId(jsonData.id);
 		that.setName(jsonData.name);
 		that.setDescription(jsonData.description);
-		that.setRequestUri(jsonData.request.uri);
-		that.setRequestMethod(jsonData.request.method);
-		that.setRequestBody(jsonData.request.body);
-		that.setResponseBody(jsonData.response.body);
+		that.setRequest(request);
+		that.setResponse(response);
+
 	} catch (e) {
 		throw new Error("Could not read mock file " + this.getFileName());
 	}
@@ -119,12 +112,12 @@ Mock.prototype.saveToFile = function() {
 		"name": this.getName(),
 		"description": this.getDescription(),
 		"request": {
-			"uri": this.getRequestUri(),
-			"method": this.getRequestMethod(),
-			"body": this.getRequestBody()
+			"uri": this.getRequest().getUri(),
+			"method": this.getRequest().getMethod(),
+			"body": this.getRequest().getBody()
 		},
 		"response": {
-			"body": this.getResponseBody()
+			"body": this.getResponse().getBody()
 		}
 	};
 
@@ -134,6 +127,5 @@ Mock.prototype.saveToFile = function() {
 		throw new Error("Could not write mock file " + this.getFileName());
 	}
 };
-
 
 module.exports = Mock;

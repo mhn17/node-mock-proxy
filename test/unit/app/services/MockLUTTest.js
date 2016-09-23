@@ -104,10 +104,10 @@ describe('MockLUT', function() {
 			expect(mock.id).to.equal('3');
 			expect(mock.name).to.equal('a POST mock');
 			expect(mock.description).to.equal('a POST mock for testing');
-			expect(mock.requestUri).to.equal('/a/path/?param=2');
-			expect(mock.requestMethod).to.equal('POST');
-			expect(mock.requestBody).to.equal('{param2:lorem}');
-			expect(mock.responseBody).to.equal('{foo:postResponse}');
+			expect(mock.request.uri).to.equal('/a/path/?param=2');
+			expect(mock.request.method).to.equal('POST');
+			expect(mock.request.body).to.equal('{param2:lorem}');
+			expect(mock.response.body).to.equal('{foo:postResponse}');
 		});
 
 		it('should return null', function() {

@@ -30,10 +30,10 @@ RequestProcessor.prototype.processRequest = function (req, res) {
             id: mock.getId(),
             name: mock.getName(),
             description: mock.getDescription(),
-            requestUri: mock.getRequestUri(),
-            requestMethod: mock.getRequestMethod(),
-            requestBody: mock.getRequestBody(),
-            responseBody: mock.getResponseBody()
+            requestUri: mock.getRequest().getUri(),
+            requestMethod: mock.getRequest().getMethod(),
+            requestBody: mock.getRequest().getBody(),
+            responseBody: mock.getResponse().getBody()
         });
 
         // set file contents as response body
@@ -41,7 +41,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
             200,
             {'Content-Type': this.proxyConfig.get("mock.contentType")}
         );
-        res.end(mock.responseBody);
+        res.end(mock.response.body);
     } else {
         // fix for node-http-proxy issue 180
         // (https://github.com/nodejitsu/node-http-proxy/issues/180)
