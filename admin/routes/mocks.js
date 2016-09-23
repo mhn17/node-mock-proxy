@@ -4,18 +4,20 @@ var config = require('config');
 var fs = require('fs');
 var mv = require('mv');
 var mkdirp = require('mkdirp');
-var path = require("path");
+var path = require('path');
 var MockLUT = require('services/MockLUT');
 
 // Services, repositories
-var pathService = require("services/PathService");
-var MockRepository = require("domain/repositories/MockRepository");
+var pathService = require('services/PathService');
+var MockRepository = require('domain/repositories/MockRepository');
 var mockRepository = new MockRepository(pathService);
 var mockLUT = new MockLUT();
+var MockTransformer = require('transformers/MockTransformer');
+var mockTransformer = new MockTransformer();
 
 // Get list of mocks
 router.get('/', function(req, res) {
-    console.log("List all mocks");
+    console.log('List all mocks');
 
 	var enabledMocks = mockRepository.findEnabledMocks();
 	var disabledMocks = mockRepository.findDisabledMocks();
@@ -23,39 +25,11 @@ router.get('/', function(req, res) {
 	var mockList = [];
 
 	enabledMocks.forEach(function(mock) {
-		mockList.push({
-			id: mock.getId(),
-			fileName: mock.getFileName().replace(pathService.getMockEnabledFolderPath(),""),
-			name: mock.getName(),
-			description: mock.getDescription(),
-			request: {
-				uri: mock.getRequest().getUri(),
-				method: mock.getRequest().getMethod(),
-				body: mock.getRequest().getBody()
-			},
-			response: {
-				body: mock.getResponse().getBody()
-			},
-			enabled: true
-	  	});
+		mockList.push(mockTransformer.transformToDto(mock, true));
 	});
 
 	disabledMocks.forEach(function(mock) {
-		mockList.push({
-			id: mock.getId(),
-			fileName: mock.getFileName().replace(pathService.getMockAvailableFolderPath(),""),
-			name: mock.getName(),
-			description: mock.getDescription(),
-			request: {
-				uri: mock.getRequest().getUri(),
-				method: mock.getRequest().getMethod(),
-				body: mock.getRequest().getBody()
-			},
-			response: {
-				body: mock.getResponse().getBody()
-			},
-			enabled: false
-	  	});
+		mockList.push(mockTransformer.transformToDto(mock, false));
 	});
 
     res.statusCode = 200;
@@ -66,7 +40,7 @@ router.get('/', function(req, res) {
 
 // Get list of mocks
 router.get('/getReturnedMocks', function(req, res) {
-	console.log("List last returned mocks with limit " + req.query.limit);
+	console.log('List last returned mocks with limit ' + req.query.limit);
 	var mockList = mockRepository.findReturnedMocks(req.query.limit);
 
 	res.statusCode = 200;
@@ -77,16 +51,22 @@ router.get('/getReturnedMocks', function(req, res) {
 router.get('/:id', function(req, res) {
     var mockId = req.params.id;
 
-    console.log("Get mock with id: " + mockId);
+    console.log('Get mock with id: ' + mockId);
 
-    // Set response
-    res.statusCode = 200;
-    res.json({ message: mockRepository.findById(mockId) });
+	var mock = mockRepository.findById(mockId);
+
+	// Set response
+	if (mock) {
+		res.statusCode = 200;
+		res.json(mockTransformer.transformToDto(mock));
+	} else {
+		res.statusCode = 404;
+	}
 });
 
 // Delete a mock
 router.delete('/:id', function(req, res) {
-	console.log("Delete mock: " + req.params.id);
+	console.log('Delete mock: ' + req.params.id);
 	mockRepository.deleteMockById(req.params.id);
     res.statusCode = 200;
     res.json({ message: 'OK: '});
@@ -97,7 +77,7 @@ router.delete('/:id', function(req, res) {
 
 // Move available mock to enabled mocks
 router.put('/:id/enable', function(req, res) {
-	console.log("Enable mock: " + req.params.id);
+	console.log('Enable mock: ' + req.params.id);
 	mockRepository.enableMockById(req.params.id);
 
 	res.statusCode = 200;
@@ -110,7 +90,7 @@ router.put('/:id/enable', function(req, res) {
 // Move enabled mock to availabled mocks
 //@Todo: When the mock is disabled the previous folder structer will not be deleted -> Needs some better handling?
 router.put('/:id/disable', function(req, res) {
-	console.log("Disable mock: " + req.params.id);
+	console.log('Disable mock: ' + req.params.id);
 	mockRepository.disableMockById(req.params.id);
 
 	res.statusCode = 200;
@@ -122,7 +102,7 @@ router.put('/:id/disable', function(req, res) {
 
 // create manually
 router.post('/', function(req, res) {
-	console.log("creating mock manually");
+	console.log('creating mock manually');
 
 	mockRepository.createMockOrUpdate(req.body);
 
