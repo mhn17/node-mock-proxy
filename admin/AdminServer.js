@@ -7,6 +7,8 @@ var fs          = require('fs');
 // routes
 var requestRoutes = require('routes/requests');
 var mockRoutes = require('routes/mocks');
+var mockSetRoutes = require('routes/mockSets');
+var expressWs = require('express-ws');
 
 // Make the AdminServer to a real web inserver via the express module
 var AdminServer = function() {
@@ -30,6 +32,7 @@ AdminServer.prototype.start = function() {
 
     // routes
     this.setUpRoutes();
+    this.setupWebsocketLog();
 
     // start server
     this.server = this.app.listen(this.adminConfig.get('port'), function () {
@@ -39,9 +42,48 @@ AdminServer.prototype.start = function() {
 
 // Add a prototype stop function for shutting down the server
 AdminServer.prototype.stop = function() {
-    if (this.server) {
-        this.server.close();
-    }
+	if (this.server) {
+		this.server.close();
+	}
+};
+
+/**
+ * Send Log via WS
+ */
+AdminServer.prototype.setupWebsocketLog = function() {
+
+    // starting Webservice...
+    var ews = expressWs(this.app);
+    var wsApp = ews.app;
+    wsApp.ws('/admin/ws/logs', function (ws, req) {});
+    var aWss = ews.getWss('/admin/ws/logs');
+
+    // function to send message to clients...
+    var sendLog = function(type) {
+
+        type = arguments[0];
+        args = arguments[1];
+
+        var allArguments = []
+
+        for (key in args) {
+            allArguments.push(args[key]);
+        }
+
+        aWss.clients.forEach(function (client) {
+            client.send(JSON.stringify({type:type, 'foo':'bar', values:allArguments}));
+        });
+    };
+
+    // overwriting console
+    ['log', 'warn', 'error', 'info'].forEach(function(value) {
+        var oldConsoleFunction = console[value];
+        console[value] = function() {
+            sendLog(value, arguments);
+
+            oldConsoleFunction.apply(console, arguments);
+        };
+    });
 };
 
 // Add a prototype function to setup the route stuff
@@ -53,13 +95,13 @@ AdminServer.prototype.setUpRoutes = function() {
     });
 
     this.app.use(function (req, res, next) {
-        console.log(req.body) // populated!
+        console.log(req.body); // populated!
         next();
     });
 
     this.app.use('/api/requests', requestRoutes);
     this.app.use('/api/mocks', mockRoutes);
-
+    this.app.use('/api/mock-sets', mockSetRoutes);
     this.app.use('/api', router);
 };
 
