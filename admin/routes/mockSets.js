@@ -4,7 +4,10 @@ var router = express.Router();
 // Services, repositories
 var pathService = require("services/PathService");
 var MockSetRepository = require("domain/repositories/MockSetRepository");
+var MockLUT = require('services/MockLUT');
+
 var mockSetRepository = new MockSetRepository(pathService);
+var mockLUT = new MockLUT();
 
 // Get list of mock sets
 router.get('/', function(req, res) {
@@ -47,6 +50,9 @@ router.put('/:id/enable', function(req, res) {
 	console.log("Enable mockSet: " + req.params.id);
 	mockSetRepository.enableMockSetById(req.params.id);
 
+    mockLUT.clearCache();
+    mockLUT.buildCache();
+
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
 });
@@ -55,6 +61,9 @@ router.put('/:id/enable', function(req, res) {
 router.put('/:id/disable', function(req, res) {
 	console.log("Disable mockSet: " + req.params.id);
 	mockSetRepository.disableMockSetById(req.params.id);
+
+    mockLUT.clearCache();
+    mockLUT.buildCache();
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
