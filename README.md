@@ -29,11 +29,13 @@ To run the test application which will always return a standard response use in 
 
 ## Chrome plugin
 A chrome plugin with some nice features like
+
 1. Create mocks directly from captured requests and their corresponding responses which were captured by the mock proxy.
 2. Manage existing mocks (activation/deactivation/edit/delete/response preview).
 3. Track the last x mocks which were returned by the mock proxy.
 4. Create mock sets to group mocks together.
 5. Take a look at the mock proxy logs.
+
 can be found here [mock proxy](https://github.com/JulHorn/mock_proxy_chrome_plugin).
 
 
