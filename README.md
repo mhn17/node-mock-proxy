@@ -36,6 +36,6 @@ A chrome plugin with some nice features like
 4. Create mock sets to group mocks together.
 5. Take a look at the mock proxy logs.
 
-can be found here [mock proxy](https://github.com/JulHorn/mock_proxy_chrome_plugin).
+can be found here [chrome plugin](https://github.com/JulHorn/mock_proxy_chrome_plugin).
 
 
