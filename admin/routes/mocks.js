@@ -88,7 +88,6 @@ router.put('/:id/enable', function(req, res) {
 });
 
 // Move enabled mock to availabled mocks
-//@Todo: When the mock is disabled the previous folder structer will not be deleted -> Needs some better handling?
 router.put('/:id/disable', function(req, res) {
 	console.log('Disable mock: ' + req.params.id);
 	mockRepository.disableMockById(req.params.id);
