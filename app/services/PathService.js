@@ -56,7 +56,7 @@ PathService.prototype.getReturnedMocksLogFilePath = function() {
 
 /**
  * Returns the path to the folder where the mock sets are being saved.
- * 
+ *
  * @returns {String} Path to the folder where the mock sets are being saved.
  */
 PathService.prototype.getMockSetPath = function() {
@@ -143,7 +143,7 @@ PathService.prototype.getListOfMockFiles = function(dir) {
         var filePath = path.join(dir, file);
         var fileStat = fs.statSync(filePath);
 
-        if (!file || (file.indexOf(".json") == -1 && !fileStat.isDirectory())) { break; }
+        if (!file || (file.indexOf(".json") == -1 && !fileStat.isDirectory())) { continue; }
 
 		if (fileStat.isDirectory()) {
 			mockFiles = mockFiles.concat(this.getListOfMockFiles(filePath));

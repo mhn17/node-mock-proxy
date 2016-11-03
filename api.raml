@@ -36,7 +36,7 @@ types:
         description: The number of results to be shown
       offset:
         type: number
-        description: The offset of the resultset
+        description: The offset of the result set
     responses:
       200:
         body:
@@ -46,25 +46,39 @@ types:
               type: object
               properties:
                 id: string
-                fileName: string
-                method: string
-                request: string
-                response: string
+                request:
+                    type: object
+                    properties:
+                        uri: string
+                        method: string
+                        body: string
+                response:
+                    type: object
+                    properties:
+                        body: string
             example: |
               [
                 {
                   "id": "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
-                  "fileName": "path/to/file.txt",
-                  "method": "GET",
-                  "request": "",
-                  "response": "{foo:bar}"
+                  "request": {
+                    "uri": "/path/to/get-request?foo=bar",
+                    "method": "GET",
+                    "body": ""
+                  },
+                  "response": {
+                    "body": {foo:bar}"
+                  }
                 },
                 {
                   "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-                  "fileName": "path/to/46767364328463767346863.txt",
-                  "method": "POST",
-                  "request": "{type:something}",
-                  "response": "{foo:buzz}"
+                  "request": {
+                    "uri": "/path/to/post-request",
+                    "method": "POST",
+                    "body": {type:something}"
+                  }
+                  "response": {
+                    "body": {foo:buzz}"
+                  }
                 }
               ]
   delete:
@@ -80,19 +94,29 @@ types:
           body:
             application/json:
               type: object
-              properties:
-                id: string
-                fileName: string
-                method: string
-                request: string
-                response: string
+                properties:
+                  id: string
+                  request:
+                      type: object
+                      properties:
+                          uri: string
+                          method: string
+                          body: string
+                  response:
+                      type: object
+                      properties:
+                          body: string
               example: |
                 {
-                  "id": "1234567-12c4-11e1-840d-7b25c5ee775a",
-                  "fileName": "path/to/46767364328463767346863.txt",
-                  "method": "POST",
-                  "request": "{type:something}",
-                  "response": "{foo:buzz}"
+                  "id": "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
+                  "request": {
+                    "uri": "/path/to/get-request?foo=bar",
+                    "method": "GET",
+                    "body": ""
+                  },
+                  "response": {
+                    "body": {foo:bar}"
+                  }
                 }
 /mocks:
   get:

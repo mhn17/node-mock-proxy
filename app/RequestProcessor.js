@@ -76,7 +76,7 @@ RequestProcessor.prototype.initProxy = function () {
     var responseData = '';
 
     // create proxy server
-    var proxy = httpProxy.createProxyServer({'ignorePath': true})
+    return httpProxy.createProxyServer({'ignorePath': true})
         .on('error', function (e) {
             console.log(JSON.stringify(e, null, ' '));
         })
@@ -86,8 +86,6 @@ RequestProcessor.prototype.initProxy = function () {
             });
         })
         .on('end', function (req, res) {
-            var mockFileName = that.mockFileNameService.getHashByRequest(req);
-
             // Fixes express bug in windows which causes originalUrl to
             // return the complete url with protocol and host
             var protAndHost = req.protocol + "://" + req.hostname;
@@ -96,24 +94,24 @@ RequestProcessor.prototype.initProxy = function () {
             that.forwardedRequestsLogger.info(
                 {
                     id: uuid.v1(),
-                    fileName: mockFileName,
-                    method: req.method,
-                    requestUri: reqUri,
-                    requestBody: req.body,
-                    response: responseData
-                },
-                'not matched incoming request'
+                    request: {
+                        uri: reqUri,
+                        method: req.method,
+                        body: req.body
+                    },
+                    response: {
+                        body: responseData
+                    }
+                }
             );
             responseData = '';
         });
-
-    return proxy;
 };
 
 // init request logging
 RequestProcessor.prototype.initRequestLog = function (logConfig) {
     // create request log
-    var forwardedRequestsLogger = bunyan.createLogger({
+    return bunyan.createLogger({
         name: 'requests',
         streams: [{
             type: "rotating-file",
@@ -122,14 +120,12 @@ RequestProcessor.prototype.initRequestLog = function (logConfig) {
             count: logConfig.get("rotation").get("count")
         }]
     });
-
-    return forwardedRequestsLogger;
 };
 
 // init mock logging
 RequestProcessor.prototype.initMockLog = function (logConfig) {
     // create mock log
-    var returnedMocksLogger = bunyan.createLogger({
+    return bunyan.createLogger({
         name: 'returnedMocks',
         streams: [{
             type: "rotating-file",
@@ -138,8 +134,6 @@ RequestProcessor.prototype.initMockLog = function (logConfig) {
             count: logConfig.get("rotation").get("count")
         }]
     });
-
-    return returnedMocksLogger;
 };
 
 RequestProcessor.prototype.getProxy = function () {

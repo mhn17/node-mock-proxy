@@ -18,14 +18,17 @@ router.get('/', function (req, res) {
         var requests = [];
         rawRequests.forEach(function(rawRequest) {
             var request = JSON.parse(rawRequest);
-           
+
             requests.push({
                 id: request.id,
-                fileName: request.fileName,
-                method: request.method,
-                requestUri: request.requestUri,
-                requestBody: request.requestBody,
-                response: request.response
+                request: {
+                    uri: request.requestUri,
+                    method: request.method,
+                    body: request.requestBody
+                },
+                response: {
+                    body: request.response
+                }
             });
         });
 
@@ -57,9 +60,7 @@ router.delete('/', function(req, res) {
 
 // Get response for a request in the log file
 router.get('/:id', function(req, res) {
-
     var requestId = req.params.id;
-    //console.log("Request", req);
     console.log("Get response for request: " + requestId);
 
     fs.readFile(pathService.getLogFilePath(), "utf-8", function(err, data) {
@@ -75,10 +76,14 @@ router.get('/:id', function(req, res) {
             requests.push({
                 id: request.id,
                 fileName: request.fileName,
-                method: request.method,
-                requestUri: request.requestUri,
-                requestBody: request.requestBody,
-                response: request.response
+                request: {
+                    uri: request.requestUri,
+                    method: request.method,
+                    body: request.requestBody
+                },
+                response: {
+                    body: request.response
+                }
             });
         });
 

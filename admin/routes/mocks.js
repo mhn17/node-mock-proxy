@@ -61,6 +61,7 @@ router.get('/:id', function(req, res) {
 		res.json(mockTransformer.transformToDto(mock));
 	} else {
 		res.statusCode = 404;
+		res.end();
 	}
 });
 
