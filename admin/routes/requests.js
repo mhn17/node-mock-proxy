@@ -22,12 +22,12 @@ router.get('/', function (req, res) {
             requests.push({
                 id: request.id,
                 request: {
-                    uri: request.requestUri,
-                    method: request.method,
-                    body: request.requestBody
+                    uri: request.request.uri,
+                    method: request.request.method,
+                    body: request.request.body
                 },
                 response: {
-                    body: request.response
+                    body: request.response.body
                 }
             });
         });
@@ -75,14 +75,13 @@ router.get('/:id', function(req, res) {
             var request = JSON.parse(rawRequest);
             requests.push({
                 id: request.id,
-                fileName: request.fileName,
                 request: {
-                    uri: request.requestUri,
-                    method: request.method,
-                    body: request.requestBody
+                    uri: request.request.uri,
+                    method: request.request.method,
+                    body: request.request.body
                 },
                 response: {
-                    body: request.response
+                    body: request.response.body
                 }
             });
         });
