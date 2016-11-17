@@ -26,15 +26,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
 
     if (mock) {
         console.log("Mock found, delivering response from " + mock.getFileName());
-        this.returnedMockLogger.info({
-            id: mock.getId(),
-            name: mock.getName(),
-            description: mock.getDescription(),
-            requestUri: mock.getRequest().getUri(),
-            requestMethod: mock.getRequest().getMethod(),
-            requestBody: mock.getRequest().getBody(),
-            responseBody: mock.getResponse().getBody()
-        });
+        this.returnedMockLogger.info(JSON.stringify(mock));
 
         // set file contents as response body
         res.writeHead(
