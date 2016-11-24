@@ -68,7 +68,7 @@ RequestProcessor.prototype.initProxy = function () {
     var responseData = '';
 
     // create proxy server
-    return httpProxy.createProxyServer({'ignorePath': true})
+    return httpProxy.createProxyServer({'ignorePath': true, 'changeOrigin': true})
         .on('error', function (e) {
             console.log(JSON.stringify(e, null, ' '));
         })
