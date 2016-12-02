@@ -11,18 +11,20 @@ var RequestProcessor = function (config, mockFileNameService, mockLUT) {
     this.mockFileNameService = mockFileNameService;
     this.mockLUT = mockLUT;
 
-    this.proxy = this.initProxy();
     this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));
     this.returnedMockLogger = this.initMockLog(config.get("logging").get("returnedMocks"));
 };
 
 // try to read file, otherwise forward to original target
 RequestProcessor.prototype.processRequest = function (req, res) {
+
+    var that = this;
+
     var hash = this.mockFileNameService.getHashByRequest(req);
     var mock = this.mockLUT.getMockByHash(hash);
 
     if (mock) {
-        console.log("Mock found, delivering response from " + mock.getFileName());
+        console.log("Mock found: " + mock.getFileName());
         this.returnedMockLogger.info({
             id: mock.getId(),
             name: mock.getName(),
@@ -42,6 +44,9 @@ RequestProcessor.prototype.processRequest = function (req, res) {
     } else {
         // fix for node-http-proxy issue 180
         // (https://github.com/nodejitsu/node-http-proxy/issues/180)
+
+
+
         if (req.method === "POST") {
             req.removeAllListeners('data');
             req.removeAllListeners('end');
@@ -53,9 +58,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
                 req.emit('end');
             });
         }
-        // end of fix
 
-		console.log('PassThru: '+req.originalUrl);
 
         // use
         var target = this.targetConfig.get("url") + req.originalUrl;
@@ -63,14 +66,21 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         // kill parsed query params, cause they already sit in the url!
         req.query = {};
 
-        this.proxy.web(req, res, {target: target});
+        var proxy = that.getProxyObject();
+
+        proxy.web(req, res, {target: target});
+        // end of fix
+
+
     }
 };
 
 // init proxy server
-RequestProcessor.prototype.initProxy = function () {
+RequestProcessor.prototype.getProxyObject = function () {
     var that = this;
     var responseData = '';
+
+    var startTime = process.hrtime();
 
     // create proxy server
     var proxy = httpProxy.createProxyServer({'ignorePath': true, changeOrigin: true})
@@ -83,6 +93,14 @@ RequestProcessor.prototype.initProxy = function () {
             });
         })
         .on('end', function (req, res) {
+
+            // time measure
+            var durationTime = process.hrtime(startTime);
+            var durationNS = durationTime[0] * 1e9 + durationTime[1];
+            var durationMS = Math.round(durationNS / 1000000);
+            console.log('PassThru: '+req.originalUrl+ " ("+durationMS+"ms)");
+
+
             var mockFileName = that.mockFileNameService.getHashByRequest(req);
 
             // Fixes express bug in windows which causes originalUrl to
