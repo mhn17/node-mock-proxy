@@ -25,7 +25,8 @@ router.get('/', function (req, res) {
                 method: request.method,
                 requestUri: request.requestUri,
                 requestBody: request.requestBody,
-                response: request.response
+                response: request.response,
+                time: request.time
             });
         });
 
