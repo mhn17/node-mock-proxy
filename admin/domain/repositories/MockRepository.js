@@ -186,7 +186,7 @@ MockRepository.prototype.disableMockById = function(mockId) {
 	this.toggleMockStateById(mockId, false);
 };
 
-MockRepository.prototype.createMockOrUpdate = function(data) {
+MockRepository.prototype.createMockOrUpdate = function(data, callback) {
 	var mock = new Mock();
 
 	// If id is set the already existing mock will be updated
@@ -203,6 +203,10 @@ MockRepository.prototype.createMockOrUpdate = function(data) {
 	mock.setResponseBody(data.responseBody);
 
 	mock.saveToFile();
+
+	if(callback) {
+		callback(mock.getId());
+	}
 };
 
 module.exports = MockRepository;
