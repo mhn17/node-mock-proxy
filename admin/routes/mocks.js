@@ -128,7 +128,7 @@ router.post('/', function(req, res) {
 		mockLUT.buildCache();
 
 		res.statusCode = 200;
-		res.json({ message: {id: id}});
+		res.json({id: id});
 	});
 });
 
