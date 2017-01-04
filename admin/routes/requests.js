@@ -91,8 +91,6 @@ router.get('/:id', function(req, res) {
                 }
         });
 
-        console.log(requestToResponse);
-
         // Set error response
         if (typeof err === 'undefined' || err === null) {
             // Set response

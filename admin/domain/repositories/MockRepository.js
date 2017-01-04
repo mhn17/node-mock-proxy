@@ -191,7 +191,7 @@ MockRepository.prototype.createMockOrUpdate = function(data, callback) {
 
 	// If id is set the already existing mock will be updated
 	if(data.id){
-		console.log(data.id);
+		console.log("Updating mock with id " + data.id);
 		mock = this.findById(data.id);
 	}
 

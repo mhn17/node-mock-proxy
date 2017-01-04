@@ -93,11 +93,10 @@ AdminServer.prototype.setUpRoutes = function() {
 
     // root URL
     router.get('/', function(req, res) {
-        res.json({ message: 'hooray! welcome to our api!' });
+        res.json({ message: 'Hooray! Welcome to our api!' });
     });
 
     this.app.use(function (req, res, next) {
-        console.log(req.body); // populated!
         next();
     });
 

@@ -57,6 +57,26 @@ router.put('/:id/enable', function(req, res) {
 	res.json({ message: 'OK'});
 });
 
+// Enable all mock sets
+router.put('/enableAll', function(req, res) {
+    var mockSetList = mockSetRepository.findAll();
+
+    console.log("Enabling all mock sets.");
+
+    mockSetList.forEach(function (mockSet) {
+        console.log("Enabling mock set with id: " + mockSet.getId());
+        mockSetRepository.enableMockSetById(mockSet.getId());
+    });
+
+    console.log("Finished enabling all mock sets.");
+
+    mockLUT.clearCache();
+    mockLUT.buildCache();
+
+    res.statusCode = 200;
+    res.json({ message: 'OK'});
+});
+
 // Disable mocks in a mock set
 router.put('/:id/disable', function(req, res) {
 	console.log("Disable mockSet: " + req.params.id);
@@ -67,6 +87,26 @@ router.put('/:id/disable', function(req, res) {
 
 	res.statusCode = 200;
 	res.json({ message: 'OK'});
+});
+
+// Enable all mock sets
+router.put('/disableAll', function(req, res) {
+    var mockSetList = mockSetRepository.findAll();
+
+    console.log("Disabling all mock sets.");
+
+    mockSetList.forEach(function (mockSet) {
+        console.log("Disabling mock set with id: " + mockSet.getId());
+        mockSetRepository.disableMockSetById(mockSet.getId());
+    });
+
+    console.log("Finished disabling all mock sets.");
+
+    mockLUT.clearCache();
+    mockLUT.buildCache();
+
+    res.statusCode = 200;
+    res.json({ message: 'OK'});
 });
 
 module.exports = router;

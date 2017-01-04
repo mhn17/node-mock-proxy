@@ -85,7 +85,7 @@ RequestProcessor.prototype.getProxyObject = function () {
     // create proxy server
     var proxy = httpProxy.createProxyServer({'ignorePath': true, changeOrigin: true})
         .on('error', function (e) {
-            console.log(JSON.stringify(e, null, ' '));
+            console.log("Error: ", JSON.stringify(e, null, ' '));
         })
         .on('proxyRes', function (proxyRes, req) {
             proxyRes.on('data', function (dataBuffer) {
@@ -98,7 +98,7 @@ RequestProcessor.prototype.getProxyObject = function () {
             var durationTime = process.hrtime(startTime);
             var durationNS = durationTime[0] * 1e9 + durationTime[1];
             var durationMS = Math.round(durationNS / 1000000);
-            console.log('PassThru: '+req.originalUrl+ " ("+durationMS+"ms)");
+            console.log('PassThrough: ' + req.originalUrl+ " (" + durationMS + "ms)");
 
 
             var mockFileName = that.mockFileNameService.getHashByRequest(req);
