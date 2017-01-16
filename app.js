@@ -25,7 +25,7 @@ new MockLUT().buildCache();
 var routes = require('routes/index');
 
 // get body as raw to create hash of post body
-app.use(bodyParser.text({"type": "*/*"}));
+app.use(bodyParser.text({"type": "*/*", limit:1024*1024*20}));
 app.use('/*', routes);
 
 // start mock proxy server

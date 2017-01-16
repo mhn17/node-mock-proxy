@@ -53,7 +53,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
 
             process.nextTick(function () {
                 if (req.body) {
-                    req.emit('data', req.body);
+                    req.emit('data', req.body + '');
                 }
                 req.emit('end');
             });
@@ -99,7 +99,6 @@ RequestProcessor.prototype.getProxyObject = function () {
             var durationNS = durationTime[0] * 1e9 + durationTime[1];
             var durationMS = Math.round(durationNS / 1000000);
             console.log('PassThrough: ' + req.originalUrl+ " (" + durationMS + "ms)");
-
 
             var mockFileName = that.mockFileNameService.getHashByRequest(req);
 
