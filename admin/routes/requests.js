@@ -28,7 +28,8 @@ router.get('/', function (req, res) {
                 },
                 response: {
                     body: request.response.body
-                }
+                },
+				info: request.info
             });
         });
 
@@ -82,7 +83,8 @@ router.get('/:id', function(req, res) {
                 },
                 response: {
                     body: request.response.body
-                }
+                },
+                info: request.info
             });
         });
 

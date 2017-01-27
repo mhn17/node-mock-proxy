@@ -83,6 +83,12 @@ RequestProcessor.prototype.initProxy = function () {
             var protAndHost = req.protocol + "://" + req.hostname;
             var reqUri = req.originalUrl.replace(protAndHost, "");
 
+            var info = "";
+            if (req.header("soapaction")) {
+                info += "soapaction: " + req.header("soapaction").substring(req.header("soapaction").lastIndexOf("\/") + 1, req.header("soapaction").length-1);
+            }
+
+
             that.forwardedRequestsLogger.info(
                 {
                     id: uuid.v1(),
@@ -93,7 +99,8 @@ RequestProcessor.prototype.initProxy = function () {
                     },
                     response: {
                         body: responseData
-                    }
+                    },
+                    info: info
                 }
             );
             responseData = '';
