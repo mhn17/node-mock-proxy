@@ -28,9 +28,14 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         console.log("Mock found, delivering response from " + mock.getFileName());
         this.returnedMockLogger.info(JSON.stringify(mock));
 
+        var statusCode = 200;
+        if (mock.statusCode) {
+            statusCode = mock.statusCode;
+        }
+
         // set file contents as response body
         res.writeHead(
-            200,
+			statusCode,
             {'Content-Type': this.proxyConfig.get("mock.contentType")}
         );
         res.end(mock.response.body);

@@ -12,6 +12,7 @@ var Mock = function() {
 	this.id = "";
 	this.name = "";
 	this.description = "";
+	this.statusCode = 200;
 	this.request = null;
 	this.response = null;
 
@@ -48,6 +49,14 @@ Mock.prototype.setDescription = function(description) {
 
 Mock.prototype.getDescription = function() {
 	return this.description;
+};
+
+Mock.prototype.setStatusCode = function(statusCode) {
+	this.statusCode = statusCode;
+};
+
+Mock.prototype.getStatusCode = function() {
+	return this.statusCode;
 };
 
 Mock.prototype.setRequest = function(request) {
@@ -91,6 +100,10 @@ Mock.prototype.readFromFile = function() {
 		that.setDescription(jsonData.description);
 		that.setRequest(request);
 		that.setResponse(response);
+
+		if (jsonData.statusCode) {
+			that.setStatusCode(jsonData.statusCode)
+		}
 
 	} catch (e) {
 		throw new Error("Could not read mock file " + this.getFileName());
