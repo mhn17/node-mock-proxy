@@ -143,7 +143,12 @@ PathService.prototype.getListOfMockFiles = function(dir) {
         var filePath = path.join(dir, file);
         var fileStat = fs.statSync(filePath);
 
-        if (!file || (file.indexOf(".json") == -1 && !fileStat.isDirectory())) { break; }
+        if (!file || (file.indexOf(".json") == -1 && !fileStat.isDirectory()))
+        {
+            console.log('The file ' + file
+                + ' in folder ' + dir + ' is no mock file and will be ignored.');
+            continue;
+        }
 
 		if (fileStat.isDirectory()) {
 			mockFiles = mockFiles.concat(this.getListOfMockFiles(filePath));
