@@ -4,7 +4,7 @@ process.mainModule.instances = {};
 // configure require
 require('app-module-path').addPath(__dirname + '/app');
 require('app-module-path').addPath(__dirname + '/admin');
-require('app-module-path').addPath(__dirname + '/custom-processors');
+require('app-module-path').addPath(__dirname + '/extensions');
 
 // require modules
 var AdminServer = require('AdminServer');

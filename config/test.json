@@ -8,23 +8,25 @@
       "contentType": "application/json"
     }
   },
-	"logging": {
-    	"forwaredRequests": {
-			"file": "test/logs/requestsForwarded.log",
-			"rotation": {
-				"period": "1d",
-				"count": 3
-			}
-		}
-	},
-	"admin": {
-		"port": "8097"
-	},
-	"mocks": {
-		"enabledFolder": "test/fixtures/mocks-enabled",
-		"availableFolder": "test/fixtures/mocks-available",
-		"requests": {
-			"preProcessors": []
-		}
-	}
+  "logging": {
+    "forwardedRequests": {
+      "file": "test/logs/requestsForwarded.log",
+      "rotation": {
+        "period": "1d",
+        "count": 3
+      }
+    }
+  },
+  "admin": {
+    "port": "8097"
+  },
+  "mocks": {
+    "enabledFolder": "test/fixtures/mocks-enabled",
+    "availableFolder": "test/fixtures/mocks-available",
+    "mockSetFolder": "test/fixtures/mock-sets"
+  },
+  "extensions": {
+    "mockRequestProcessors": [],
+    "logProcessors": []
+  }
 }

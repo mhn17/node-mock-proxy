@@ -1,50 +1,85 @@
-var config = require('config').get('mocks');
+var config = require('config');
 
 var ExtensionService = function() {
 	if (process.mainModule.instances.extensionService) {
 		return process.mainModule.instances.extensionService;
 	}
 
-	// array of pre processors
-	this.preProcessors = [];
+	// define types
+	this.TYPE_MOCK_REQUEST_PROCESSORS = "mockRequestProcessors";
+	this.TYPE_LOG_PROCESSORS = "logProcessors";
+
+	// array of types
+	this.types = [
+		this.TYPE_MOCK_REQUEST_PROCESSORS,
+		this.TYPE_LOG_PROCESSORS
+	];
+
+	// object for extensions
+	this.extensions = {};
+	this.extensions[this.TYPE_MOCK_REQUEST_PROCESSORS] = [];
+	this.extensions[this.TYPE_LOG_PROCESSORS] = [];
+
 	this.setUp();
 	process.mainModule.instances.extensionService = this;
 	return this;
 };
 
+/**
+ * Setup extensions
+ */
 ExtensionService.prototype.setUp = function() {
-	if (config.get('requests').get('preProcessors')) {
-		var preProcessors = config.get('requests').get('preProcessors');
+	if (config.has("extensions")) {
+		var extensionConfig = config.get("extensions");
 		var that = this;
 
-		preProcessors.forEach(function (processorName) {
-			var processor = require('' + processorName);
-
-			if (typeof processor === 'object') {
-				switch (processor.version) {
-					case 1:
-						if (typeof processor.process === 'function') {
-							that.preProcessors.push(processor.process);
-							console.log('Pre processor "' + processorName + '" added');
-						} else {
-							throw new Error('No process function in pre processor "' + processorName + '"');
-						}
-						break;
-					default:
-						throw new Error('Pre processor version not supported');
-						break;
-				}
+		this.types.forEach(function (type) {
+			if (extensionConfig.has(type) && Array.isArray(extensionConfig.get(type))) {
+				extensionConfig.get(type).forEach(function (extension) {
+					that.initExtension(type, extension)
+				})
 			}
 		});
 	}
 };
 
-ExtensionService.prototype.processPreProcessors = function(body) {
-	this.preProcessors.forEach(function(process){
-		body = process(body);
+/**
+ * Initialize extension and add it to extensions array
+ * @param type
+ * @param extensionName
+ */
+ExtensionService.prototype.initExtension = function(type, extensionName) {
+	var extension = require('' + extensionName);
+
+	if (typeof extension === 'object') {
+		switch (extension.version) {
+			case 1:
+				if (typeof extension.process === 'function') {
+					this.extensions[type].push(extension.process);
+					console.log('Extension "' + extensionName + '" added for type "' + type + '"');
+				} else {
+					throw new Error('No process function in extension "' + extensionName + '"');
+				}
+				break;
+			default:
+				throw new Error('Extension version not supported');
+				break;
+		}
+	}
+};
+
+/**
+ * Process extensions depending on type
+ * @param type
+ * @param content
+ * @returns {*}
+ */
+ExtensionService.prototype.process = function(type, content) {
+	this.extensions[type].forEach(function(process){
+		content = process(content);
 	});
 
-	return body;
+	return content;
 };
 
 module.exports = ExtensionService;

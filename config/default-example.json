@@ -1,40 +1,39 @@
 {
-	"target": {
-		"url": "http://localhost:9999/"
-	},
-	"proxy": {
-		"port": "8000",
-		"mock": {
-			"contentType": "application/json"
-		}
-	},
-	"logging": {
-		"forwardedRequests": {
-			"file": "logs/requestsForwarded.log",
-			"rotation": {
-				"period": "1d",
-				"count": 3
-			}
-		},
-		"returnedMocks": {
-			"file": "logs/returnedMocks.log",
-			"rotation": {
-				"period": "1d",
-				"count": 3
-			}
-		}
-	},
-	"admin": {
-		"port": "8001"
-	},
-	"mocks": {
-		"enabledFolder": "mocks-enabled",
-		"availableFolder": "mocks-available",
-		"mockSetFolder": "mock-sets",
-		"requests": {
-			"preProcessors": [
-				"RemoveString"
-			]
-		}
-	}
+  "target": {
+    "url": "http://localhost:9999/"
+  },
+  "proxy": {
+    "port": "8000",
+    "mock": {
+      "contentType": "application/json"
+    }
+  },
+  "logging": {
+    "forwardedRequests": {
+      "file": "logs/requestsForwarded.log",
+      "rotation": {
+        "period": "1d",
+        "count": 3
+      }
+    },
+    "returnedMocks": {
+      "file": "logs/returnedMocks.log",
+      "rotation": {
+        "period": "1d",
+        "count": 3
+      }
+    }
+  },
+  "admin": {
+    "port": "8001"
+  },
+  "mocks": {
+    "enabledFolder": "mocks-enabled",
+    "availableFolder": "mocks-available",
+    "mockSetFolder": "mock-sets"
+  },
+  "extensions": {
+    "mockRequestProcessors": [],
+    "logProcessors": []
+  }
 }

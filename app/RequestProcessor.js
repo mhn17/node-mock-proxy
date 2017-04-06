@@ -4,7 +4,9 @@ var bunyan = require('bunyan');
 var path = require("path");
 var uuid = require('node-uuid');
 var MockLUT = require('services/MockLUT');
+var MockRequest = require('domain/models/MockRequest');
 var MockFileNameService = require('services/MockFileNameService');
+var ExtensionService = require('services/ExtensionService');
 var config = require('config');
 
 var RequestProcessor = function () {
@@ -12,6 +14,7 @@ var RequestProcessor = function () {
     this.proxyConfig = config.get("proxy");
     this.mockConfig = config.get("mocks");
     this.mockFileNameService = new MockFileNameService();
+    this.extensionService = new ExtensionService();
     this.mockLUT = new MockLUT();
 
     this.proxy = this.initProxy();
@@ -21,7 +24,9 @@ var RequestProcessor = function () {
 
 // try to read file, otherwise forward to original target
 RequestProcessor.prototype.processRequest = function (req, res) {
-    var hash = this.mockFileNameService.getHashByRequest(req);
+	var mockRequest = this.createMockRequestFromRequest(req);
+	mockRequest = this.extensionService.process(this.extensionService.TYPE_MOCK_REQUEST_PROCESSORS, mockRequest);
+    var hash = this.mockFileNameService.getHash(mockRequest);
     var mock = this.mockLUT.getMockByHash(hash);
 
     if (mock) {
@@ -88,26 +93,22 @@ RequestProcessor.prototype.initProxy = function () {
             var protAndHost = req.protocol + "://" + req.hostname;
             var reqUri = req.originalUrl.replace(protAndHost, "");
 
-            var info = "";
-            if (req.header("soapaction")) {
-                info += "soapaction: " + req.header("soapaction").substring(req.header("soapaction").lastIndexOf("\/") + 1, req.header("soapaction").length-1);
-            }
+            var logEntry = {
+				id: uuid.v1(),
+				request: {
+					uri: reqUri,
+					method: req.method,
+					body: req.body
+				},
+				response: {
+					body: responseData
+				},
+				info: ''
+			};
 
+			logEntry = that.extensionService.process(that.extensionService.TYPE_LOG_PROCESSORS, {"logEntry": logEntry, "req": req});
 
-            that.forwardedRequestsLogger.info(
-                {
-                    id: uuid.v1(),
-                    request: {
-                        uri: reqUri,
-                        method: req.method,
-                        body: req.body
-                    },
-                    response: {
-                        body: responseData
-                    },
-                    info: info
-                }
-            );
+            that.forwardedRequestsLogger.info(logEntry);
             responseData = '';
         });
 };
@@ -146,6 +147,28 @@ RequestProcessor.prototype.getProxy = function () {
 
 RequestProcessor.prototype.getForwardedRequestsLogger = function () {
     return this.forwardedRequestsLogger;
+};
+
+/**
+ * create a MockRequest from a request object
+ * @param req
+ */
+RequestProcessor.prototype.createMockRequestFromRequest = function(req) {
+	// Builds a string out of the protocol and hostname to replace that part of the originalUrl from express in windows
+	// with "" because express seems to take the wrong delimiter. example: http:\www.test.com
+	var protAndHost = req.protocol + ":\\" + req.hostname;
+	var originalUrl = req.originalUrl;
+
+	// This step is needed because there seems to be an express bug in windows which causes originalUrl to
+	// return the complete url with protocol and host
+	originalUrl = originalUrl.replace(protAndHost, "");
+
+	var mockRequest = new MockRequest();
+	mockRequest.setUri(originalUrl);
+	mockRequest.setMethod(req.method);
+	mockRequest.setBody(req.body);
+
+	return mockRequest;
 };
 
 module.exports = RequestProcessor;
