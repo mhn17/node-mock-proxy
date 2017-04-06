@@ -104,13 +104,13 @@ router.put('/:id/disable', function(req, res) {
 router.post('/', function(req, res) {
 	console.log('creating mock manually');
 
-	mockRepository.createMockOrUpdate(req.body);
+	mockRepository.createMockOrUpdate(req.body, function (id) {
+		mockLUT.clearCache();
+		mockLUT.buildCache();
 
-	res.statusCode = 200;
-	res.json({ message: 'OK'});
-
-	mockLUT.clearCache();
-	mockLUT.buildCache();
+		res.statusCode = 200;
+		res.json({id: id});
+	});
 });
 
 module.exports = router;

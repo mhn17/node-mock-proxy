@@ -17,7 +17,6 @@ var RequestProcessor = function () {
     this.extensionService = new ExtensionService();
     this.mockLUT = new MockLUT();
 
-    this.proxy = this.initProxy();
     this.forwardedRequestsLogger = this.initRequestLog(config.get("logging").get("forwardedRequests"));
     this.returnedMockLogger = this.initMockLog(config.get("logging").get("returnedMocks"));
 };
@@ -30,7 +29,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
     var mock = this.mockLUT.getMockByHash(hash);
 
     if (mock) {
-        console.log("Mock found, delivering response from " + mock.getFileName());
+        console.log("Mock found: " + mock.getFileName());
         this.returnedMockLogger.info(JSON.stringify(mock));
 
         var statusCode = 200;
@@ -47,20 +46,21 @@ RequestProcessor.prototype.processRequest = function (req, res) {
     } else {
         // fix for node-http-proxy issue 180
         // (https://github.com/nodejitsu/node-http-proxy/issues/180)
+
+
+
         if (req.method === "POST") {
             req.removeAllListeners('data');
             req.removeAllListeners('end');
 
             process.nextTick(function () {
                 if (req.body) {
-                    req.emit('data', req.body);
+                    req.emit('data', req.body + '');
                 }
                 req.emit('end');
             });
         }
-        // end of fix
 
-		console.log('PassThru: '+req.originalUrl);
 
         // use
         var target = this.targetConfig.get("url") + req.originalUrl;
@@ -68,19 +68,26 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         // kill parsed query params, cause they already sit in the url!
         req.query = {};
 
-        this.proxy.web(req, res, {target: target});
+        var proxy = that.getProxyObject();
+
+        proxy.web(req, res, {target: target});
+        // end of fix
+
+
     }
 };
 
 // init proxy server
-RequestProcessor.prototype.initProxy = function () {
+RequestProcessor.prototype.getProxyObject = function () {
     var that = this;
     var responseData = '';
+
+    var startTime = process.hrtime();
 
     // create proxy server
     return httpProxy.createProxyServer({'ignorePath': true, 'changeOrigin': true})
         .on('error', function (e) {
-            console.log(JSON.stringify(e, null, ' '));
+            console.log("Error: ", JSON.stringify(e, null, ' '));
         })
         .on('proxyRes', function (proxyRes, req) {
             proxyRes.on('data', function (dataBuffer) {
