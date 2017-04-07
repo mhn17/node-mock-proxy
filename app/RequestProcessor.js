@@ -12,7 +12,6 @@ var config = require('config');
 var RequestProcessor = function () {
     this.targetConfig = config.get("target");
     this.proxyConfig = config.get("proxy");
-    this.mockConfig = config.get("mocks");
     this.mockFileNameService = new MockFileNameService();
     this.extensionService = new ExtensionService();
     this.mockLUT = new MockLUT();
@@ -25,6 +24,7 @@ var RequestProcessor = function () {
 RequestProcessor.prototype.processRequest = function (req, res) {
 	var mockRequest = this.createMockRequestFromRequest(req);
 	mockRequest = this.extensionService.process(this.extensionService.TYPE_MOCK_REQUEST_PROCESSORS, mockRequest);
+
     var hash = this.mockFileNameService.getHash(mockRequest);
     var mock = this.mockLUT.getMockByHash(hash);
 
@@ -95,6 +95,7 @@ RequestProcessor.prototype.getProxyObject = function () {
 
             var logEntry = {
 				id: uuid.v1(),
+				statusCode: req.status,
 				request: {
 					uri: reqUri,
 					method: req.method,

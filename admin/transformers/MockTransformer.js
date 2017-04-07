@@ -17,6 +17,7 @@ MockTransformer.prototype.transformToDto = function(mock, enabled) {
 		fileName: fileName,
 		name: mock.getName(),
 		description: mock.getDescription(),
+		statusCode: mock.getStatusCode(),
 		request: {
 			uri: mock.getRequest().getUri(),
 			method: mock.getRequest().getMethod(),

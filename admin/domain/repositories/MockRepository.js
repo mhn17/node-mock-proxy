@@ -207,6 +207,7 @@ MockRepository.prototype.createMockOrUpdate = function(data, callback) {
 
 	mock.setName(data.name);
 	mock.setDescription(data.description);
+	mock.setStatusCode(data.statusCode);
 	mock.setRequest(request);
 	mock.setResponse(response);
 

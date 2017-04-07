@@ -81,8 +81,6 @@ Mock.prototype.readFromFile = function() {
 		throw new Error("File name not set");
 	}
 
-	var that = this;
-
 	try {
 		var data = fs.readFileSync(this.getFileName(), {"encoding": "utf-8"});
 		var jsonData = JSON.parse(data);
@@ -95,14 +93,16 @@ Mock.prototype.readFromFile = function() {
 		var response = new Response();
 		response.setBody(jsonData.response.body);
 
-		that.setId(jsonData.id);
-		that.setName(jsonData.name);
-		that.setDescription(jsonData.description);
-		that.setRequest(request);
-		that.setResponse(response);
+		this.setId(jsonData.id);
+		this.setName(jsonData.name);
+		this.setDescription(jsonData.description);
+		this.setRequest(request);
+		this.setResponse(response);
 
 		if (jsonData.statusCode) {
-			that.setStatusCode(jsonData.statusCode)
+			this.setStatusCode(jsonData.statusCode);
+		} else {
+			this.setStatusCode(200);
 		}
 
 	} catch (e) {
@@ -124,6 +124,7 @@ Mock.prototype.saveToFile = function() {
 		"id": this.getId(),
 		"name": this.getName(),
 		"description": this.getDescription(),
+		"statusCode": this.getStatusCode(),
 		"request": {
 			"uri": this.getRequest().getUri(),
 			"method": this.getRequest().getMethod(),

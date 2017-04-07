@@ -21,6 +21,7 @@ router.get('/', function (req, res) {
 
             requests.push({
                 id: request.id,
+                statusCode: request.statusCode,
                 request: {
                     uri: request.request.uri,
                     method: request.request.method,
@@ -76,6 +77,7 @@ router.get('/:id', function(req, res) {
             var request = JSON.parse(rawRequest);
             requests.push({
                 id: request.id,
+				statusCode: request.statusCode,
                 request: {
                     uri: request.request.uri,
                     method: request.request.method,
