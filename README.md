@@ -27,6 +27,34 @@ To run the test application which will always return a standard response use in 
 
     node MockTarget.js
 
+## Extensions
+You can use extensions to modify mock requests or log entries. All extensions need to placed in the "extensions" folder and registered in the configuration file:
+
+Configuration example:
+
+    ...
+    "extensions": {
+        "mockRequestProcessors": [
+            "MyMockRequestProcessorExtension"
+        ],
+        "logProcessors": [
+            "MyLogProcessorExtension"
+        ]
+    }
+
+The extension file needs to export an object with a version property and and a "process" function.
+
+Extension example:
+
+    module.exports = {
+    	version: 1,
+    	process: function(content) {
+   			content.logEntry.info = "some more info here"
+    
+    		return content.logEntry;
+    	}
+    };
+
 ## Chrome plugin
 A chrome plugin with some nice features like
 
