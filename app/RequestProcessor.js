@@ -46,9 +46,6 @@ RequestProcessor.prototype.processRequest = function (req, res) {
     } else {
         // fix for node-http-proxy issue 180
         // (https://github.com/nodejitsu/node-http-proxy/issues/180)
-
-
-
         if (req.method === "POST") {
             req.removeAllListeners('data');
             req.removeAllListeners('end');
@@ -60,7 +57,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
                 req.emit('end');
             });
         }
-
+		// end of fix
 
         // use
         var target = this.targetConfig.get("url") + req.originalUrl;
@@ -68,12 +65,8 @@ RequestProcessor.prototype.processRequest = function (req, res) {
         // kill parsed query params, cause they already sit in the url!
         req.query = {};
 
-        var proxy = that.getProxyObject();
-
+        var proxy = this.getProxyObject();
         proxy.web(req, res, {target: target});
-        // end of fix
-
-
     }
 };
 

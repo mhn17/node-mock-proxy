@@ -32,7 +32,7 @@ MockProxyServer.prototype.start = function() {
 	this.mockLUT.buildCache();
 
 	// get body as raw to create hash of post body
-	this.app.use(bodyParser.text({"type": "*/*"}));
+	this.app.use(bodyParser.text({"type": "*/*", limit:1024*1024*20}));
 	this.app.use('/*', routes);
 
 	// start mock proxy server
