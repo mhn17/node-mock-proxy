@@ -95,7 +95,7 @@ RequestProcessor.prototype.getProxyObject = function () {
 
             var logEntry = {
 				id: uuid.v1(),
-				statusCode: req.status,
+				statusCode: res.statusCode,
 				request: {
 					uri: reqUri,
 					method: req.method,
