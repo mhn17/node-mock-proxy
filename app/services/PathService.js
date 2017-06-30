@@ -127,7 +127,6 @@ PathService.prototype.getMockPathBySearch = function(mockFileName) {
     }
 };
 
-
 /**
  * Returns all mock files, either enabled or available
  *
@@ -158,6 +157,13 @@ PathService.prototype.getListOfMockFiles = function(dir) {
 	}
 
 	return mockFiles;
+};
+
+/**
+ * TBD
+ */
+PathService.prototype.getPugViewFolderPath = function() {
+    return './admin/ui/views';
 };
 
 module.exports = new PathService();

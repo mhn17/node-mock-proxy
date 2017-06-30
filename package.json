@@ -19,6 +19,7 @@
     "mkdirp": "0.5.1",
     "mv": "^2.1.1",
     "node-uuid": "^1.4.7",
+    "pug": "^2.0.0-rc.2",
     "sanitize-filename": "^1.6.0"
   },
   "description": "A proxy server returning mock responses for specific requests while proxying all other requests to the default target.",

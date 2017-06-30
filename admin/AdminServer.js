@@ -14,6 +14,16 @@ var expressWs = require('express-ws');
 var AdminServer = function() {
     // init server
     this.app = express();
+
+
+
+
+    this.app.set('view engine', 'pug');
+
+
+
+
+
     this.server = null;
 
     // get admin config
@@ -64,7 +74,7 @@ AdminServer.prototype.setupWebsocketLog = function() {
         type = arguments[0];
         args = arguments[1];
 
-        var allArguments = []
+        var allArguments = [];
 
         for (key in args) {
             allArguments.push(args[key]);
@@ -91,7 +101,9 @@ AdminServer.prototype.setupWebsocketLog = function() {
 AdminServer.prototype.setUpRoutes = function() {
     // root URL
     router.get('/', function(req, res) {
-        res.json({ message: 'Hooray! Welcome to our api!' });
+        res.render('index', {
+            title: 'Hallo pug!'
+        });
     });
 
     this.app.use(function (req, res, next) {
