@@ -107,9 +107,10 @@ RequestProcessor.prototype.getProxyObject = function () {
 				info: ''
 			};
 
-			logEntry = that.extensionService.process(that.extensionService.TYPE_LOG_PROCESSORS, {"logEntry": logEntry, "req": req});
+            var extensionLogEntry = {"logEntry": logEntry, "req": req};
+			extensionLogEntry = that.extensionService.process(that.extensionService.TYPE_LOG_PROCESSORS, extensionLogEntry);
 
-            that.forwardedRequestsLogger.info(logEntry);
+            that.forwardedRequestsLogger.info(extensionLogEntry.logEntry);
             responseData = '';
         });
 };
