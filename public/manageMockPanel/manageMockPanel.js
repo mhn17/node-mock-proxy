@@ -18,7 +18,7 @@ $(document).ready(function() {
 		styleSheetName = 'page';
 	}
 
-	$('head').append('<link rel="stylesheet" href="../css/' + styleSheetName + '.css">');
+	$('head').append('<link rel="stylesheet" href=' + styleSheetName + '"../css/.css">');
 	$('body').addClass(styleSheetName);
 
 	new UiNavigation();

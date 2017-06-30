@@ -6,12 +6,6 @@ var fs = require('fs');
 // Services
 var pathService = require("services/PathService");
 
-router.get('/ui', function (req, res) {
-    res.render('index', {
-            title: 'Hallo pug!'
-       });
-});
-
 // Logged requests
 router.get('/', function (req, res) {
     console.log("List available requests");

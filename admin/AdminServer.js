@@ -8,6 +8,7 @@ var fs          = require('fs');
 var requestRoutes = require('routes/requests');
 var mockRoutes = require('routes/mocks');
 var mockSetRoutes = require('routes/mockSets');
+var ui = require('routes/ui');
 var expressWs = require('express-ws');
 
 // Make the AdminServer to a real web inserver via the express module
@@ -99,12 +100,10 @@ AdminServer.prototype.setupWebsocketLog = function() {
 // Add a prototype function to setup the route stuff
 // Save requests and responses
 AdminServer.prototype.setUpRoutes = function() {
-    // root URL
-    router.get('/', function(req, res) {
-        res.render('index', {
-            title: 'Hallo pug!'
-        });
-    });
+
+
+    // ToDo: Add hello response here again
+
 
     this.app.use(function (req, res, next) {
         next();
@@ -114,6 +113,7 @@ AdminServer.prototype.setUpRoutes = function() {
     this.app.use('/api/mocks', mockRoutes);
     this.app.use('/api/mock-sets', mockSetRoutes);
     this.app.use('/api', router);
+    this.app.use('/admin/ui', ui);
 };
 
 module.exports = AdminServer;
