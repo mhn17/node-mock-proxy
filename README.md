@@ -55,15 +55,14 @@ Extension example:
     	}
     };
 
-## Chrome plugin
-A chrome plugin with some nice features like
+## UI
 
+A straightforward UI can be accessed via the URL "DefinedURLInConfigFile/admin/ui", e.g. "http://127.0.0.1:8001/admin/ui".
+It offers some nice features like
 1. Create mocks directly from captured requests and their corresponding responses which were captured by the mock proxy.
 2. Manage existing mocks (activation/deactivation/edit/delete/response preview).
 3. Track the last x mocks which were returned by the mock proxy.
 4. Create mock sets to group mocks together.
 5. Take a look at the mock proxy logs.
 
-can be found [here](https://github.com/JulHorn/mock_proxy_chrome_plugin).
-
-
+The UI was ported from a Chrome plugin, which can be found [here](https://github.com/JulHorn/mock_proxy_chrome_plugin).
