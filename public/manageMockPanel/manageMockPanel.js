@@ -1,9 +1,4 @@
 
-
-// If the local storage value does not exist (user never changed anything ot it is empty), then warn the user
-// and use a default value
-new LocalStorageHandler().setDefaultEndpointIfNoEndpointIsSet();
-
 $(document).ready(function() {
 
 	// css & bodyclass for panel or popups

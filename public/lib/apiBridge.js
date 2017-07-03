@@ -1,10 +1,8 @@
 
-var ApiBridge = function () {
-	this.localStorageHandler = new LocalStorageHandler();
-};
+var ApiBridge = function () {};
 
 ApiBridge.prototype.webSocket = function(endpoint, receiveCallBack) {
-	var connection = new WebSocket("ws://" + this.localStorageHandler.getActiveEndpointAddress() + endpoint);
+	var connection = new WebSocket("ws://" + this.getServerEndpoint().replace("http://", "") + endpoint);
 
 	connection.onopen = function () {
 		connection.send('Ping'); // Send the message 'Ping' to the server
@@ -27,19 +25,9 @@ ApiBridge.prototype.sendRequest = function (endpoint, method, data, callback) {
 
 	console.log('sendRequest', endpoint, method, data);
 
-	// if MockProxy is in DevPanel
-	if ($('body').hasClass('panel')) {
-
-		var request = { "endpoint": 'http://' + this.localStorageHandler.getActiveEndpointAddress() + endpoint, "method": method, "data": data};
-		chrome.runtime.sendMessage(request, function(response) {
-			callback(response);
-		});
-	}
-	else {
 		var xhr = new XMLHttpRequest();
-		xhr.open(method, 'http://' + this.localStorageHandler.getActiveEndpointAddress() + endpoint, true);
+		xhr.open(method, this.getServerEndpoint() + endpoint, true);
 		xhr.onload = function (event) {
-			console.log('onload', event);
 			if (xhr.readyState == 4 && xhr.status == 200) {
 				var payload = JSON.parse(xhr.responseText);
 				callback(payload);
@@ -53,9 +41,7 @@ ApiBridge.prototype.sendRequest = function (endpoint, method, data, callback) {
 		else {
 			xhr.send(null);
 		}
-	}
 };
-
 
 ApiBridge.prototype.enableMock = function (mockId, callback) {
 	this.sendRequest("/api/mocks/" + mockId + "/enable", "PUT", null, callback);
@@ -127,4 +113,14 @@ ApiBridge.prototype.disableAllMockSets = function(callback) {
 
 ApiBridge.prototype.createMockSet = function(data, callback) {
 	this.sendRequest("/api/mock-sets", "POST", data, callback);
+};
+
+/**
+ * Returns the server endpoint/host to which the requests will be send. The value will be retrieved from the local storage.
+ *
+ * @return {String} Returns the server endpoint/host to which the requests will be send.
+ * **/
+ApiBridge.prototype.getServerEndpoint = function () {
+	return location.protocol
+		+ '//' + location.hostname + (location.port ? ':' + location.port : '');
 };

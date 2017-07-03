@@ -18,7 +18,7 @@ var AdminServer = function() {
 
 
 
-
+    this.app.use(express.static("public"));
     this.app.set('view engine', 'pug');
 
 
