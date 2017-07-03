@@ -53,7 +53,7 @@ UiPreview.prototype.show = function(language) {
 	var content = this.content;
 
 	$('#previewWindow #previewLanguage button[data-language]').removeClass('active');
-	$('#previewWindow #previewLanguage button[data-language="'+language+'"]').addClass('active');
+	$('#previewWindow #previewLanguage button[data-language="' + language + '"]').addClass('active');
 
 	// Try to autoformat code if no parameter was given
 	if (typeof(language) === 'undefined') {

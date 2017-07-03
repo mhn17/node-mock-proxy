@@ -48,7 +48,7 @@ html
                 button(data-language="json") JSON
                 button(data-language="") Plain Text
             button(class="closeButton" data-action="close") X
-            pr
+            pre
                 code
         div(id="stage")
             div(id="PaneShowRequests")
@@ -106,11 +106,11 @@ html
                         td
                             label(for="form_requestMethod") Request Method
                         td
-                        select(id="form_requestMethod" name="requestMethod")
-                        option(value="GET") GET
-                        option(value="POST") POST
-                        option(value="PUT") PUT
-                        option(value="DELETE") DELETE
+                            select(id="form_requestMethod" name="requestMethod")
+                                option(value="GET") GET
+                                option(value="POST") POST
+                                option(value="PUT") PUT
+                                option(value="DELETE") DELETE
                     tr
                         td
                             label(for="form_requestBody") Request Body

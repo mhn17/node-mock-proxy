@@ -19,6 +19,7 @@ PaneTrackMocks.prototype.draw = function() {
 
 		mockList.forEach(function (mock, index) {
 			var rowContent = '';
+
 			rowContent += '<td>' + index + '</td>';
 			rowContent += '<td>' + mock.name + '</td>';
 			rowContent += '<td>' + mock.description + '</td>';
