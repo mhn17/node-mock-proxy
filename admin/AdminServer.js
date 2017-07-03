@@ -16,15 +16,12 @@ var AdminServer = function() {
     // init server
     this.app = express();
 
-
-
-    this.app.use(express.static("public"));
+    // Configure pug templating engine to use folders in admin
+    this.app.set('views', "admin/views");
+    this.app.use(express.static('admin/public'));
     this.app.set('view engine', 'pug');
 
-
-
-
-
+    // Do other stuff
     this.server = null;
 
     // get admin config
