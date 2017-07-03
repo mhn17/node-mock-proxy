@@ -14,7 +14,7 @@ PaneLog.prototype.draw = function() {
 PaneLog.prototype.addLog = function(type, arguments) {
 
 	var log = '';
-	log+= '<div class="logEntry '+type+'">';
+	log+= '<div class="logEntry ' + type + '">';
 	$.each(arguments, function(key, value) {
 		if (typeof value === 'object') {
 			value = JSON.stringify(value);
