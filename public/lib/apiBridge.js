@@ -2,7 +2,7 @@
 var ApiBridge = function () {};
 
 ApiBridge.prototype.webSocket = function(endpoint, receiveCallBack) {
-	var connection = new WebSocket("ws://" + this.getServerEndpoint().replace("http://", "") + endpoint);
+	var connection = new WebSocket("ws://" + this.getServerEndpoint().replace("http://", "").replace("https://", "") + endpoint);
 
 	connection.onopen = function () {
 		connection.send('Ping'); // Send the message 'Ping' to the server

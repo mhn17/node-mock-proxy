@@ -1,9 +1,6 @@
-
-
 #mockList label.recentlyActive {
     color: green;
 }
-
 
 #mockList tr td:nth-child(1),
 #mockList tr th:nth-child(1) {

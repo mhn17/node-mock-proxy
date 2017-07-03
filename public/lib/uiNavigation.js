@@ -19,7 +19,7 @@ var UiNavigation = function() {
 		'PaneShowRequests': new PaneShowRequests(),
 		'PaneMockSetList': new PaneMockSetList(),
 		'PaneCreateMockSet': new PaneCreateMockSet(),
-		'PaneLog': new PaneLog(),
+		'PaneLog': new PaneLog()
 	};
 
 	this.switchPanel($('nav.main').data('defaultPane'));
@@ -38,8 +38,6 @@ UiNavigation.prototype.init = function() {
 		var paneId = $(this).data('pane');
 		that.allContainer.push($('#' + paneId));
 	});
-
-
 };
 
 // Hide all panes
@@ -54,21 +52,14 @@ UiNavigation.prototype.hideAllPanes = function() {
 UiNavigation.prototype.bindEvents = function() {
 	var that = this;
 
-
-
-	$(this.buttonSelector+'[data-pane]').on('click', function() {
+	$(this.buttonSelector + '[data-pane]').on('click', function() {
 		that.switchPanel($(this).data('pane'));
-	});
-
-	$(this.buttonSelector+'[data-tool="OpenWindow"]').on('click', function() {
-		var href = $(this).data('href');
-		chrome.tabs.create({ url: href });
 	});
 };
 
 UiNavigation.prototype.switchSubNavigation = function(paneId) {
 
-	$navSub = $('nav.sub');
+	var $navSub = $('nav.sub');
 	$navSub.hide();
 
 	// remove all active states...

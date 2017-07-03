@@ -35,9 +35,6 @@ html
                 button(data-pane="PaneMockList") Mocks
                 button(data-pane="PaneMockSetList") Sets
                 button(data-pane="PaneLog") Logs
-            div(class="tools")
-                button(data-tool="OpenWindow" data-href="/options/options.html") Logs
-                button(data-tool="OpenWindow" data-href="/manageMockPanel/manageMockPanel.html") Logs
         nav(class="sub" data-parent-nav="PaneMockList")
             button(data-pane="PaneMockList") List
             button(data-pane="PaneCreateMock") Create
@@ -55,16 +52,16 @@ html
                 code
         div(id="stage")
             div(id="PaneShowRequests")
-                h1 "Requests"
+                h1 Requests
                 button(data-action="deleteRequests") Clear Requests
                 table(id="requestList")
                     thead
-                    tr
-                        th Uri
-                        th Method
-                        th StatusCode
-                        th Info
-                        th(colspan="2")
+                        tr
+                            th Uri
+                            th Method
+                            th StatusCode
+                            th Info
+                            th(colspan="2")
                     tbody
         div(id="PaneMockList")
             h1 Mocklist
@@ -72,14 +69,14 @@ html
             button(data-action="trackMocks") Track Mocks
             table(id="mockList")
                 thead
-                tr
-                    th Enabled
-                    th Name
-                    th Description
-                    th StatusCode
-                    th Uri
-                    th Activated
-                    th(colspan="3") Tools
+                    tr
+                        th Enabled
+                        th Name
+                        th Description
+                        th StatusCode
+                        th Uri
+                        th Activated
+                        th(colspan="3") Tools
                 tbody
         div(id="PaneCreateMock")
             h1 Create/Update Mock
@@ -140,11 +137,11 @@ html
             h1 Tracked Mocks
             table
                 thead
-                tr
-                    th Order
-                    th Name
-                    th Description
-                    th Tools
+                    tr
+                        th Order
+                        th Name
+                        th Description
+                        th Tools
                 tbody
         div(id="PaneMockSetList")
             h1 Mock Sets
@@ -152,10 +149,10 @@ html
             button(data-action="deactivateAllSets") Deactivate all
             table(id="mockSetList")
                 thead
-                tr
-                    th Name
-                    th Description
-                    th(colspan="3") Tools
+                    tr
+                        th Name
+                        th Description
+                        th(colspan="3") Tools
                 tbody
         div(id="PaneCreateMockSet")
             h1 Create/Update Mock Set
@@ -182,5 +179,5 @@ html
                             button(id="set_form_submit") Submit
                 input(id="set_form_id" type="hidden")
         div(id="PaneLog")
-        h1 Log
-        div(class="consoleLog")
+            h1 Log
+            div(class="consoleLog")
