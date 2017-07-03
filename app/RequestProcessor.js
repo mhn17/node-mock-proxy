@@ -30,7 +30,7 @@ RequestProcessor.prototype.processRequest = function (req, res) {
 
     if (mock) {
         console.log("Mock found: " + mock.getFileName());
-        this.returnedMockLogger.info(JSON.stringify(mock));
+        this.returnedMockLogger.info(mock);
 
         var statusCode = 200;
         if (mock.statusCode) {
